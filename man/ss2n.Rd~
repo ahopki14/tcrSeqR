@@ -1,8 +1,8 @@
 \name{b}
 \alias{b}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{some dummy data
-%%  ~~function to do ... ~~
+\title{
+Compute the signal to noise of two samples
 }
 \description{
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~

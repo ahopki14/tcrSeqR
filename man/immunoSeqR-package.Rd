@@ -3,40 +3,35 @@
 \alias{immunoSeqR}
 \docType{package}
 \title{
-What the package does (short line)
-~~ package title ~~
+Tools for analyzing data from Adaptive's ImmunoSeq platform
 }
 \description{
-More about what it does (maybe more than one line)
-~~ A concise (1-5 lines) description of the package ~~
+Results from T cell receptor beta chain sequencing can be aggregated and manipulated using this package.
 }
 \details{
 \tabular{ll}{
 Package: \tab immunoSeqR\cr
 Type: \tab Package\cr
-Version: \tab 1.0\cr
+Version: \tab 1.0.1\cr
 Date: \tab 2015-01-09\cr
-License: \tab What license is it under?\cr
+License: \tab None (yet)?\cr
 }
-~~ An overview of how to use the package, including the most important ~~
-~~ functions ~~
+overview
 }
 \author{
-Who wrote it
+Alexander Hopkins
 
-Maintainer: Who to complain to <yourfault@somewhere.net>
-~~ The author and/or maintainer of the package ~~
+Alexander Hopkins <achopkins@gmail.com>
+
 }
 \references{
-~~ Literature or other references for background information ~~
+
 }
-~~ Optionally other standard keywords, one per line, from file KEYWORDS in ~~
-~~ the R documentation directory ~~
+
 \keyword{ package }
 \seealso{
-~~ Optional links to other man pages, e.g. ~~
-~~ \code{\link[<pkg>:<pkg>-package]{<pkg>}} ~~
+
 }
 \examples{
-~~ simple examples of the most important functions ~~
+
 }
