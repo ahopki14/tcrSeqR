@@ -1,7 +1,7 @@
 \name{a}
 \alias{a}
 \docType{data}
-\title{
+\title{a dummy function
 %%   ~~ data name/kind ... ~~
 }
 \description{

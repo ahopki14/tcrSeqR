@@ -4,6 +4,6 @@ Title: Tools for analyzing data from Adaptive's ImmunoSeq platform
 Version: 1.0
 Date: 2015-01-09
 Author: Alexander Hopkins
-Maintainer: Alexander Hopkins <achopkins@gmail.com>
+Maintainer: achopkins@gmail.com
 Description: Results from T cell receptor beta chain sequencing can be aggregated and manipulated using this package.
 License: None (yet)

@@ -1,7 +1,7 @@
 \name{b}
 \alias{b}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{
+\title{some dummy data
 %%  ~~function to do ... ~~
 }
 \description{
