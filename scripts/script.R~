@@ -1,0 +1,5 @@
+all_files <- list.files(pattern=".tsv")
+ds <- iseqr_merge(all_files)
+ds <- ds[ds$aa!='',] # restrict to productive
+ds$aa <- as.character(ds$aa) 
+ds <- aggregate(ds[,-1:-2],list(ds[,2]),sum) # where 1 and 2 are metadata

@@ -1,0 +1,92 @@
+\name{iseqr_merge_raw}
+\alias{iseqr_merge_raw}
+%- Also NEED an '\alias' for EACH other topic documented here.
+\title{
+%%  ~~function to do ... ~~
+}
+\description{
+%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+}
+\usage{
+iseqr_merge_raw(all_files)
+}
+%- maybe also 'usage' for other objects documented here.
+\arguments{
+  \item{all_files}{
+%%     ~~Describe \code{all_files} here~~
+}
+}
+\details{
+%%  ~~ If necessary, more details than the description above ~~
+}
+\value{
+%%  ~Describe the value returned
+%%  If it is a LIST, use
+%%  \item{comp1 }{Description of 'comp1'}
+%%  \item{comp2 }{Description of 'comp2'}
+%% ...
+}
+\references{
+%% ~put references to the literature/web site here ~
+}
+\author{
+%%  ~~who you are~~
+}
+\note{
+%%  ~~further notes~~
+}
+
+%% ~Make other sections like Warning with \section{Warning }{....} ~
+
+\seealso{
+%% ~~objects to See Also as \code{\link{help}}, ~~~
+}
+\examples{
+##---- Should be DIRECTLY executable !! ----
+##-- ==>  Define data, use random,
+##--	or do  help(data=index)  for the standard data sets.
+
+## The function is currently defined as
+function (all_files) 
+{
+    name <- gsub(".tsv", "", all_files)
+    name <- gsub("_", "", name)
+    name <- gsub("-", "", name)
+    name <- paste0("sample", name)
+    if (length(unique(name)) != length(name)) {
+        stop("Names do not appear to be unique")
+    }
+    nt_list <- vector()
+    aa_list <- vector()
+    for (a in seq_along(all_files)) {
+        ds <- read.delim(all_files[a], sep = "\t")
+        ds <- data.frame(ds)
+        nt_list <- c(nt_list, as.vector(ds$nucleotide))
+        aa_list <- c(aa_list, as.vector(ds$aminoAcid))
+        cat(c("done loading ", all_files[a], "\n"))
+    }
+    list <- data.frame(nt = nt_list, aa = aa_list)
+    list <- unique(list)
+    ds <- list
+    for (a in seq_along(all_files)) {
+        tmp_ds <- read.delim(all_files[a], sep = "\t")
+        tmp_ds <- data.frame(nt = tmp_ds$nucleotide, count = tmp_ds$count)
+        colnames(tmp_ds)[2] <- paste(name[a])
+        ds <- merge(ds, tmp_ds, by = "nt", all = TRUE)
+        cat(c("done with", all_files[a], "\n"))
+    }
+    ds[is.na(ds) == TRUE] <- 0
+    cat("------------------\n")
+    cat("Loaded the following data, please check against the raw files:\n")
+    for (a in seq_along(colnames(ds))) {
+        cat(c(colnames(ds)[a], ":", length(ds[, a][ds[, a] != 
+            0]), "\n"))
+    }
+    cat("------------------\n")
+    ds
+  }
+}
+% Add one or more standard keywords, see file 'KEYWORDS' in the
+% R documentation directory.
+\keyword{ ~kwd1 }
+\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

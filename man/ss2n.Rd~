@@ -1,30 +1,25 @@
-\name{b}
-\alias{b}
+\name{ss2n}
+\alias{ss2n}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Compute the signal to noise of two samples
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+The signal to noise score describes the difference between two groups relative to their variability. It is the difference between the means, divided by the sum of the standard deviations.
 }
 \usage{
-b(a)
+ss2n(x,y)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{a}{
-%%     ~~Describe \code{a} here~~
-}
+  \item{x}{Data from first group}
+	\item{y}{Data from second group}
 }
 \details{
 %%  ~~ If necessary, more details than the description above ~~
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
+\item{score}{Vector of s2n scores}
 }
 \references{
 %% ~put references to the literature/web site here ~

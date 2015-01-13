@@ -1,25 +1,24 @@
-\name{ss2n}
-\alias{ss2n}
+\name{iseqr_merge}
+\alias{iseqr_merge}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Compute the signal to noise of two samples
+Merge exported ImmunoSeq data files into a data frame
 }
 \description{
-The signal to noise score describes the difference between two groups relative to their variability. It is the difference between the means, divided by the sum of the standard deviations.
+
 }
 \usage{
-ss2n(x,y)
+iseqr_merge(all_files)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{Data from first group}
-	\item{y}{Data from second group}
+  \item{all_files}{Character vector of paths to files to be merged. Should also provide unique information about each samples. This list will be sanitized and used as the sample names in the data.frame}
 }
 \details{
-%%  ~~ If necessary, more details than the description above ~~
+
 }
 \value{
-\item{score}{Vector of s2n scores}
+\item{ds}{data.frame containing counts. Column headers are replaced with names derived from all_files.}
 }
 \references{
 %% ~put references to the literature/web site here ~
@@ -38,7 +37,6 @@ ss2n(x,y)
 }
 \examples{
 
-}
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 \keyword{ ~kwd1 }

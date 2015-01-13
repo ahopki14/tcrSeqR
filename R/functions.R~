@@ -53,7 +53,7 @@ ss2n <- function(x,y){
 }
 
 # Overlap 
-overlap <- function(x,y){
+overlap <- function(x,y){ # move this to a functions file...
 	shared_x <- x[x>0 & y >0]
 	shared_y <- y[x>0 & y >0]
 	shared_sum <- sum(c(shared_x,shared_y))

@@ -1,25 +1,25 @@
-\name{ss2n}
-\alias{ss2n}
+\name{overlap}
+\alias{overlap}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Compute the signal to noise of two samples
+Calculate the overlap between two TCR sequencing samples
 }
 \description{
-The signal to noise score describes the difference between two groups relative to their variability. It is the difference between the means, divided by the sum of the standard deviations.
+Calculates the overlap (total shared reads/total reads) for two sets of data. 
 }
 \usage{
-ss2n(x,y)
+overlap(x, y)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{Data from first group}
-	\item{y}{Data from second group}
+  \item{x}{First data set}
+  \item{y}{Second data set}
 }
 \details{
 %%  ~~ If necessary, more details than the description above ~~
 }
 \value{
-\item{score}{Vector of s2n scores}
+\item{ol}{Overlap}
 }
 \references{
 %% ~put references to the literature/web site here ~
