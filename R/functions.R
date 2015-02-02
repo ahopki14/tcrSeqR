@@ -61,3 +61,43 @@ overlap <- function(x,y){
 	ol <- shared_sum/(total) # Adaptive has a + 1 in the denom...
 	ol
 }
+
+#Synonymity
+# x is a factor (coerced to char vector) or char vector
+# syn is a named list of synonymities
+synonymity <- function(x){
+x <- as.character(x)
+ind <- split(seq_len(length(x)),x)
+syn <- sapply(ind,length)
+syn
+}
+
+# Aggregate
+# ds is a data frame made with iseqr_merge (needs 'aa' and 'nt', others will be lost)
+# ds_out is a data frame of the aggregated data
+iseqr_aggregate <- function(ds){
+# restrict to productive and sanitize factor
+ds <- ds[ds$aa!='',] 
+ds$aa <- as.factor(as.character(ds$aa)) 
+# make indicies and synonymity
+ind <- split(seq_len(nrow(ds)),ds$aa)
+syn <- sapply(ind,length)
+# define data columns
+dc <- names(ds)[names(ds)!='nt' & names(ds)!='aa']
+# do math
+sum_rows <- function(x){sapply(ds[x,dc],FUN=sum)}
+a <- sapply(ind,FUN=sum_rows)
+b <- data.frame(t(a))
+# combine synonymous nucleotide sequences into a single char (comma sep)
+paste_names <- function(x){toString(ds[x,'nt'])}
+nt <- sapply(ind,FUN=paste_names)
+nt <- data.frame(nt)
+# put together ds_out
+rn <- data.frame(aa=rownames(b))
+rownames(b) <- seq_len(nrow(b))
+syn <- data.frame(syn)
+ds_out <- cbind(syn,nt,rn,b)
+rownames(ds_out) <- seq_len(nrow(ds_out))
+cat(paste0('Collapsed ',length(syn[syn>1]),' TCRs\n', 'Left ',length(syn[syn==1]),' TCRs\n'))
+ds_out
+}

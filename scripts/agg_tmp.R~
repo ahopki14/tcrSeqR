@@ -5,6 +5,9 @@ ds <- data.frame(nt= c('j','m','h','o','k','l','i','n'),aa=c('c','c','b','','a',
 ds <- ds[ds$aa!='',] # restrict to productive
 ds$aa <- as.factor(as.character(ds$aa)) # necessary to remove on-productive aa from factor levels
 #
+#
+#
+#
 # 
 ind <- split(seq_len(nrow(ds)),ds$aa)
 syn <- sapply(ind,length)

@@ -1,8 +1,6 @@
 all_files <- list.files(pattern=".tsv")
 ds <- iseqr_merge(all_files)
 # can load a 2 sample data set from example.data.Rda
-ds <- ds[ds$aa!='',] # restrict to productive
-ds$aa <- as.character(ds$aa) 
-ds <- aggregate(ds[,-1:-2],list(ds[,2]),sum) # where 1 and 2 are metadata
+ds_agg <- iseqr_aggregate(ds)
 save(ds,file='big_table_aggregated_by_aa.Rda')
 

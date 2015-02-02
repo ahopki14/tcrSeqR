@@ -1,0 +1,40 @@
+\name{synonymity}
+\alias{synonymity}
+%- Also NEED an '\alias' for EACH other topic documented here.
+\title{
+Calculate the synonymity of a vector. This is simply the number of times each unique element occurs in a data set.
+}
+\description{
+The synonymity of a set of amino acid sequences is essentially the number of unique nucleotide sequences that make each unique amino acid sequence.  
+}
+\usage{
+synonymity(x)
+}
+
+\arguments{
+  \item{x}{A factor or character vector}
+}
+\details{
+
+}
+\value{
+\item{syn}{A vector of length length(unique(x)) describing the number of times each element in unique(x) occurred}
+}
+\references{
+}
+\author{
+Alexander Hopkins
+}
+\note{
+%%  ~~further notes~~
+}
+
+%% ~Make other sections like Warning with \section{Warning }{....} ~
+
+\seealso{
+%% ~~objects to See Also as \code{\link{help}}, ~~~
+}
+\examples{
+
+}
+
