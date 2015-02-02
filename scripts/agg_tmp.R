@@ -3,7 +3,7 @@ ds <- data.frame(nt= c('j','m','h','o','k','l','i','n'),aa=c('c','c','b','','a',
 # or load the 2 sample set
 #load('example_data.Rda')
 ds <- ds[ds$aa!='',] # restrict to productive
-ds$aa <- as.factor(as.character(ds$aa)) # necessary to remove on-productive aa from factor levels
+ds$aa <- as.factor(as.character(ds$aa)) # necessary to remove un-productive seq from factor levels
 #
 # 
 ind <- split(seq_len(nrow(ds)),ds$aa)

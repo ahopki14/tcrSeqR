@@ -37,20 +37,7 @@ overlap(x, y)
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
 
-## The function is currently defined as
-function (x, y) 
-{
-    shared_x <- x[x > 0 & y > 0]
-    shared_y <- y[x > 0 & y > 0]
-    shared_sum <- sum(c(shared_x, shared_y))
-    total <- sum(c(x, y))
-    ol <- shared_sum/(total + 1)
-    ol
-  }
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
