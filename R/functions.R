@@ -1,5 +1,6 @@
 # merge the exported ImmunoSeq data into a data frame
 iseqr_merge <- function(all_files){
+	start <- proc.time()
 	name <- gsub(".tsv","",all_files)
 	name <- gsub("_","",name)
 	name <- gsub("-","",name)
@@ -15,6 +16,10 @@ iseqr_merge <- function(all_files){
 		aa_list <- c(aa_list,as.vector(ds$aminoAcid))
 		cat(c("done loading ", all_files[a],"\n"))
 	}
+	# clock
+	t <- round((proc.time()-start)[['elapsed']]/60,2) 
+	cat(paste0('Loaded ',length(all_files),' samples in ',t,' minutes\n'))
+	#
 	list <- data.frame(nt=nt_list,aa=aa_list)
 	list <- unique(list)
 	ds <- list
@@ -27,11 +32,13 @@ iseqr_merge <- function(all_files){
 	}
 	ds[is.na(ds)==TRUE] <- 0
 	# Print sanity check
+	t <- round((proc.time()-start)[['elapsed']]/60,2) 
 	cat("------------------\n")
 	cat('Loaded the following data, please check against the raw files:\n')
 	for(a in seq_along(colnames(ds))){
 		cat(c(colnames(ds)[a],":", length(ds[,a][ds[,a]!=0]),"\n"))
 	}
+	cat(paste0('Completed in ',t,' minutes\n'))
 	cat("------------------\n")
 	# Return the data set	
 	ds
@@ -76,6 +83,7 @@ syn
 # ds is a data frame made with iseqr_merge (needs 'aa' and 'nt', others will be lost)
 # ds_out is a data frame of the aggregated data
 iseqr_aggregate <- function(ds){
+start <- proc.time()
 # restrict to productive and sanitize factor
 ds <- ds[ds$aa!='',] 
 ds$aa <- as.factor(as.character(ds$aa)) 
@@ -98,6 +106,10 @@ rownames(b) <- seq_len(nrow(b))
 syn <- data.frame(syn)
 ds_out <- cbind(syn,nt,rn,b)
 rownames(ds_out) <- seq_len(nrow(ds_out))
+# Print sanity check
+t <- round((proc.time()-start)[['elapsed']]/60,2) 
 cat(paste0('Collapsed ',length(syn[syn>1]),' TCRs\n', 'Left ',length(syn[syn==1]),' TCRs\n'))
+cat(paste0('Completed in ',t,' minutes\n'))
+#
 ds_out
 }
