@@ -5,14 +5,15 @@
 Aggregate Adaptive Immunoseq data by amino acid
 }
 \description{
-Data provided by Adaptive includes TCR counts at the nucleotide level. This function combines synonymous nucleotide sequences while keeping the nucleotide level data intact. Any meta-data added to the data set after iseqr_merge will be lost (i.e. only 'aa' and 'nt' are kept).
+Data provided by Adaptive includes TCR counts at the nucleotide level. This function combines synonymous nucleotide sequences while keeping the nucleotide level data intact (optional). Any meta-data added to the data set after iseqr_merge will be lost (i.e. only 'aa' and 'nt' are kept).
 }
 \usage{
-iseqr_aggregate(ds)
+iseqr_aggregate(ds,inc_nt)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{ds}{A data set generated from iseqr_merge.}
+  \item{inc_nt}{A logical indicating if nucleotide information should be included in the output. This is very slow. default is TRUE}
 }
 \details{
 %%  ~~ If necessary, more details than the description above ~~
