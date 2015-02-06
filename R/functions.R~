@@ -6,7 +6,7 @@ iseqr_merge <- function(all_files){
 	name <- gsub("-","",name)
 	name <- paste0('sample',name)
 	cnames <- names(read.delim(all_files[1],sep='\t',nrow=1))
-	if(!all(cnames[1:3] == c('nucleotide','aminoAcid','count'))){cat('error\n')}
+	if(!all(cnames[1:3] == c('nucleotide','aminoAcid','count'))){stop("Unexpected columns in file.")}
 # Verify that names are OK
 	if(length(unique(name)) != length(name)){stop("Names do not appear to be unique")}
 	nt_list <- vector()
@@ -101,7 +101,7 @@ synonymity <- function(x){
 # Aggregate
 # ds is a data frame made with iseqr_merge (needs 'aa' and 'nt', others will be lost)
 # ds_out is a data frame of the aggregated data
-iseqr_aggregate <- function(ds){
+iseqr_aggregate <- function(ds, inc_nt=TRUE){
 	start <- proc.time()
 # restrict to productive and sanitize factor
 	ds <- ds[ds$aa!='',] 
@@ -115,16 +115,19 @@ iseqr_aggregate <- function(ds){
 	sum_rows <- function(x){sapply(ds[x,dc],FUN=sum)}
 	a <- sapply(ind,FUN=sum_rows)
 	b <- data.frame(t(a))
-# combine synonymous nucleotide sequences into a single char (comma sep)
-	paste_names <- function(x){toString(ds[x,'nt'])}
-	nt <- sapply(ind,FUN=paste_names)
-	nt <- data.frame(nt)
 # put together ds_out
 	rn <- data.frame(aa=rownames(b))
 	rownames(b) <- seq_len(nrow(b))
 	syn <- data.frame(syn)
-	ds_out <- cbind(syn,nt,rn,b)
+	ds_out <- cbind(syn,rn,b)
 	rownames(ds_out) <- seq_len(nrow(ds_out))
+# combine synonymous nucleotide sequences into a single char (comma sep)
+	if(inc_nt){
+		paste_names <- function(x){toString(ds[x,'nt'])}
+		nt <- sapply(ind,FUN=paste_names)
+		nt <- data.frame(nt)
+		ds_out <- cbind(nt, ds_out)
+	}
 # Print sanity check
 	t <- round((proc.time()-start)[['elapsed']]/60,2) 
 	cat(paste0('Collapsed ',length(syn[syn>1]),' TCRs\n', 'Left ',length(syn[syn==1]),' TCRs\n'))
