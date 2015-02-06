@@ -2,7 +2,7 @@
 \alias{overlap}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Calculate the overlap between two TCR sequencing samples
+Calculate the overlap between two data sets
 }
 \description{
 Calculates the overlap (total shared reads/total reads) for two sets of data (given as numeric vectors) 

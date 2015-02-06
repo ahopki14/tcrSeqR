@@ -5,7 +5,7 @@
 Calculate the overlap between two TCR sequencing samples
 }
 \description{
-Calculates the overlap (total shared reads/total reads) for two sets of data. 
+Calculates the overlap (total shared reads/total reads) for two sets of data (given as numeric vectors) 
 }
 \usage{
 overlap(x, y)
