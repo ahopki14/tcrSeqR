@@ -1,6 +1,6 @@
 # merge the exported ImmunoSeq data into a data frame
 iseqr_merge <- function(all_files){
-	start <- proc.time()
+	start <- proc.time() # start the clock
 	name <- gsub(".tsv","",all_files)
 	name <- gsub("_","",name)
 	name <- gsub("-","",name)

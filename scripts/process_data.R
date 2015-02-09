@@ -4,5 +4,5 @@ ds <- iseqr_merge(all_files)
 ds <- ds[ds$aa!='',] # not necessary as aggregate does this first...
 ds <- ds[!grepl('*',ds$aa,fixed=TRUE),] # remove any with stop codons
 ds_agg <- iseqr_aggregate(ds)
-save(ds,file='exp1_iseqr_agg.Rda')
+save(ds,file='ds_agg.Rda')
 
