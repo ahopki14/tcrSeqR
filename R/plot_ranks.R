@@ -1,7 +1,9 @@
 library(scales)
+library(immunoSeqR)
 load('ds_agg.Rda')
-n <- 30
-tds <- ds_agg[,c(2,3,5)]
+n <- 500
+#alp <- 
+tds <- ds_agg[,c(2,4,6)]
 tds <- tds[tds[,2]>0 | tds[,3]>0,]
 rownames(tds) <- seq_len(nrow(tds))
 tds$aa <- as.factor(as.character(tds$aa))
@@ -12,30 +14,41 @@ Post <- rank(-tds[,3],ties.method='min')
 pre_b <- which(Pre %in% 1:n)
 post_b <- which(Post %in% 1:n)
 #plot(Pre[b],Post[b])
-desc <- c(rep("Pre",n),rep("Post",n))
+desc <- c(rep("Pre",length(pre_b)),rep("Post",length(post_b)))
 desc <- as.factor(desc)
 desc <- factor(desc, levels=rev(levels(desc)))
 dat <- c(Pre[pre_b],Post[pre_b])
-stripchart(
-	dat ~ desc,
-	ylim=c(5*n,1),
+#pdf('test.pdf',width=8.5,height=8)
+stripchart( #makes an empty chart to draw lines on
+	c(0,0)~c('Pre','Post'),
+	at=c(1.25,1.75),
+	ylim=c(3*n,1),
+	xlim=c(1.2,1.8),
 	vertical=TRUE,
-	at=c(1.2,1.7),
-	pch=19,
-	col=alpha('red',0.5),
+	col='white',
 	ylab='Rank',
-	main=paste0('Overlap: ',round(o,2))
+	frame.plot=FALSE
 	)
-dat <- c(Pre[post_b],Post[post_b])
-stripchart(
-	dat ~ desc,
-	add=TRUE,
-	vertical=TRUE,
-	at=c(1.3,1.8),
-	pch=19,
-	col=alpha('blue',0.5)
-	)
+## No need to plot the points, just the segments
+#stripchart(
+#	dat ~ desc,
+#	add=TRUE,
+#	at=c(1.2,1.7),
+#	pch='.',
+#	col=alpha('red',0.5),
+#	main=paste0('Overlap: ',round(o,2)),
+#	)
+#dat <- c(Pre[post_b],Post[post_b])
+#stripchart(
+#	dat ~ desc,
+#	add=TRUE,
+#	at=c(1.3,1.8),
+#	pch='.',
+#	col=alpha('blue',0.5)
+#	)
 for(a in 1:n){
-	segments(1.2,Pre[pre_b][a],1.7,Post[pre_b][a],col=alpha('red',0.5),lend=0)
-	segments(1.3,Pre[post_b][a],1.8,Post[post_b][a],col=alpha('blue',0.5),lend=0)
+	segments(1.2,Pre[pre_b][a],1.7,Post[pre_b][a],col=alpha('red',0.4),lend=0)
+	segments(1.3,Pre[post_b][a],1.8,Post[post_b][a],col=alpha('blue',0.4),lend=0)
 }
+#dev.off()
+
