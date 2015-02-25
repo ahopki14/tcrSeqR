@@ -1,0 +1,4 @@
+plot_ranks:
+	make iterative 
+	restrict to TCRs in tumor
+	
