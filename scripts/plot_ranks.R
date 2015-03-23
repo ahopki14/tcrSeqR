@@ -4,7 +4,6 @@ load('~/Documents/emj/ImmunoseqResults/sampleExport.2014-07-31_10-10-24/ds_agg.R
 load('~/Documents/emj/ImmunoseqResults/dict.Rda')
 n <- 500
 for(a in seq(length(levels(dict$patient)))){
-
 	name <- levels(dict$patient)[a]
 	resp <- as.character( dict$response[which(dict$patient==name)][1])
 	samples <- c(2, 
