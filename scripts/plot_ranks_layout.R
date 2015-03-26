@@ -2,25 +2,25 @@ library(scales)
 library(immunoSeqR)
 load('~/Documents/emj/ImmunoseqResults/sampleExport.2014-07-31_10-10-24/ds_agg_reorder.Rda')
 load('~/Documents/emj/ImmunoseqResults/sampleExport.2014-07-31_10-10-24/dict_reorder.Rda')
-n <- 50
 
+n <- 200
 ds <- ds_agg_reorder
 dict <- dict_reorder
 
-pdf(paste0('~/Documents/emj/ImmunoseqResults/R/plots/Rankplots/in_tumor-',n,'.pdf'),width=8.5,height=8)
+pdf(paste0('~/Documents/emj/ImmunoseqResults/R/plots/Rankplots/all-',n,'.pdf'), width=8.5,height=8)
 par(mfcol=c(3,2))
 for(a in seq(length(levels(dict$patient)))){
 	name <- levels(dict$patient)[a]
-	resp <- as.character( dict$response[which(dict$patient==name)][1])
+	resp <- as.character(dict$response[which(dict$patient==name)][1])
 	samples <- c(2, # include the aa data
 		which(dict$patient==name & dict$type=='Pre'),
 		which(dict$patient==name & dict$type=='Post'),
 		which(dict$patient==name & dict$type=='PDAC')
-		)
+	)
 	names(ds)[samples] 
 	tds <- ds[,samples]
 	tds <- tds[tds[,2]>0 | tds[,3]>0,]
-	tds <- tds[tds[,4]>0,] # restrict to tumor
+	#tds <- tds[tds[,4]>0,] # restrict to tumor
 	rownames(tds) <- seq_len(nrow(tds))
 	tds$aa <- as.factor(as.character(tds$aa))
 	o <- overlap(tds[,2],tds[,3]) 
