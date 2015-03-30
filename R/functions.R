@@ -84,14 +84,13 @@ overlap <- function(x,y){
 }
 
 # Overlap Scan
-olScan <- function(x,y){
-	ds <- data.frame(x=x,y=y)
-	ds <- ds[order(-ds$x), ]
-	ol <- vector()
-	for(a in 10:nrow(ds)){
-	  ol <- c(ol,overlap(ds$x[1:a],ds$y[1:a]))
-	}
-	ol
+olScan <- function(x,y,byN=10){
+  tds <- data.frame(x=x,y=y)
+  tds <- tds[tds[,1]!=0 | tds[,2]!=0,]
+  tds <- tds[order(-tds$x), ]
+  byV <- seq(10,nrow(tds),byN) 
+  ol <- mapply(byV,FUN=function(n){overlap(tds$x[1:n],tds$y[1:n])})
+  ol
 }
 
 
