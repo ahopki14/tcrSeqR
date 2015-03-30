@@ -1,5 +1,5 @@
 library(scales)
-library(immunoSeqR)
+#library(immunoSeqR)
 load('~/Documents/emj/ImmunoseqResults/sampleExport.2014-07-31_10-10-24/ds_agg_reorder.Rda')
 load('~/Documents/emj/ImmunoseqResults/sampleExport.2014-07-31_10-10-24/dict_reorder.Rda')
 
