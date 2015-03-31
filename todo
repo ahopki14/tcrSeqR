@@ -1,11 +1,12 @@
 plot_ranks:
-	Make iterative 
-	Make paneled graphs
-	Restrict to TCRs in tumor
+	X Make iterative 
+	X Make paneled graphs
+	X Restrict to TCRs in tumor
 	Most changed sequences
 	
 Misc:
 	Work on tumor analysis
 		What happens in the periphery to the most abundant tumor TCRs?
 	Work on optimization of # of clones for max overlap difference
-	Figure out better way to wrangle metadata in R
+	X Figure out better way to wrangle metadata in R
+	    Update old code with new dictionary
