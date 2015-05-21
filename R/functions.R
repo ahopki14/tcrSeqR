@@ -6,7 +6,7 @@ iseqr_merge <- function(all_files){
 	name <- gsub("-","",name)
 	name <- paste0('sample',name)
 	cnames <- names(read.delim(all_files[1],sep='\t',nrow=1))
-	if(!all(cnames[1:3] == c('nucleotide','aminoAcid','count'))){stop("Unexpected columns in file.")}
+	if(!all(cnames[1:3] == c('nucleotide','aminoAcid','count..reads.'))){stop("Unexpected columns in file.")}
 # Verify that names are OK
 	if(length(unique(name)) != length(name)){stop("Names do not appear to be unique")}
 	nt_list <- vector()
