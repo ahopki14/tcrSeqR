@@ -106,6 +106,16 @@ synonymity <- function(x){
 	syn
 }
 
+# clonality
+clonality <- function(x,entropy=FALSE){
+  x <- x[x != 0]
+  x <- x/sum(x)
+  cl <- -sum(x*log(x))/log(length(x)) # Entropy
+  if(!entropy){
+    cl <- 1-cl   
+  }
+  cl
+}
 
 
 # Aggregate
