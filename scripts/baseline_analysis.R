@@ -3,6 +3,7 @@ load('/home/ahopkins/Documents/emj/ImmunoseqResults/sampleExport.2015-05-21_09-5
 cl <- sapply(ds_agg[,-c(1,2)],clonality)
 cl <- as.vector(cl)
 
+#clonality plot
 day <- dict$day[-c(1,2)]
 patient <- as.factor(dict$patient[-c(1,2)])
 pdf('/home/ahopkins/Documents/emj/ImmunoseqResults/R/baseline_plots/clonality.pdf',height=6,width=10)
@@ -14,6 +15,8 @@ xyplot(cl ~ day | patient,
       scales=list(alternating=FALSE))
 dev.off()
 
+
+# 8x8 overlap heatmap
 o <- matrix(data=rep(NA,64),nrow=8)
 for(a in 1:3){
   o <- matrix(data=rep(NA,64),nrow=8)
@@ -26,13 +29,16 @@ for(a in 1:3){
     }
   }  
 pdf(paste0('/home/ahopkins/Documents/emj/ImmunoseqResults/R/baseline_plots/overlap_patient_',a,'.pdf'),height=6,width=10)
+print(
 levelplot(o,
 	regions=TRUE,
+	#at=seq(0.25,0.65,length=100),
 	col.regions = gray(100:0/100),
 	xlab="",
 	ylab="",
-	main=paste0('Overlap (Patient ',a,')')
-	)		
+	main=paste0('Overlap (Donor ',a,')')
+	)
+)		
 dev.off()
 }
 
