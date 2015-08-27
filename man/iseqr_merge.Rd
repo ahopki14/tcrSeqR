@@ -24,7 +24,7 @@ iseqr_merge(all_files)
 %% ~put references to the literature/web site here ~
 }
 \author{
-%%  ~~who you are~~
+Alexander Hopkins
 }
 \note{
 %%  ~~further notes~~

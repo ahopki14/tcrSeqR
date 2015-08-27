@@ -1,25 +1,25 @@
-\name{overlap}
-\alias{overlap}
+\name{clonality}
+\alias{clonality}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Calculate the overlap between two data sets
+Calculate the clonality or entropy of a distribution
 }
 \description{
-Calculates the overlap (total shared reads/total reads) for two sets of data (given as numeric vectors) 
+Calculates the clonality (normalized Shannon Entropy) 
 }
 \usage{
-overlap(x, y)
+clonality(x,entropy=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{First data set}
-  \item{y}{Second data set}
+  \item{x}{Numeric vector containing the counts of each species in a population}
+  \item{entropy}{Logical indicating if the entropy should be reported, rather than the clonality (C=1-E)}
 }
 \details{
 %%  ~~ If necessary, more details than the description above ~~
 }
 \value{
-\item{ol}{Overlap}
+\item{cl}{Clonality}
 }
 \references{
 %% ~put references to the literature/web site here ~

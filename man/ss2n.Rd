@@ -25,7 +25,7 @@ ss2n(x,y)
 %% ~put references to the literature/web site here ~
 }
 \author{
-%%  ~~who you are~~
+Alexander Hopkins
 }
 \note{
 %%  ~~further notes~~

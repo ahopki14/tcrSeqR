@@ -1,25 +1,26 @@
-\name{overlap}
-\alias{overlap}
+\name{olScan}
+\alias{olScan}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Calculate the overlap between two data sets
+Calculate the overlap as more samples are added
 }
 \description{
-Calculates the overlap (total shared reads/total reads) for two sets of data (given as numeric vectors) 
+Calculate the overlap between two samples using progressively more samples (in descending order of abundance in the first sample)
 }
 \usage{
-overlap(x, y)
+olScan(x,y,byN=10)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{First data set}
   \item{y}{Second data set}
+  \item{byN}{Step size}
 }
 \details{
 %%  ~~ If necessary, more details than the description above ~~
 }
 \value{
-\item{ol}{Overlap}
+\item{ol}{Vector of overlap values calculated}
 }
 \references{
 %% ~put references to the literature/web site here ~
@@ -34,7 +35,7 @@ Alexander Hopkins
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+
 }
 \examples{
 
