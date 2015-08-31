@@ -1,4 +1,6 @@
 #sample level stats
+# load data and dictionary
+
 cl <- as.data.frame(sapply(ds[,-c(1,2)],clonality))
 names(cl)[1] <- 'Clonality'
 t <- as.data.frame(sapply(ds[,-c(1,2)],sum))
@@ -17,4 +19,5 @@ for(a in seq(length(levels(dict$patient)))){
 }
 
 stats <- cbind(r,t,cl)
+save(stats,ol,file='stats.Rda')
 
