@@ -2,4 +2,4 @@
 setwd('/home/student/ahopkins/emj/immunoseq_data/adjuvant')
 load('ds.Rda')
 ds_agg <- iseqr_aggregate(ds,inc_nt=FALSE)
-save(ds,file='ds.Rda')
+save(ds,file='ds_agg.Rda')

@@ -1,8 +1,9 @@
 # use calculate_summary script to generate stats
 # load stats and dictionary
 
+#set path for file output
 path <- '/home/ahopkins/Documents/emj/ImmunoseqResults/neoadjuvant_study/plots/'
-
+dir.create(path)
 
 pdf(paste0(path,'number-vs-richness.pdf'),height=6,width=6)
 plot(dict[-c(1,2),'cells'],stats$Richness,
