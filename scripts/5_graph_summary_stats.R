@@ -10,8 +10,8 @@ for(a in seq_along(types)){
   tdict <- dict[w, ]
   for(b in seq_along(tstats)){
     # calculate p-values
-    r <- tstats[tdict$response=='R' ,b]
-    nr <- tstats[tdict$response=='NR' ,b]
+    r <- tstats[tdict$response=='R', b]
+    nr <- tstats[tdict$response=='NR', b]
  		p <- t.test(r,nr,var.equal=TRUE)$p.value
  		dir.create(paste0(path, colnames(tstats)[b],'/'), recursive=TRUE)
  		pdf(paste0(path, colnames(tstats)[b],'/',types[a],'.pdf'),width=4.5,height=8)
