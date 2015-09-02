@@ -35,7 +35,7 @@ plot(dict[-c(1,2),'age'],stats$overlap,
   ylab='Overlap')
 dev.off()
 
-pdf(paste0(path , 'count-vs-overlap.pdf'),height=6,width=6)
+pdf(paste0(path , 'number-vs-overlap.pdf'),height=6,width=6)
 plot(dict[-c(1,2),'cells'],stats$overlap,
   xlab='Input Cell Number',
   ylab='Overlap')
@@ -70,7 +70,7 @@ stripchart(dict$age[-c(1,2)] ~ factor(dict$response[-c(1,2)]),
 dev.off()
 
 t <- t.test(dict$cells[dict$response=='NR' & (dict$type=='PRE')],dict$cells[dict$response=='R' & (dict$type=='PRE')])
-pdf(paste0(path, 'cells-by-response.pdf'),height=8,width=4.5)
+pdf(paste0(path, 'number-by-response.pdf'),height=8,width=4.5)
 stripchart(dict$cells[-c(1,2)] ~ factor(dict$response[-c(1,2)]),
 	pch=19,
 	main=paste('p=',round(t$p.value,4)),

@@ -13,17 +13,18 @@ numnr <- as.integer(summary(resp)['NR'])
 num <- length(resp)
 
 # create plot layout matrix
-if(numr>=numnr){
-l <- matrix(c(seq(numr),seq(numnr)+numr,rep(0,numr-numnr)),numr,2)
+if(numnr>=numr){
+l <- matrix(c(seq(numnr),seq(numr)+numnr,rep(0,numnr-numr)),numnr,2)
 } else {
-l <- matrix(c(seq(numr),rep(0,numnr-numr),seq(numnr)+numr),numnr,2)
+l <- matrix(c(seq(numnr),rep(0,numr-numnr),seq(numr)+numnr),numr,2)
 }
 
 # plot
-pdf(paste0('~/Documents/emj/ImmunoseqResults/adjuvant_study/plots/Rankplots/all-',n,'.pdf'), 
+if(restrict_to_tumor){clones <- 'in_tumor'} else{clones <- 'all'}
+pdf(paste0('~/Documents/emj/ImmunoseqResults/neoadjuvant_study/plots/Rankplots/',clones,'-',n,'.pdf'), 
     width=15,height=7*max(numr,numnr))
 layout(l,respect=TRUE)
-for(b in c('R','NR')){
+for(b in c('NR','R')){
   tds <- ds[ ,which(dict$resp==b)]
   tdict <- dict[which(dict$resp==b), ] 
   
