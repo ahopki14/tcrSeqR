@@ -1,9 +1,11 @@
 # load dictionary and stats (see calculate_summary)
 
-path <- '/home/ahopkins/Documents/emj/ImmunoseqResults/neoadjuvant_study/plots/'
+path <- '/home/ahopkins/Documents/emj/ImmunoseqResults/sampleExport.2014-07-31_10-10-24/rerun/plots/'
 
 types <- levels(dict$type)
-stats <- rbind(rep(NA,ncol(stats)),rep(NA,ncol(stats)),stats) # pad the stats with NA so dict works
+if(!is.na(stats[1,1])){
+  stats <- rbind(rep(NA,ncol(stats)),rep(NA,ncol(stats)),stats) # pad the stats with NA so dict works
+}
 for(a in seq_along(types)){
   w <- which(dict$type==types[a])
   tstats <- stats[w, ]

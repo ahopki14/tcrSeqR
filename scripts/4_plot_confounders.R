@@ -2,7 +2,7 @@
 # load stats and dictionary
 
 #set path for file output
-path <- '/home/ahopkins/Documents/emj/ImmunoseqResults/neoadjuvant_study/plots/'
+path <- '/home/ahopkins/Documents/emj/ImmunoseqResults/sampleExport.2014-07-31_10-10-24/rerun/plots/'
 dir.create(path)
 
 pdf(paste0(path,'number-vs-richness.pdf'),height=6,width=6)
@@ -54,7 +54,7 @@ plot(stats$Richness,stats$overlap,
 dev.off()
 
 ##################################Confounders######################################
-load('~/Documents/emj/ImmunoseqResults/adjuvant_study/dict.Rda')
+
 t <- t.test(dict$age[dict$response=='NR' & dict$type=='PRE'],dict$age[dict$response=='R' & dict$type=='PRE'])
 
 pdf(paste0(path, 'age-by-response.pdf'),height=8,width=4.5)
