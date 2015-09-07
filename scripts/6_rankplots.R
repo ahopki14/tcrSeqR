@@ -4,8 +4,9 @@ library(scales)
 # set how many clones will be plotted
 n <- 200
 # Should only clones present in the tumor be plotted?
-restrict_to_tumor <- FALSE
-
+restrict_to_tumor <- TRUE
+# Where to put the output
+path <= '/home/ahopkins/Documents/emj/ImmunoseqResults/sampleExport.2014-07-31_10-10-24/rerun/'
 
 resp <- dict$response[which(dict$type=='PRE')]
 numr <- as.integer(summary(resp)['R'])
@@ -21,8 +22,8 @@ l <- matrix(c(seq(numnr),rep(0,numr-numnr),seq(numr)+numnr),numr,2)
 
 # plot
 if(restrict_to_tumor){clones <- 'in_tumor'} else{clones <- 'all'}
-pdf(paste0('~/Documents/emj/ImmunoseqResults/neoadjuvant_study/plots/Rankplots/',clones,'-',n,'.pdf'), 
-    width=15,height=7*max(numr,numnr))
+dir.create(paste0(path,'Rankplots/'))
+pdf(paste0(path,'Rankplots/',clones,'-',n,'.pdf'),width=15,height=7*max(numr,numnr))
 layout(l,respect=TRUE)
 for(b in c('NR','R')){
   tds <- ds[ ,which(dict$resp==b)]

@@ -1,5 +1,6 @@
 # load the data and the dictionary
 patients <- levels(as.factor(dict$patient))
+path <- '/home/ahopkins/Documents/emj/ImmunoseqResults/sampleExport.2014-07-31_10-10-24/rerun/plots/'
 
 for(a in seq_along(patients)){
   # make data subsets
@@ -16,8 +17,8 @@ for(a in seq_along(patients)){
   # calculate overlap
   ol <- overlap(pre,post)
   # plot
-  pdf(paste0('/home/ahopkins/Documents/emj/ImmunoseqResults/adjuvant_study/plots/Corr/',
-            patients[a],'_corr.pdf'),
+  dir.create(paste0(path,'Corr/'))
+  pdf(paste0(path,'Corr/',patients[a],'_corr.pdf'),
       width=8.5,height=8)
   par(oma=c(1,4,1,1))
   r <- range(pre,post)[2]*1.05	

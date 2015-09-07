@@ -32,13 +32,12 @@ for(a in seq_along(types)){
 }
 
 ## overlap
-
+dir.create(paste0(path, 'Pre-Post/'), recursive=TRUE)
 resp <- dict$response[which(dict$type=='PRE')]
 r <- ol[resp=='R']
 nr <- ol[resp=='NR']
 p <- t.test(r,nr,var.equal=TRUE)$p.value
-dir.create(path,'/Pre-Post/')
-pdf(path,'/Pre-Post/overlap.pdf', width=4.5,height=8)
+pdf(paste0(path,'Pre-Post/overlap.pdf'), width=4.5,height=8)
 stripchart(ol ~ resp,
       at=c(1.25,1.75),
 			pch=19,
@@ -48,4 +47,5 @@ stripchart(ol ~ resp,
 		)
 text(1.5,max(c(r,nr)),paste0("p=",as.character(round(p,4))))
 dev.off()
+
 
