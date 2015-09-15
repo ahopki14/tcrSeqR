@@ -19,20 +19,27 @@ for(a in seq_along(patients)){
      pct_change <- 100*((tstats[tdict$type=='POST' ,b] - tstats[tdict$type=='PRE',b]) /
                         tstats[tdict$type=='PRE',b])
      out$patient[a] <- patients[a]
-     out$response[a] <- tdict$response[tdict$patient==patients[a] & tdict$type=='PRE']
-     dir.create(paste0(path, colnames(tstats)[b],'/'), recursive=TRUE)
-     pdf(paste0(path, colnames(tstats)[b],'/',types[a],'.pdf'),width=4.5,height=8)
+     out$response[a] <- as.character(tdict$response[tdict$patient==patients[a] & tdict$type=='PRE'])
+     out[a,b+2] <- pct_change
+   }
+}
+
+
+for(d in seq_along(stats)){
+       pdf(paste0(path,'Pre-Post/',names(stats)[d],'.pdf'),width=4.5,height=8)
        par(oma=c(1,2,1,1))
-       stripchart(tstats[ ,b] ~ tdict$response,
+       r <- out[out$response=='R',names(stats)[d]]
+       nr <- out[out$response=='NR',names(stats)[d]]
+       p <- t.test(r,nr,var.equal=TRUE)$p.value
+       stripchart(out[ ,names(stats)[d]] ~ as.factor(out$response),
                   at=c(1.25,1.75),
                   pch=19,
                   vertical=TRUE,
                   xlim=c(1,2),
-                  ylab=colnames(tstats)[b],
-                  main=paste0(types[a])
+                  ylab='Pct Change Pre to Post',
+                  main=names(stats)[d]
                   )
-       text(1.5,max(c(r,nr)),paste0("p=",as.character(round(p,4))))
-       dev.off()
-  }
+      text(1.5,max(c(r,nr)),paste0("p=",as.character(round(p,4))))
+      dev.off()
 }
 
