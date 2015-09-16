@@ -26,7 +26,10 @@ for(a in seq_along(patients)){
 
 
 for(d in seq_along(stats)){
-       pdf(paste0(path,'Pre-Post/',names(stats)[d],'.pdf'),width=4.5,height=8)
+       pdf(paste0(path,'Pre-Post/',names(stats)[d],'.pdf'),
+           width=4.5,height=8,
+           title=paste('Change in', names(stats)[d])
+          )
        par(oma=c(1,2,1,1))
        r <- out[out$response=='R',names(stats)[d]]
        nr <- out[out$response=='NR',names(stats)[d]]

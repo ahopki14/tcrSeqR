@@ -19,7 +19,8 @@ for(a in seq_along(patients)){
   # plot
   dir.create(paste0(path,'Corr/'))
   pdf(paste0(path,'Corr/',patients[a],'_corr.pdf'),
-      width=8.5,height=8)
+      width=8.5,height=8,
+      title=paste('Correlation Plot for',patients[a]))
   par(oma=c(1,4,1,1))
   r <- range(pre,post)[2]*1.05	
 	plot(post,pre,pch=".",asp=1,

@@ -23,7 +23,7 @@ l <- matrix(c(seq(numnr),rep(0,numr-numnr),seq(numr)+numnr),numr,2)
 # plot
 if(restrict_to_tumor){clones <- 'in_tumor'} else{clones <- 'all'}
 dir.create(paste0(path,'Rankplots/'))
-pdf(paste0(path,'Rankplots/',clones,'-',n,'.pdf'),width=15,height=7*max(numr,numnr))
+pdf(paste0(path,'Rankplots/',clones,'-',n,'.pdf'),width=15,height=7*max(numr,numnr), title='immunoSeqR Rank Plot')
 layout(l,respect=TRUE)
 for(b in c('NR','R')){
   tds <- ds[ ,which(dict$resp==b)]
