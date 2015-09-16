@@ -1,7 +1,8 @@
 #load data and dictionary
 # Where to put the output
-path <- '/home/ahopkins/Documents/emj/ImmunoseqResults/sampleExport.2014-07-31_10-10-24/rerun/'
-tr <- 5 # restrict reads>tr in tumor
+path <- '/home/ahopkins/Documents/emj/ImmunoseqResults/neoadjuvant_study/plots/'
+tr <- 2 # restrict reads>tr in tumor
+exp_threshold <- 2
 resp <- dict$response[which(dict$type=='PRE')]
 numr <- as.integer(summary(resp)['R'])
 numnr <- as.integer(summary(resp)['NR'])
@@ -32,16 +33,28 @@ for(b in c('NR','R')){
         ttds <- ttds[ttds[,1]>0 | ttds[,2]>0, ] # restrict to clones in Pre OR Post
         ttds[ttds==0] <- 1 # add a pseudocount to avoid div by 0
         lfc <- log2(ttds[ ,2]/ttds[ ,1]) # Post/Pre (bigger=expanded)
-        #pdf
-        w <- which(ttds[ ,3] > tr)
+        exp_loc <- which(lfc >= exp_threshold)
+        pct_tumor_expanded <- round(100*(
+					length(which(ttds[exp_loc,3] >= tr))/
+					length(which(ttds[ ,3] >= tr))
+					),2
+				   )
+        pct_expanded_tumor <- round(100*(
+					length(which(ttds[exp_loc,3] >= tr))/
+					length(exp_loc)
+					),2
+				   )
+        w <- which(ttds[ ,3] >= tr)
+        if(length(w)>0){
         plot(lfc[w],ttds[w,3],
-             pch=20,
+             pch=19,cex=2,
              xlab='log2(Fold Change Pre to Post)',
              ylab='TCR Count in Tumor',
-             main=paste0(name,' (',b,')')
+             main=paste0(name,' (',b,')','\n',pct_tumor_expanded,"% / ",pct_expanded_tumor,"%")
             ) 
+	} else {plot.new()}
  }
 }
 dev.off()
-
+# text(tmp[1],tmp[4],'text',pos=3,offset=1)
 
