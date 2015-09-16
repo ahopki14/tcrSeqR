@@ -1,12 +1,21 @@
-plot_ranks:
-	X Make iterative 
-	X Make paneled graphs
-	X Restrict to TCRs in tumor
-	Most changed sequences
-	
-Misc:
-	Work on tumor analysis
-		What happens in the periphery to the most abundant tumor TCRs?
-	Work on optimization of # of clones for max overlap difference
-	X Figure out better way to wrangle metadata in R
-	    Update old code with new dictionary
+Tasks (in rough order of importance)
+
+	- Of expanded peripheral clones (vary threshold for "expanded"), how many are in the tumor? 
+		- Compare this between the Adj and NeoAdj
+			- Possibly restrict it to responders
+
+	- Of clones in the tumor, how many expand in the periphery?
+		- Compare this between the Adj and NeoAdj
+                        - Possibly restrict it to responders
+
+	- Plot Adaptive's T cell density metric
+
+	- Get HLA types and add to dictionary
+
+	- Add OS/DFS to dictionary
+
+	- Change PDF titles to something informative
+
+	- Add patient IDs to plots (somehow)
+
+	- Come up with QC plots
