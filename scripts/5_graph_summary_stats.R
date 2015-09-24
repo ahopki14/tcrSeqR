@@ -1,6 +1,6 @@
 # load dictionary and stats (see calculate_summary)
 
-path <- '/home/ahopkins/Documents/emj/ImmunoseqResults/sampleExport.2014-07-31_10-10-24/rerun/plots/'
+path <- '/home/ahopkins/Documents/emj/ImmunoseqResults/adjuvant_study/plots/'
 
 types <- levels(dict$type)
 if(!is.na(stats[1,1])){

@@ -1,6 +1,6 @@
 # load dictionary and stats (see calculate_summary)
 
-path <- '/home/ahopkins/Documents/emj/ImmunoseqResults/sampleExport.2014-07-31_10-10-24/rerun/plots/'
+path <- '/home/ahopkins/Documents/emj/ImmunoseqResults/adjuvant_study/plots/'
 
 if(!is.na(stats[1,1])){
   stats <- rbind(rep(NA,ncol(stats)),rep(NA,ncol(stats)),stats) # pad the stats with NA so dict works

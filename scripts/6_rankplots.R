@@ -2,11 +2,11 @@ library(scales)
 #load data and dictionary
 
 # set how many clones will be plotted
-n <- 200
+n <- 50
 # Should only clones present in the tumor be plotted?
-restrict_to_tumor <- TRUE
+restrict_to_tumor <- FALSE
 # Where to put the output
-path <= '/home/ahopkins/Documents/emj/ImmunoseqResults/sampleExport.2014-07-31_10-10-24/rerun/'
+path <= '/home/ahopkins/Documents/emj/ImmunoseqResults/adjuvant_study/plots/'
 
 resp <- dict$response[which(dict$type=='PRE')]
 numr <- as.integer(summary(resp)['R'])

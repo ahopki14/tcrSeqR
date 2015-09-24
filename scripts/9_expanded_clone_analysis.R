@@ -1,6 +1,6 @@
 #load data and dictionary
 # Where to put the output
-path <- '/home/ahopkins/Documents/emj/ImmunoseqResults/neoadjuvant_study/plots/'
+path <- '/home/ahopkins/Documents/emj/ImmunoseqResults/adjuvant_study/plots/'
 tr <- 2 # restrict reads>tr in tumor
 exp_threshold <- 2
 resp <- dict$response[which(dict$type=='PRE')]
@@ -14,8 +14,12 @@ l <- matrix(c(seq(numnr),seq(numr)+numnr,rep(0,numnr-numr)),numnr,2)
 l <- matrix(c(seq(numnr),rep(0,numr-numnr),seq(numr)+numnr),numr,2)
 }
 # plot
-dir.create(paste0(path,'Expanded_Clones/'))
-pdf(paste0(path,'Expanded_Clones/expanded_clones.pdf'),width=15,height=7*max(numr,numnr), title='immunoSeqR: Expanded Clones')
+out <- matrix(NA, ncol=length(levels(as.factor((dict$patient)))),nrow=2)
+out <- as.data.frame(out)
+names(out) <- levels(as.factor(dict$patient))
+
+#dir.create(paste0(path,'Expanded_Clones/'))
+#pdf(paste0(path,'Expanded_Clones/expanded_clones.pdf'),width=15,height=7*max(numr,numnr), title='immunoSeqR: Expanded Clones')
 layout(l,respect=TRUE)
 for(b in c('NR','R')){
   tds <- ds[ ,which(dict$resp==b)]
@@ -44,6 +48,7 @@ for(b in c('NR','R')){
 					length(exp_loc)
 					),2
 				   )
+	out[levels(tdict$patient)[a]] <- c(pct_tumor_expanded,pct_expanded_tumor) 
         w <- which(ttds[ ,3] >= tr)
         if(length(w)>0){
         plot(lfc[w],ttds[w,3],
