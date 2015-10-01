@@ -6,7 +6,7 @@ iseqr_merge <- function(all_files){
 	name <- gsub("-","",name)
 	name <- paste0('sample',name)
 	cnames <- names(read.delim(all_files[1],sep='\t',nrow=1))
-	if(!all(cnames[1:3] == c('nucleotide','aminoAcid','count..reads.'))){stop("Unexpected columns in file.")}
+	if(!all(cnames[1:3] == c('nucleotide','aminoAcid','count..templates.'))){stop("Unexpected columns in file.")}
 # Verify that names are OK
 	if(length(unique(name)) != length(name)){stop("Names do not appear to be unique")}
 	nt_list <- vector()
@@ -154,4 +154,47 @@ iseqr_aggregate <- function(ds, inc_nt=TRUE){
 	cat(paste0('Completed in ',t,' minutes\n'))
 #
 	ds_out
+}
+
+# Simsons Index
+simpson <- function(x){
+	x <- x/sum(x)
+	x <- x^2
+	l <- sum(x)
+	l
+}
+
+# Morisita's overlap index
+morisita <- function(x,y){
+	if(length(x) != length(y)){stop("Vectors must be same length")}
+	prod <- x*y
+	m <- (2*(sum(prod))) / ((simpson(x) + simpson(y))*sum(x)*sum(y))
+	m
+}
+
+iseqr_load <- function(x){
+	if(x=='nadj'){print('Loading Neoadjuvant Study')
+       	 load('~/Documents/emj/ImmunoseqResults/neoadjuvant_study/dict_new.Rda',envir=.GlobalEnv)
+	 load('~/Documents/emj/ImmunoseqResults/neoadjuvant_study/ds_nadj_agg.Rda',envir=.GlobalEnv)
+	 load('~/Documents/emj/ImmunoseqResults/neoadjuvant_study/stats.Rda',envir=.GlobalEnv)
+	 path <- '~/Documents/emj/ImmunoseqResults/neoadjuvant_study/plots/'
+	}
+        if(x=='adj'){print('Loading Adjuvant Study')
+         load('~/Documents/emj/ImmunoseqResults/adjuvant_study/dict.Rda',envir=.GlobalEnv)
+         load('~/Documents/emj/ImmunoseqResults/adjuvant_study/ds_adj_agg.Rda',envir=.GlobalEnv)
+         load('~/Documents/emj/ImmunoseqResults/adjuvant_study/stats.Rda',envir=.GlobalEnv)
+         path <- '~/Documents/emj/ImmunoseqResults/adjuvant_study/plots/'
+        }
+        if(x=='pilot'){print('Loading Pilot Study')
+         load('~/Documents/emj/ImmunoseqResults/sampleExport.2014-07-31_10-10-24/rerun/dict.Rda',envir=.GlobalEnv)
+         load('~/Documents/emj/ImmunoseqResults/sampleExport.2014-07-31_10-10-24/rerun/ds_agg.Rda',envir=.GlobalEnv)
+         load('~/Documents/emj/ImmunoseqResults/sampleExport.2014-07-31_10-10-24/rerun/stats.Rda',envir=.GlobalEnv)
+         path <- '~/Documents/emj/ImmunoseqResults/sampleExport.2014-07-31_10-10-24/rerun/plots/'
+        }
+	if(x=='sbrt'){print('Loading SBRT Study')
+         load('~/Documents/emj/ImmunoseqResults/sbrt_study/dict.Rda',envir=.GlobalEnv)
+         load('~/Documents/emj/ImmunoseqResults/sbrt_study/ds_adj_agg.Rda',envir=.GlobalEnv)
+         load('~/Documents/emj/ImmunoseqResults/sbrt_study/stats.Rda',envir=.GlobalEnv)
+         path <- '~/Documents/emj/ImmunoseqResults/sbrt_study/plots/'
+        }
 }

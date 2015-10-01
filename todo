@@ -1,14 +1,8 @@
 Tasks (in rough order of importance)
 
-	- Of expanded peripheral clones (vary threshold for "expanded"), how many are in the tumor? 
-		- Compare this between the Adj and NeoAdj
-			- Possibly restrict it to responders
-
-	- Of clones in the tumor, how many expand in the periphery?
-		- Compare this between the Adj and NeoAdj
-                        - Possibly restrict it to responders
-
-	- Plot Adaptive's T cell density metric
+	- Add Fisher test to expanded_clones
+	- Add Morisita's overlap to plots
+	- Create plots for SBRT study with 3 timepoints
 
 	- Get HLA types and add to dictionary
 
