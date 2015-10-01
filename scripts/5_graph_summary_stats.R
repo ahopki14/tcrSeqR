@@ -1,6 +1,6 @@
 # load dictionary and stats (see calculate_summary)
 
-path <- '/home/ahopkins/Documents/emj/ImmunoseqResults/adjuvant_study/plots/'
+#path <- '/home/ahopkins/Documents/emj/ImmunoseqResults/adjuvant_study/plots/'
 
 types <- levels(dict$type)
 if(!is.na(stats[1,1])){
@@ -46,6 +46,22 @@ stripchart(ol ~ resp,
           vertical=TRUE,
           xlim=c(1,2),
           ylab='Pre-Post Overlap',
+          )
+text(1.5,max(c(r,nr)),paste0("p=",as.character(round(p,4))))
+dev.off()
+
+#Morisita
+resp <- dict$response[which(dict$type=='PRE')]
+r <- m[resp=='R']
+nr <- m[resp=='NR']
+p <- t.test(r,nr,var.equal=TRUE)$p.value
+pdf(paste0(path,'Pre-Post/morisita_overlap.pdf'), width=4.5,height=8,title="Pre-Post Morisita Overlap")
+stripchart(m ~ resp,
+          at=c(1.25,1.75),
+          pch=19,
+          vertical=TRUE,
+          xlim=c(1,2),
+          ylab='Pre-Post Morisita Overlap',
           )
 text(1.5,max(c(r,nr)),paste0("p=",as.character(round(p,4))))
 dev.off()

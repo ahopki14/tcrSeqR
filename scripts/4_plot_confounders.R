@@ -2,7 +2,7 @@
 # load stats and dictionary
 
 #set path for file output
-path <- '/home/ahopkins/Documents/emj/ImmunoseqResults/adjuvant_study/plots/'
+#path <- '/home/ahopkins/Documents/emj/ImmunoseqResults/adjuvant_study/plots/'
 dir.create(path)
 
 pdf(paste0(path,'number-vs-richness.pdf'),height=6,width=6, title='Number vs Richness')

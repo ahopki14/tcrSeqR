@@ -19,8 +19,9 @@ for(a in seq(length(levels(dict$patient)))){
   ol[a] <- overlap(tds[ ,which(tdict$type=='PRE')],tds[ ,which(tdict$type=='POST')])
   m[a] <- morisita(tds[ ,which(tdict$type=='PRE')],tds[ ,which(tdict$type=='POST')])
   names(ol)[a] <- levels(dict$patient)[a]
+  names(m)[a] <- levels(dict$patient)[a]
 }
 
 stats <- cbind(r,t,cl)
-save(stats,ol,file='stats.Rda')
+save(stats,ol,m,file='stats.Rda')
 

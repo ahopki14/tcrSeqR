@@ -177,24 +177,24 @@ iseqr_load <- function(x){
        	 load('~/Documents/emj/ImmunoseqResults/neoadjuvant_study/dict_new.Rda',envir=.GlobalEnv)
 	 load('~/Documents/emj/ImmunoseqResults/neoadjuvant_study/ds_nadj_agg.Rda',envir=.GlobalEnv)
 	 load('~/Documents/emj/ImmunoseqResults/neoadjuvant_study/stats.Rda',envir=.GlobalEnv)
-	 path <- '~/Documents/emj/ImmunoseqResults/neoadjuvant_study/plots/'
+	 assign('path','~/Documents/emj/ImmunoseqResults/neoadjuvant_study/plots/',envir=.GlobalEnv)
 	}
         if(x=='adj'){print('Loading Adjuvant Study')
          load('~/Documents/emj/ImmunoseqResults/adjuvant_study/dict.Rda',envir=.GlobalEnv)
          load('~/Documents/emj/ImmunoseqResults/adjuvant_study/ds_adj_agg.Rda',envir=.GlobalEnv)
          load('~/Documents/emj/ImmunoseqResults/adjuvant_study/stats.Rda',envir=.GlobalEnv)
-         path <- '~/Documents/emj/ImmunoseqResults/adjuvant_study/plots/'
+         assign('path','~/Documents/emj/ImmunoseqResults/adjuvant_study/plots/',envir=.GlobalEnv)
         }
         if(x=='pilot'){print('Loading Pilot Study')
          load('~/Documents/emj/ImmunoseqResults/sampleExport.2014-07-31_10-10-24/rerun/dict.Rda',envir=.GlobalEnv)
          load('~/Documents/emj/ImmunoseqResults/sampleExport.2014-07-31_10-10-24/rerun/ds_agg.Rda',envir=.GlobalEnv)
          load('~/Documents/emj/ImmunoseqResults/sampleExport.2014-07-31_10-10-24/rerun/stats.Rda',envir=.GlobalEnv)
-         path <- '~/Documents/emj/ImmunoseqResults/sampleExport.2014-07-31_10-10-24/rerun/plots/'
+         assign('path','~/Documents/emj/ImmunoseqResults/sampleExport.2014-07-31_10-10-24/rerun/plots/',envir=.GlobalEnv)
         }
 	if(x=='sbrt'){print('Loading SBRT Study')
          load('~/Documents/emj/ImmunoseqResults/sbrt_study/dict.Rda',envir=.GlobalEnv)
          load('~/Documents/emj/ImmunoseqResults/sbrt_study/ds_adj_agg.Rda',envir=.GlobalEnv)
          load('~/Documents/emj/ImmunoseqResults/sbrt_study/stats.Rda',envir=.GlobalEnv)
-         path <- '~/Documents/emj/ImmunoseqResults/sbrt_study/plots/'
+         assign('path','~/Documents/emj/ImmunoseqResults/sbrt_study/plots/',envir=.GlobalEnv)
         }
 }
