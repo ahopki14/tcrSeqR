@@ -25,3 +25,21 @@ for(a in seq(length(levels(dict$patient)))){
 stats <- cbind(r,t,cl)
 save(stats,ol,m,file='stats.Rda')
 
+
+nsamp <- length(names(ds))-2
+olm <- data.frame(matrix(NA,nrow=nsamp,ncol=nsamp))
+mm <- data.frame(matrix(NA,nrow=nsamp,ncol=nsamp))
+for(a in 3:(nsamp+2)){
+	for(b in 3:(nsamp+2)){
+		if(a!=b){
+			olm[a-2,b-2] <- overlap(ds[ ,a],ds[ ,b])
+			mm[a-2,b-2] <- morisita(ds[ ,a],ds[ ,b])
+		}
+		colnames(olm)[b-2] <- names(ds)[b]
+		rownames(olm)[a-2] <- names(ds)[a] 
+		colnames(mm)[b-2] <- names(ds)[b]
+                rownames(mm)[a-2] <- names(ds)[a]
+	}
+}
+olm <- as.matrix(olm)
+mm <- as.matrix(mm)
