@@ -1,5 +1,6 @@
 Tasks (in rough order of importance)
 
+	- Modify plots to use ol/m  matricies
 	- Add Fisher test to expanded_clones
 	- Add Morisita's overlap to plots
 	- Create plots for SBRT study with 3 timepoints

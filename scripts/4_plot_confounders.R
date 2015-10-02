@@ -29,29 +29,29 @@ plot(dict[-c(1,2),'age'],stats$Clonality,
   ylab='Clonality')
 dev.off()
 
-pdf(paste0(path, 'age-vs-overlap.pdf'),height=6,width=6, title='Age vs Overlap')
-plot(dict[-c(1,2),'age'],stats$overlap,
-  xlab='Age at Diagnosis',
-  ylab='Overlap')
-dev.off()
+#pdf(paste0(path, 'age-vs-overlap.pdf'),height=6,width=6, title='Age vs Overlap')
+#plot(dict[-c(1,2),'age'],stats$overlap,
+#  xlab='Age at Diagnosis',
+#  ylab='Overlap')
+#dev.off()
 
-pdf(paste0(path , 'number-vs-overlap.pdf'),height=6,width=6, title='Number vs Overlap')
-plot(dict[-c(1,2),'cells'],stats$overlap,
-  xlab='Input Cell Number',
-  ylab='Overlap')
-dev.off()
+#pdf(paste0(path , 'number-vs-overlap.pdf'),height=6,width=6, title='Number vs Overlap')
+#plot(dict[-c(1,2),'cells'],stats$overlap,
+#  xlab='Input Cell Number',
+#  ylab='Overlap')
+#dev.off()
 
-pdf(paste0(path, 'clonality-vs-overlap.pdf'),height=6,width=6, title='Clonality vs Overlap')
-plot(stats$Clonality,stats$overlap,
-  xlab='Clonality',
-  ylab='Overlap')
-dev.off()
+#pdf(paste0(path, 'clonality-vs-overlap.pdf'),height=6,width=6, title='Clonality vs Overlap')
+#plot(stats$Clonality,stats$overlap,
+#  xlab='Clonality',
+#  ylab='Overlap')
+#dev.off()
 
-pdf(paste0(path, 'richness-vs-overlap.pdf'),height=6,width=6, title='Richness vs Overlap')
-plot(stats$Richness,stats$overlap,
-  xlab='Richness',
-  ylab='Overlap')
-dev.off()
+#pdf(paste0(path, 'richness-vs-overlap.pdf'),height=6,width=6, title='Richness vs Overlap')
+#plot(stats$Richness,stats$overlap,
+#  xlab='Richness',
+#  ylab='Overlap')
+#dev.off()
 
 ##################################Confounders######################################
 

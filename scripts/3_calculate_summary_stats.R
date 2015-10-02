@@ -26,6 +26,7 @@ stats <- cbind(r,t,cl)
 save(stats,ol,m,file='stats.Rda')
 
 
+# This should probably be re-done with apply()...
 nsamp <- length(names(ds))-2
 olm <- data.frame(matrix(NA,nrow=nsamp,ncol=nsamp))
 mm <- data.frame(matrix(NA,nrow=nsamp,ncol=nsamp))
@@ -43,3 +44,6 @@ for(a in 3:(nsamp+2)){
 }
 olm <- as.matrix(olm)
 mm <- as.matrix(mm)
+
+save(stats,ol,m,olm,mm,file='stats.Rda')
+

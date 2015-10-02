@@ -35,6 +35,9 @@ for(a in seq_along(types)){
 
 ## overlap
 dir.create(paste0(path, 'Pre-Post/'), recursive=TRUE)
+plot(dict[-c(1,2),'age'],stats$overlap,
+  xlab='Age at Diagnosis',
+  ylab='Overlap')
 resp <- dict$response[which(dict$type=='PRE')]
 r <- ol[resp=='R']
 nr <- ol[resp=='NR']
@@ -65,5 +68,17 @@ stripchart(m ~ resp,
           )
 text(1.5,max(c(r,nr)),paste0("p=",as.character(round(p,4))))
 dev.off()
+
+
+
+wr <- which(dict$response=='R')
+wrn <- which(dict$response=='NR')
+rdict <- dict[wr, ]
+nrdict <- dict[wnr, ]
+rolm <- olm[wr-2,wr-2]
+rmm <- mm[wr-2,wr-2]
+nrolm <- olm[wnr-2,wnr-2]
+nrmm <- mm[wnr-2,wnr-2]
+
 
 
