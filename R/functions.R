@@ -193,7 +193,7 @@ iseqr_load <- function(x){
         }
 	if(x=='sbrt'){print('Loading SBRT Study')
          load('~/Documents/emj/ImmunoseqResults/sbrt_study/dict.Rda',envir=.GlobalEnv)
-         load('~/Documents/emj/ImmunoseqResults/sbrt_study/ds_adj_agg.Rda',envir=.GlobalEnv)
+         load('~/Documents/emj/ImmunoseqResults/sbrt_study/ds_sbrt_agg.Rda',envir=.GlobalEnv)
          load('~/Documents/emj/ImmunoseqResults/sbrt_study/stats.Rda',envir=.GlobalEnv)
          assign('path','~/Documents/emj/ImmunoseqResults/sbrt_study/plots/',envir=.GlobalEnv)
         }
