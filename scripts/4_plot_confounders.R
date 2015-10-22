@@ -6,25 +6,25 @@
 dir.create(path)
 
 pdf(paste0(path,'number-vs-richness.pdf'),height=6,width=6, title='Number vs Richness')
-plot(dict[-c(1,2),'cells'],stats$Richness,
+plot(dict[,'cells'],stats$Richness,
   xlab='Input Cell Number',
   ylab='Richness')
 dev.off()
 
 pdf(paste0(path, 'number-vs-clonality.pdf'),height=6,width=6, title='Number vs Clonality')
-plot(dict[-c(1,2),'cells'],stats$Clonality,
+plot(dict[,'cells'],stats$Clonality,
   xlab='Input Cell Number',
   ylab='Clonality')
 dev.off()
 
 pdf(paste0(path, 'age-vs-richness.pdf'),height=6,width=6, title='Age vs Richness')
-plot(dict[-c(1,2),'age'],stats$Richness,
+plot(dict[,'age'],stats$Richness,
   xlab='Age at Diagnosis',
   ylab='Richness')
 dev.off()
 
 pdf(paste0(path, 'age-vs-clonality.pdf'),height=6,width=6, title='Age vs Clonality')
-plot(dict[-c(1,2),'age'],stats$Clonality,
+plot(dict[,'age'],stats$Clonality,
   xlab='Age at Diagnosis',
   ylab='Clonality')
 dev.off()

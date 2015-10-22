@@ -1,6 +1,6 @@
 #load data and dictionary
 # Where to put the output
-path <- '/home/ahopkins/Documents/emj/ImmunoseqResults/adjuvant_study/plots/'
+#path <- '/home/ahopkins/Documents/emj/ImmunoseqResults/adjuvant_study/plots/'
 tr <- 2 # restrict reads>tr in tumor
 exp_threshold <- 2
 resp <- dict$response[which(dict$type=='PRE')]
@@ -18,8 +18,8 @@ out <- matrix(NA, ncol=length(levels(as.factor((dict$patient)))),nrow=2)
 out <- as.data.frame(out)
 names(out) <- levels(as.factor(dict$patient))
 
-#dir.create(paste0(path,'Expanded_Clones/'))
-#pdf(paste0(path,'Expanded_Clones/expanded_clones.pdf'),width=15,height=7*max(numr,numnr), title='immunoSeqR: Expanded Clones')
+dir.create(paste0(path,'Expanded_Clones/'))
+pdf(paste0(path,'Expanded_Clones/expanded_clones.pdf'),width=15,height=7*max(numr,numnr), title='immunoSeqR: Expanded Clones')
 layout(l,respect=TRUE)
 for(b in c('NR','R')){
   tds <- ds[ ,which(dict$resp==b)]

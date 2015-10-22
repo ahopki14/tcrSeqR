@@ -23,7 +23,7 @@ for(a in seq(length(levels(dict$patient)))){
 }
 
 stats <- cbind(r,t,cl)
-save(stats,ol,m,file='stats.Rda')
+#save(stats,ol,m,file='stats.Rda')
 
 
 # This should probably be re-done with apply()...
@@ -45,5 +45,5 @@ for(a in 3:(nsamp+2)){
 olm <- as.matrix(olm)
 mm <- as.matrix(mm)
 
-save(stats,ol,m,olm,mm,file='stats.Rda')
+save(stats,ol,m,olm,mm,file=paste0(path,'stats.Rda'))
 

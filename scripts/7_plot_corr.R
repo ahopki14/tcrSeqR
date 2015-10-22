@@ -1,6 +1,6 @@
 # load the data and the dictionary
 patients <- levels(as.factor(dict$patient))
-path <- '/home/ahopkins/Documents/emj/ImmunoseqResults/adjuvant_study/plots/'
+#path <- '/home/ahopkins/Documents/emj/ImmunoseqResults/adjuvant_study/plots/'
 
 for(a in seq_along(patients)){
   # make data subsets

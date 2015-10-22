@@ -2,9 +2,9 @@ library(scales)
 #load data and dictionary
 
 # set how many clones will be plotted
-n <- 50
+n <- 200
 # Should only clones present in the tumor be plotted?
-restrict_to_tumor <- FALSE
+restrict_to_tumor <- TRUE
 # Where to put the output
 path <= '/home/ahopkins/Documents/emj/ImmunoseqResults/adjuvant_study/plots/'
 
