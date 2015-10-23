@@ -210,6 +210,8 @@ find_clones <- function(path='~/Documents/emj/ImmunoseqResults/published_clones.
 	#w <- apply(clones,MARGIN=2,grep,ds$aa)
 	#cl <- clones$V1[!is.na(w)]
 	w <- w[!is.na(w)]
-	ds[w,]
+	pub <- ds[w,]
+	pub$aa <- factor(pub$aa)
+	pub
 }
 
