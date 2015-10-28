@@ -197,6 +197,13 @@ iseqr_load <- function(x){
          load('~/Documents/emj/ImmunoseqResults/sbrt_study/stats.Rda',envir=.GlobalEnv)
          assign('path','~/Documents/emj/ImmunoseqResults/sbrt_study/plots/',envir=.GlobalEnv)
         }
+        if(x=='baseline'){print('Loading Baseline Study')
+         load('/home/ahopkins/Documents/emj/ImmunoseqResults/sampleExport.2015-05-21_09-55-12/dict.Rda',envir=.GlobalEnv)
+         load('/home/ahopkins/Documents/emj/ImmunoseqResults/sampleExport.2015-05-21_09-55-12/ds_agg.Rda',envir=.GlobalEnv)
+         load('/home/ahopkins/Documents/emj/ImmunoseqResults/sampleExport.2015-05-21_09-55-12/stats.Rda',envir=.GlobalEnv)
+         assign('path','/home/ahopkins/Documents/emj/ImmunoseqResults/sampleExport.2015-05-21_09-55-12/',envir=.GlobalEnv)
+        }
+
 }
 
 find_clones <- function(path='~/Documents/emj/ImmunoseqResults/published_clones.txt',

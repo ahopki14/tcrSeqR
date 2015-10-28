@@ -36,11 +36,17 @@ x <- seq(0,0.05,length=1000)
 tmp <- function(x,y){
 	length(y[y<x])
 }
-pdf('~/Desktop/plot.pdf',width=8,height=8)
-	r <-  dict$response[dict$patient==patients[a] & dict$type=='PRE'][3]
+for(a in seq_along(patients)){
+	r <-  dict$response[dict$patient==patients[a] & 
+			    dict$type=='PRE'][3]
 	col <- 'red'
 	if(r=='R'){col='black'}
-	num <- sapply(x,FUN=tmp,y=p_adj)
-	plot(x,num,pch=20,col=col,main=patients[a],xlab='FDR Cutoff',
-		ylab='Number of Clones',add=TRUE)
+	y <- out$p_adj[out$patient==patients[a]]
+	num <- sapply(x,FUN=tmp,y=y)
+pdf(file=paste0(path,'Expanded_Clones/',
+	patients[a],'-exp_plot.pdf'))
+	plot(x,num,pch=20,col=col,main=patients[a],
+		xlab='FDR Cutoff',
+		ylab='Number of Clones')
 dev.off()
+}
