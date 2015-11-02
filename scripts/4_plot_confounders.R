@@ -55,7 +55,8 @@ dev.off()
 
 ##################################Confounders######################################
 
-t <- t.test(dict$age[dict$response=='NR' & dict$type=='PRE'],dict$age[dict$response=='R' & dict$type=='PRE'])
+t <- t.test(dict$age[dict$response=='NR' & dict$type=='PRE'],
+		dict$age[dict$response=='R' & dict$type=='PRE'])
 
 pdf(paste0(path, 'age-by-response.pdf'),height=8,width=4.5, title='Age by Response')
 stripchart(dict$age[-c(1,2)] ~ factor(dict$response[-c(1,2)]),
@@ -69,8 +70,10 @@ stripchart(dict$age[-c(1,2)] ~ factor(dict$response[-c(1,2)]),
 	)
 dev.off()
 
-t <- t.test(dict$cells[dict$response=='NR' & (dict$type=='PRE')],dict$cells[dict$response=='R' & (dict$type=='PRE')])
-pdf(paste0(path, 'number-by-response.pdf'),height=8,width=4.5, title='Number by Respone')
+t <- t.test(dict$cells[dict$response=='NR' & (dict$type=='PRE')],
+		dict$cells[dict$response=='R' & (dict$type=='PRE')])
+pdf(paste0(path, 'number-by-response.pdf'),height=8,width=4.5, 
+		title='Number by Respone')
 stripchart(dict$cells[-c(1,2)] ~ factor(dict$response[-c(1,2)]),
 	pch=19,
 	main=paste('p=',round(t$p.value,4)),

@@ -68,7 +68,8 @@ dir.create(paste0(path, 'Overlaps/'), recursive=TRUE)
 r <- ol_pre_post[resp=='R']
 nr <- ol_pre_post[resp=='NR']
 p <- t.test(r,nr,var.equal=TRUE)$p.value
-pdf(paste0(path,'Overlaps/overlap-pre-post.pdf'), width=4.5,height=8,title="Pre-Post Overlap")
+pdf(paste0(path,'Overlaps/overlap-pre-post.pdf'), width=4.5,height=8,
+		title="Pre-Post Overlap")
 stripchart(ol_pre_post ~ resp,
           at=c(1.25,1.75),
           pch=19,

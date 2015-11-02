@@ -5,13 +5,13 @@ patients <- levels(as.factor(dict$patient))
 for(a in seq_along(patients)){
   # make data subsets
   w <- which(dict$patient==patients[a])
-  response <- as.character(dict$response[which(dict$patient==patients[a] & dict$type=='PRE')])
+  response <- as.character(dict$response[which(dict$patient==patients[a] &
+				 dict$type=='PRE')])
   tds <- ds[ ,w]
   tdict <- dict[w, ]
-  # get pre and post
   pre <- tds[ ,which(tdict$type=='PRE')]
   post <- tds[ ,which(tdict$type=='POST')]
-  x <- (pre!=0 | post!=0)
+  x <- which(pre!=0 | post!=0)
   pre <- pre[x]
   post <- post[x]
   # calculate overlap
