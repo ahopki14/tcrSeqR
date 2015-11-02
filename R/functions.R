@@ -201,7 +201,7 @@ iseqr_load <- function(x){
          load('/home/ahopkins/Documents/emj/ImmunoseqResults/sampleExport.2015-05-21_09-55-12/dict.Rda',envir=.GlobalEnv)
          load('/home/ahopkins/Documents/emj/ImmunoseqResults/sampleExport.2015-05-21_09-55-12/ds_agg.Rda',envir=.GlobalEnv)
          load('/home/ahopkins/Documents/emj/ImmunoseqResults/sampleExport.2015-05-21_09-55-12/stats.Rda',envir=.GlobalEnv)
-         assign('path','/home/ahopkins/Documents/emj/ImmunoseqResults/sampleExport.2015-05-21_09-55-12/',envir=.GlobalEnv)
+         assign('path','/home/ahopkins/Documents/emj/ImmunoseqResults/sampleExport.2015-05-21_09-55-12/plots/',envir=.GlobalEnv)
         }
 
 }
