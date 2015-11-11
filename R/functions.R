@@ -1,17 +1,23 @@
 # merge the exported ImmunoSeq data into a data frame
-iseqr_merge <- function(all_files){
+iseqr_merge <- function(all_files,use_expected_genomes=FALSE){
 	start <- proc.time() # start the clock
 	name <- gsub(".tsv","",all_files)
 	name <- gsub("_","",name)
 	name <- gsub("-","",name)
 	name <- paste0('sample',name)
 	cnames <- names(read.delim(all_files[1],sep='\t',nrow=1))
-	if(!all(cnames[1:3] == c('nucleotide','aminoAcid','count..templates.'))){stop("Unexpected columns in file.")}
+	if(!all(cnames[1:2] == c('nucleotide','aminoAcid'))){
+		stop("Unexpected columns in file.")}
+	if(use_expected_genomes){data_col <- grep('estimated',cnames,ignore.case=TRUE)}else{
+			     data_col <- grep('count',cnames)}
+	if(length(data_col)!=1){stop('Unable to find data column.')}
 # Verify that names are OK
 	if(length(unique(name)) != length(name)){stop("Names do not appear to be unique")}
 	nt_list <- vector()
 	aa_list <- vector()
 	for(a in seq_along(all_files)){
+		tcnames <- names(read.delim(all_files[a],sep='\t',nrow=1))
+		if(!all(tcnames==cnames)){stop(paste0('Error in ',all_files[a],'. Check the headers'))}
 		ds <- read.delim(
 			all_files[a],
 			sep='\t',
@@ -29,13 +35,15 @@ iseqr_merge <- function(all_files){
 	list <- data.frame(nt=nt_list,aa=aa_list)
 	list <- unique(list)
 	ds <- list
+	col_classes <- c('character','character',rep('NULL',length(cnames)-2))
+	col_classes[data_col] <- 'integer'
 	for(a in seq_along(all_files)){
 		tmp_ds <- read.delim(
 			all_files[a],
 			sep='\t',
-			colClasses=c('character','character','integer',rep('NULL',length(cnames)-3))
+			colClasses=col_classes
 			)
-		tmp_ds <- data.frame(nt=tmp_ds$nucleotide,count=tmp_ds$count)
+		tmp_ds <- data.frame(nt=tmp_ds$nucleotide,count=tmp_ds[,3])
 		colnames(tmp_ds)[2] <- paste(name[a])
 		ds <- merge(ds,tmp_ds,by='nt',all=TRUE)
 		cat(c("done with", all_files[a],"\n"))
