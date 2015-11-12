@@ -1,16 +1,17 @@
 library(scales)
 #load data and dictionary
-# Should only clones present in the tumor be plotted?
-restrict_to_tumor <- FALSE
 
 # set how many clones will be plotted
-for(i in c(50,200,500)){
-n <- i
+n <- 50
+# Should only clones present in the tumor be plotted?
+restrict_to_tumor <- FALSE
+# Where to put the output
+path <= '/home/ahopkins/Documents/emj/ImmunoseqResults/adjuvant_study/plots/'
 
-resp <- dict$response[which(dict$type=='PRE')]
-numr <- as.integer(summary(resp)['R'])
-numnr <- as.integer(summary(resp)['NR'])
-num <- length(resp)
+arm <- dict$arm[which(dict$type=='PRETREAT')]
+numr <- length(which(arm==1))
+numnr <- length(which(arm==2))
+num <- length(arm)
 
 # create plot layout matrix
 if(numnr>=numr){
@@ -25,8 +26,8 @@ dir.create(paste0(path,'Rankplots/'))
 pdf(paste0(path,'Rankplots/',clones,'-',n,'.pdf'),width=15,height=7*max(numr,numnr), title='immunoSeqR Rank Plot')
 layout(l,respect=TRUE)
 for(b in c('NR','R')){
-  tds <- ds[ ,which(dict$resp==b)]
-  tdict <- dict[which(dict$resp==b), ] 
+  tds <- ds[ ,which(dict$arm==b)]
+  tdict <- dict[which(dict$arm==b), ] 
   
   for(a in seq(length(unique(tdict$patient)))){
   	name <- unique(tdict$patient)[a]
@@ -70,4 +71,3 @@ for(b in c('NR','R')){
 dev.off()
 
 
-}

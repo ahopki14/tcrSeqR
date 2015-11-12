@@ -1,5 +1,6 @@
 # load dictionary and stats (see calculate_summary)
 
+#path <- '/home/ahopkins/Documents/emj/ImmunoseqResults/adjuvant_study/plots/'
 
 #per sample stats
 types <- levels(dict$type)
@@ -12,15 +13,15 @@ for(a in seq_along(types)){
   tdict <- dict[w, ]
   for(b in seq_along(tstats)){
     # calculate p-values
-    r <- tstats[tdict$response=='R', b]
-    nr <- tstats[tdict$response=='NR', b]
+    r <- tstats[tdict$arm==1, b]
+    nr <- tstats[tdict$arm==2, b]
     p <- t.test(r,nr,var.equal=TRUE)$p.value
     dir.create(paste0(path, colnames(tstats)[b],'/'), recursive=TRUE)
     pdf(paste0(path, colnames(tstats)[b],'/',types[a],'.pdf'),
                    width=4.5,height=8,
                    title=paste0(colnames(tstats)[b],' ',types[a]))
     par(oma=c(1,2,1,1))	
-    stripchart(tstats[ ,b] ~ tdict$response,
+    stripchart(tstats[ ,b] ~ tdict$arm,
       at=c(1.25,1.75),
 			pch=19,
 			vertical=TRUE,
@@ -28,7 +29,8 @@ for(a in seq_along(types)){
 			ylab=colnames(tstats)[b],
 			main=paste0(types[a])
 		)
-		text(1.5,max(c(r,nr)),paste0("p=",as.character(round(p,4))))
+		text(1.5,max(c(r,nr)),
+		     paste0("p=",as.character(round(p,4))))
 		dev.off()
   } 
 }
@@ -39,113 +41,118 @@ patients <- levels(as.factor(dict$patient))
 #make empty lists
 ol_pre_post <- rep(NA,length(levels(dict$patient)))
 names(ol_pre_post) <- as.character(levels(dict$patient))
-ol_pre_tumor <- ol_pre_post
-ol_post_tumor <- ol_pre_post
+ol_pre_postfolf <- ol_pre_post
+ol_postsbrt_postfolf <- ol_pre_post
 m_pre_post <- ol_pre_post
-m_pre_tumor <- ol_pre_post
-m_post_tumor <- ol_pre_post
-resp <- ol_pre_post
+m_pre_postfolf <- ol_pre_post
+m_postsbrt_postfolf <- ol_pre_post
+arm <- ol_pre_post
 
 #loop through patients and extract everything from the matricies
 for(a in seq_along(patients)){
-	pre <- which(dict$patient==patients[a] & dict$type=='PRE')-2
-	post <- which(dict$patient==patients[a] & dict$type=='POST')-2
-	tumor <- which(dict$patient==patients[a] & dict$type=='PDAC')-2
+	pre <- which(dict$patient==patients[a] &
+		     dict$type=='PRETREAT')-2
+	post <- which(dict$patient==patients[a] & 
+		      dict$type=='POSTSBRT')-2
+	postfolf <- which(dict$patient==patients[a] & 
+		       dict$type=='POSTFOLF')-2
+	if(length(postfolf)<1){postfolf <- NA}
 	ol_pre_post[a] <- olm[pre,post]
 	m_pre_post[a] <- mm[pre,post]
-	ol_pre_tumor[a] <- olm[pre,tumor]
-        m_pre_tumor[a] <- mm[pre,tumor]
-	ol_post_tumor[a] <- olm[post,tumor]
-        m_post_tumor[a] <- mm[post,tumor]
-	resp[a] <- as.character(dict$response[which(dict$patient==patients[a] & dict$type=='PRE')])
+	ol_pre_postfolf[a] <- olm[pre,postfolf]
+        m_pre_postfolf[a] <- mm[pre,postfolf]
+	ol_postsbrt_postfolf[a] <- olm[post,postfolf]
+        m_postsbrt_postfolf[a] <- mm[post,postfolf]
+	arm[a] <- as.character(
+			dict$arm[which(dict$patient==patients[a] & 
+			dict$type=='PRETREAT')]
+				)
 }
-resp <- as.factor(resp)
+arm <- as.factor(arm)
 
 
 ## overlap
 dir.create(paste0(path, 'Overlaps/'), recursive=TRUE)
-r <- ol_pre_post[resp=='R']
-nr <- ol_pre_post[resp=='NR']
+r <- ol_pre_post[arm==1]
+nr <- ol_pre_post[arm==2]
 p <- t.test(r,nr,var.equal=TRUE)$p.value
-pdf(paste0(path,'Overlaps/overlap-pre-post.pdf'), width=4.5,height=8,
-		title="Pre-Post Overlap")
-stripchart(ol_pre_post ~ resp,
+pdf(paste0(path,'Overlaps/overlap-pre-postsbrt.pdf'), width=4.5,height=8,title="Pre-Post Overlap")
+stripchart(ol_pre_post ~ arm,
           at=c(1.25,1.75),
           pch=19,
           vertical=TRUE,
           xlim=c(1,2),
-          ylab='Pre-Post Overlap',
+          ylab='Pre-Post-SBRT Overlap',
+          )
+text(1.5,max(c(r,nr)),paste0("p=",as.character(round(p,4))))
+dev.off()
+r <- ol_pre_postfolf[arm==1]
+nr <- ol_pre_postfolf[arm==2]
+p <- t.test(r,nr,var.equal=TRUE)$p.value
+pdf(paste0(path,'Overlaps/overlap-pre-postfolf.pdf'), width=4.5,height=8,title="Pre-Post Overlap")
+stripchart(ol_pre_postfolf ~ arm,
+          at=c(1.25,1.75),
+          pch=19,
+          vertical=TRUE,
+          xlim=c(1,2),
+          ylab='Pre-Post-FOLF Overlap',
           )
 text(1.5,max(c(r,nr)),paste0("p=",as.character(round(p,4))))
 dev.off()
 
-r <- ol_pre_tumor[resp=='R']
-nr <- ol_pre_tumor[resp=='NR']
+r <- ol_postsbrt_postfolf[arm==1]
+nr <- ol_postsbrt_postfolf[arm==2]
 p <- t.test(r,nr,var.equal=TRUE)$p.value
-pdf(paste0(path,'Overlaps/overlap-pre-tumor.pdf'), width=4.5,height=8,title="Pre-Post Overlap")
-stripchart(ol_pre_tumor ~ resp,
+pdf(paste0(path,'Overlaps/overlap-post-sbrt-post-folf.pdf'), width=4.5,height=8,title="Pre-Post Overlap")
+stripchart(ol_postsbrt_postfolf ~ arm,
           at=c(1.25,1.75),
           pch=19,
           vertical=TRUE,
           xlim=c(1,2),
-          ylab='Pre-Tumor Overlap',
-          )
-text(1.5,max(c(r,nr)),paste0("p=",as.character(round(p,4))))
-dev.off()
-
-r <- ol_post_tumor[resp=='R']
-nr <- ol_post_tumor[resp=='NR']
-p <- t.test(r,nr,var.equal=TRUE)$p.value
-pdf(paste0(path,'Overlaps/overlap-post-tumor.pdf'), width=4.5,height=8,title="Pre-Post Overlap")
-stripchart(ol_post_tumor ~ resp,
-          at=c(1.25,1.75),
-          pch=19,
-          vertical=TRUE,
-          xlim=c(1,2),
-          ylab='Post-Tumor Overlap',
+          ylab='Post-SBRT-Post-FOLF Overlap',
           )
 text(1.5,max(c(r,nr)),paste0("p=",as.character(round(p,4))))
 dev.off()
 
 # Morisita
-r <- m_pre_post[resp=='R']
-nr <- m_pre_post[resp=='NR']
+r <- m_pre_post[arm==1]
+nr <- m_pre_post[arm==2]
 p <- t.test(r,nr,var.equal=TRUE)$p.value
-pdf(paste0(path,'Overlaps/morisita-pre-post.pdf'), width=4.5,height=8,title="Pre-Post Overlap")
-stripchart(m_pre_post ~ resp,
+pdf(paste0(path,'Overlaps/morisita-pre-post-sbrt.pdf'), width=4.5,height=8,title="Pre-Post Overlap")
+stripchart(m_pre_post ~ arm,
           at=c(1.25,1.75),
           pch=19,
           vertical=TRUE,
           xlim=c(1,2),
-          ylab='Pre-Post Morisita Overlap',
+          ylab='Pre-Post-SBRT Morisita Overlap',
           )
 text(1.5,max(c(r,nr)),paste0("p=",as.character(round(p,4))))
 dev.off()
 
-r <- m_pre_tumor[resp=='R']
-nr <- m_pre_tumor[resp=='NR']
+r <- m_pre_postfolf[arm==1]
+nr <- m_pre_postfolf[arm==2]
 p <- t.test(r,nr,var.equal=TRUE)$p.value
-pdf(paste0(path,'Overlaps/morisita-pre-tumor.pdf'), width=4.5,height=8,title="Pre-Post Overlap")
-stripchart(m_pre_tumor ~ resp,
+pdf(paste0(path,'Overlaps/morisita-pre-post-FOLF.pdf'), width=4.5,height=8,title="Pre-Post Overlap")
+stripchart(m_pre_postfolf ~ arm,
           at=c(1.25,1.75),
           pch=19,
           vertical=TRUE,
           xlim=c(1,2),
-          ylab='Pre-Tumor Morisita Overlap',
+          ylab='Pre-Post-FOLF Morisita Overlap',
           )
 text(1.5,max(c(r,nr)),paste0("p=",as.character(round(p,4))))
 dev.off()
 
-r <- m_post_tumor[resp=='R']
-nr <- m_post_tumor[resp=='NR']
+r <- m_postsbrt_postfolf[arm==1]
+nr <- m_postsbrt_postfolf[arm==2]
 p <- t.test(r,nr,var.equal=TRUE)$p.value
-pdf(paste0(path,'Overlaps/morisita-post-tumor.pdf'), width=4.5,height=8,title="Pre-Post Overlap")
-stripchart(m_post_tumor ~ resp,
+pdf(paste0(path,'Overlaps/morisita-post-sbrt-post-folf.pdf'), width=4.5,height=8,title="Pre-Post Overlap")
+stripchart(m_postsbrt_postfolf ~ arm,
           at=c(1.25,1.75),
           pch=19,
           vertical=TRUE,
           xlim=c(1,2),
-          ylab='Post-Tumor Morisita Overlap',
+          ylab='Post-SBRT-Post-FOLF Morisita Overlap',
           )
 text(1.5,max(c(r,nr)),paste0("p=",as.character(round(p,4))))
 dev.off()

@@ -1,7 +1,7 @@
 # load dictionary and stats (see calculate_summary)
 
 #path <- '/home/ahopkins/Documents/emj/ImmunoseqResults/adjuvant_study/plots/'
-dir.create(paste0(path,'Pre-Post/'))
+
 if(!is.na(stats[1,1])){
   stats <- rbind(rep(NA,ncol(stats)),rep(NA,ncol(stats)),stats) # pad the stats with NA so dict works
 }
