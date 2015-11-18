@@ -1,7 +1,7 @@
 library(scales)
 #load data and dictionary
 # Should only clones present in the tumor be plotted?
-restrict_to_tumor <- FALSE
+restrict_to_tumor <- TRUE
 
 # set how many clones will be plotted
 for(i in c(50,200,500)){
@@ -71,3 +71,4 @@ dev.off()
 
 
 }
+bleep()

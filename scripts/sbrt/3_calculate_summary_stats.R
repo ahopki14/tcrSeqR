@@ -45,5 +45,5 @@ for(a in 3:(nsamp+2)){
 olm <- as.matrix(olm)
 mm <- as.matrix(mm)
 
-save(stats,olm,mm,file='stats.Rda')
+save(stats,olm,mm,file=paste0(path,'stats.Rda'))
 
