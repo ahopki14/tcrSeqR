@@ -262,6 +262,26 @@ find_clones <- function(path='~/Documents/emj/ImmunoseqResults/published_clones.
 	pub
 }
 
+
+iseqr_fisher <- function(x,s){ # x is the row of mat, s is the column sum of mat
+    tab <- rbind(x,s-x)
+    fisher.test(tab)$p.value
+}
+
+exp_clone <- function(x,y,min_count=5){ # x is the row of mat, s is the column sum of mat
+    iseqr_fisher <- function(x,s){ # x is the row of mat, s is the column sum of mat
+        tab <- rbind(x,s-x)
+        fisher.test(tab)$p.value
+    }
+    mat <- as.matrix(cbind(x,y))
+    mat <- mat[mat[,1]>min_count | mat[,2]>min_count,]
+    s <- apply(mat,MARGIN=2,FUN=sum)
+    p_vals <- apply(mat,MARGIN=1,FUN=iseqr_fisher,s=s)
+    p_vals
+}
+
+
+
 # an R terminal bell (require a shell script or alias which makes a noise and exits)
-bleep <- function(){system('bleep')}
+bleep <- function(){system('bleep &')}
 

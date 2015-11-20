@@ -14,15 +14,15 @@ for(a in seq_along(patients)){
 	ps_mat <- mat
 	ps_mat[ps_mat==0] <- 1
 	fc <- abs(log(ps_mat[,1]/ps_mat[,2],2))
-	mat <- mat[fc>2,] 
+	#mat <- mat[fc>1,] 
 	s <- apply(mat,MARGIN=2,FUN=sum)
 	tm <- proc.time()
 	p_vals <- apply(mat,MARGIN=1,FUN=exp_clone,s=s)
 	el<- proc.time()-tm
 	p_adj <- p.adjust(p_vals,method='BH')
-	exp_cl <- length(p_adj[p_adj<0.01])
+	exp_cl <- length(p_adj[p_adj<0.05])
 	exp_cl_pct <- round(100*exp_cl/length(p_adj),2)
-	pdf(file=paste0(path,'Expanded_Clones/',patients[a],'-hist_restr.pdf'),
+	pdf(file=paste0(path,'Expanded_Clones/',patients[a],'-hist.pdf'),
 		width=8,height=8) 
 	hist(p_adj[p_adj<0.05],breaks=500,
 		main=paste0(patients[a],'\n',exp_cl,' clones (',exp_cl_pct,'%)'),
