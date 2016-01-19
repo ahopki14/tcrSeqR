@@ -5,18 +5,18 @@ out <- data.frame(p_adj=numeric(),ind=numeric(),patient=character())
 for(a in seq_along(patients)){
 	w <- which(dict$patient==patients[a] & dict$type!='PDAC')
 	mat <- ds[,w] 
-	mat <- mat[mat[,1]>5 | mat[,2]>5,]
+	mat <- mat[mat[,1]>5 & mat[,2]>5,]
 	mat <- as.matrix(mat)
 	ps_mat <- mat
 	ps_mat[ps_mat==0] <- 1
-	fc <- abs(log(ps_mat[,1]/ps_mat[,2],2))
-	#mat <- mat[fc>1,] 
+	fc <- (log(ps_mat[,2]/ps_mat[,1],2))
+	mat <- mat[fc>1,] 
 	s <- apply(mat,MARGIN=2,FUN=sum)
 	tm <- proc.time()
-	p_vals <- apply(mat,MARGIN=1,FUN=exp_clone,s=s)
+	p_vals <- exp_clone(mat[,1],mat[,2])
 	el<- proc.time()-tm
 	p_adj <- p.adjust(p_vals,method='BH')
-	exp_cl <- length(p_adj[p_adj<0.05])
+	exp_cl <- length(p_adj[p_adj<0.01])
 	exp_cl_pct <- round(100*exp_cl/length(p_adj),2)
 	pdf(file=paste0(path,'Expanded_Clones/',patients[a],'-hist.pdf'),
 		width=8,height=8) 
