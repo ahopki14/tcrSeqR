@@ -1,9 +1,5 @@
 #mat <- matrix(ncol=2,sample(1:1000),100)
 
-exp_clone <- function(x,s){ # x is the row of mat, s is the column sum of mat
-                           tab <- rbind(x,s-x)
-                           fisher.test(tab)$p.value
-                          }
 patients <- levels(dict$patient)
 out <- data.frame(p_adj=numeric(),ind=numeric(),patient=character())
 for(a in seq_along(patients)){

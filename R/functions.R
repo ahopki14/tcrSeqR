@@ -239,7 +239,8 @@ iseqr_load <- function(x){
     }
     if(x=='baseline_expgen'){print('Loading Baseline Study Expected Genomes')
     load('/home/ahopkins/Documents/emj/ImmunoseqResults/sampleExport.2015-05-21_09-55-12/exp_gen/dict.Rda',envir=.GlobalEnv)
-    load('/home/ahopkins/Documents/emj/ImmunoseqResults/sampleExport.2015-05-21_09-55-12/exp_gen/ds_agg_exp_gen.Rda',envir=.GlobalEnv)
+    load('/home/ahopkins/Documents/emj/ImmunoseqResults/sampleExport.2015-05-21_09-55-12/exp_gen/ds_baseline_agg_expgen.Rda',
+        envir=.GlobalEnv)
     load('/home/ahopkins/Documents/emj/ImmunoseqResults/sampleExport.2015-05-21_09-55-12/exp_gen/stats.Rda',envir=.GlobalEnv)
     assign('path','/home/ahopkins/Documents/emj/ImmunoseqResults/sampleExport.2015-05-21_09-55-12/exp_gen/plots/',envir=.GlobalEnv)
     }
@@ -267,13 +268,12 @@ iseqr_fisher <- function(x,s){ # x is the row of mat, s is the column sum of mat
     fisher.test(tab)$p.value
 }
 
-exp_clone <- function(x,y,min_count=5){ # x is the row of mat, s is the column sum of mat
+exp_clone <- function(x,y){ # x is the row of mat, s is the column sum of mat
     iseqr_fisher <- function(x,s){ # x is the row of mat, s is the column sum of mat
         tab <- rbind(x,s-x)
         fisher.test(tab)$p.value
     }
     mat <- as.matrix(cbind(x,y))
-    mat <- mat[mat[,1]>min_count | mat[,2]>min_count,]
     s <- apply(mat,MARGIN=2,FUN=sum)
     p_vals <- apply(mat,MARGIN=1,FUN=iseqr_fisher,s=s)
     p_vals

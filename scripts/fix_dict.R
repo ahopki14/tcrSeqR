@@ -6,5 +6,6 @@ ord[1] <- 1
 ord[2] <- 2
 names(ds)[ord]==dict$fn
 ds <- ds[,ord]
+names(ds)==dict$fn
 
 # save

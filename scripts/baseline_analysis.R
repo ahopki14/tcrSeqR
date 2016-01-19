@@ -1,12 +1,10 @@
-load('/home/ahopkins/Documents/emj/ImmunoseqResults/sampleExport.2015-05-21_09-55-12/ds_agg.Rda')
-load('/home/ahopkins/Documents/emj/ImmunoseqResults/sampleExport.2015-05-21_09-55-12/dict.Rda')
-cl <- sapply(ds_agg[,-c(1,2)],clonality)
+cl <- sapply(ds[,-c(1,2)],clonality)
 cl <- as.vector(cl)
 
 #clonality plot
 day <- dict$day[-c(1,2)]
 patient <- as.factor(dict$patient[-c(1,2)])
-pdf('/home/ahopkins/Documents/emj/ImmunoseqResults/R/baseline_plots/clonality.pdf',height=6,width=10)
+pdf(paste0(path,'clonality.pdf'),height=6,width=10)
 trellis.par.set(strip.background=list(col="lightgrey"))
 xyplot(cl ~ day | patient, 
       layout = c(3,1),
@@ -29,10 +27,10 @@ mean(cl_stdevs/cl_avg) #  0.1091
 # Richness plot
 day <- dict$day[-c(1,2)]
 patient <- as.factor(dict$patient[-c(1,2)])
-r <- sapply(ds_agg,function(x){length(x[x!=0])})
+r <- sapply(ds,function(x){length(x[x!=0])})
 r <- as.vector(r)
 r <- r[-c(1,2)]
-pdf('/home/ahopkins/Documents/emj/ImmunoseqResults/R/baseline_plots/richness.pdf',height=6,width=10)
+pdf((paste0(path,'richness.pdf'),height=6,width=10)
 trellis.par.set(strip.background=list(col="lightgrey"))
  xyplot(r ~ day | patient,
       layout = c(3,1),
@@ -55,9 +53,9 @@ mean(r_stdevs/r_avg) #  0.1267
 # Total Reads
 day <- dict$day[-c(1,2)]
 patient <- as.factor(dict$patient[-c(1,2)])
-tot <- sapply(ds_agg[,-c(1,2)],sum)
+tot <- sapply(ds[,-c(1,2)],sum)
 tot <- as.vector(tot)
-pdf('/home/ahopkins/Documents/emj/ImmunoseqResults/R/baseline_plots/total_reads.pdf',height=6,width=10)
+pdf((paste0(path,'total_reads.pdf'),height=6,width=10)
 trellis.par.set(strip.background=list(col="lightgrey"))
  xyplot(tot ~ day | patient,
       layout = c(3,1),
@@ -67,7 +65,7 @@ trellis.par.set(strip.background=list(col="lightgrey"))
 dev.off()
 
 # Reads vs. Richness
-pdf('/home/ahopkins/Documents/emj/ImmunoseqResults/R/baseline_plots/richness-vs-total_reads.pdf',height=10,width=10)
+pdf((paste0(path,'richness-vs-total_reads.pdf'),height=10,width=10)
 plot(tot,r,
   xlab='Total Reads',
   ylab='Richness',
@@ -75,7 +73,7 @@ plot(tot,r,
 dev.off()
 
 # Reads vs. Clonality
-pdf('/home/ahopkins/Documents/emj/ImmunoseqResults/R/baseline_plots/clonality-vs-total_reads.pdf',height=10,width=10)
+pdf((paste0(path,'clonality-vs-total_reads.pdf'),height=10,width=10)
 plot(tot,cl,
   xlab='Total Reads',
   ylab='Clonality',
@@ -83,7 +81,7 @@ plot(tot,cl,
 dev.off()
 
 # Richness vs. Clonality
-pdf('/home/ahopkins/Documents/emj/ImmunoseqResults/R/baseline_plots/richness-vs-clonality.pdf',height=10,width=10)
+pdf((paste0(path,'richness-vs-clonality.pdf'),height=10,width=10)
 plot(r,cl,
   xlab='Richness',
   ylab='Clonality'
@@ -96,32 +94,32 @@ o <- matrix(data=rep(NA,64),nrow=8)
 for(a in 2:3){
   o <- matrix(data=rep(NA,64),nrow=8)
   w <- which(dict$patient==a)
-  ds <- ds_agg[,w]
+  ds <- ds[,w]
   for(x in seq(8)){
     for(y in seq(8)[-x]){
       o[x,y] <- overlap(ds[ ,x],ds[ ,y])
       o[y,x] <- o[x,y] 
     }
   }
-  save(o,file=paste0('patient_',a,'_overlap_matrix.Rda'))
+  save(o,file=paste0(path,'patient_',a,'_overlap_matrix.Rda'))
  }
 
-for(a in 1:3){
-load(paste0('/home/ahopkins/Documents/emj/ImmunoseqResults/sampleExport.2015-05-21_09-55-12/','patient_',a,'_overlap_matrix.Rda'))
+#for(a in 1:3){
+#load(paste0('/home/ahopkins/Documents/emj/ImmunoseqResults/sampleExport.2015-05-21_09-55-12/','patient_',a,'_overlap_matrix.Rda'))
 
-pdf(paste0('/home/ahopkins/Documents/emj/ImmunoseqResults/R/baseline_plots/overlap_patient_',a,'.pdf'),height=10,width=10)
-print(
-levelplot(o,
-	regions=TRUE,
+#pdf(paste0('/home/ahopkins/Documents/emj/ImmunoseqResults/R/baseline_plots/overlap_patient_',a,'.pdf'),height=10,width=10)
+#print(
+#levelplot(o,
+#	regions=TRUE,
 	#at=seq(0.25,0.65,length=100),
-	col.regions = gray(100:0/100),
-	xlab="",
-	ylab="",
-	main=paste0('Overlap (Donor ',a,')')
-	)
-)		
-dev.off()
-}
+#	col.regions = gray(100:0/100),
+#	xlab="",
+#	ylab="",
+#	main=paste0('Overlap (Donor ',a,')')
+#	)
+#)		
+#dev.off()
+#}
 
 all_ol <- vector()
 for(a in 1:3){

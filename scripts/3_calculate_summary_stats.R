@@ -23,6 +23,8 @@ for(a in seq(length(levels(dict$patient)))){
 }
 
 stats <- cbind(r,t,cl)
+stats$fn <- rownames(stats)
+
 #save(stats,ol,m,file='stats.Rda')
 
 
