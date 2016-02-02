@@ -1,7 +1,7 @@
 plot_ds <- merge(dict,stats)
 dir.create(paste0(path,'ggplot'))
 # set the range of variable that go on the x axis
-x_vals <- c('response','Number of Lymphoid Aggregates','Lymphoid Aggregate Tertile')
+x_vals <- c('day_seq')
 metrics <- names(stats)[names(stats)!='fn']
 for(metric in metrics){
     for(x_val in x_vals){
@@ -19,3 +19,32 @@ for(metric in metrics){
         }
     }
 }
+
+for(metric in metrics){
+    type_plot <- ggplot(plot_ds,
+                    aes_q(x=plot_ds$type,y=as.name(metric))) +
+        geom_point() +
+        xlab('') +
+        theme_bw() +
+        theme(legend.position='none') +
+        geom_text(aes(label=patient,colour=arm),
+           hjust=-0.5,size=2)
+        plot_width=length(levels(plot_ds$type))
+        ggsave(type_plot,file=paste0(path,'ggplot/',metric,'-by_type.pdf'),
+                    width=plot_width+0.5,height=6,units='in')
+}
+
+
+common_fields <- names(plot_ds)[3:5]
+tmp <- split(plot_ds,plot_ds$type)
+df1 <- as.data.frame(tmp[1])
+names(df1)[3:5] <- common_fields
+df2 <- as.data.frame(tmp[2])
+names(df2)[3:5] <- common_fields
+df3 <- as.data.frame(tmp[3])
+names(df3)[3:5] <-  common_fields
+
+tmp2 <- merge(df1,df2,common_fields,all.x=TRUE)
+tmp3 <- merge(tmp2,df3,all.x=TRUE)
+comp_ds <- tmp3[,c(1,2,3,grep('Clonality|Richness|Sum',names(tmp3)))]
+names(comp_ds)[1:5] <- names(plot_ds)[1:5]

@@ -5,18 +5,19 @@ out <- data.frame(p_adj=numeric(),ind=numeric(),patient=character())
 for(a in seq_along(patients)){
 	w <- which(dict$patient==patients[a] & dict$type!='PDAC')
 	mat <- ds[,w] 
-	mat <- mat[mat[,1]>5 & mat[,2]>5,]
+    rownames(mat) <- seq(nrow(mat))
+	mat <- mat[mat[,1]>5 | mat[,2]>5,]
 	mat <- as.matrix(mat)
 	ps_mat <- mat
 	ps_mat[ps_mat==0] <- 1
-	fc <- (log(ps_mat[,2]/ps_mat[,1],2))
+	fc <- abs(log(ps_mat[,2]/ps_mat[,1],2))
 	mat <- mat[fc>1,] 
 	s <- apply(mat,MARGIN=2,FUN=sum)
 	tm <- proc.time()
-	p_vals <- exp_clone(mat[,1],mat[,2])
+	p_vals <- exp_clone(mat[,2],mat[,1])
 	el<- proc.time()-tm
 	p_adj <- p.adjust(p_vals,method='BH')
-	exp_cl <- length(p_adj[p_adj<0.01])
+	exp_cl <- length(p_adj[p_adj<0.05])
 	exp_cl_pct <- round(100*exp_cl/length(p_adj),2)
 	pdf(file=paste0(path,'Expanded_Clones/',patients[a],'-hist.pdf'),
 		width=8,height=8) 
@@ -24,6 +25,11 @@ for(a in seq_along(patients)){
 		main=paste0(patients[a],'\n',exp_cl,' clones (',exp_cl_pct,'%)'),
 		xlab='P values')
 	dev.off()
+    ind <- as.numeric(rownames(mat))
+    hits <- ds[ind,c(1,2,w)]
+    hits$p_adj <- p_adj
+    hits$p_val <- p_vals
+    hits <- hits[order(hits$p_adj),]
 	p_adj_ord <- p_adj[order(p_adj)]
 	tout <- data.frame(p_adj=p_adj_ord, ind=seq(length(p_adj)), 
 			   patient=rep(patients[a],length(p_adj))) 
