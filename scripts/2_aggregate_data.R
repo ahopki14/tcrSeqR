@@ -12,6 +12,8 @@ ds <- ds[ds$aa!='',]
 length(grep('\\*',ds$aa))
 ds <- ds[grep('\\*',ds$aa,invert=TRUE),]
 
+# Re-factor
+ds$aa <- as.factor(as.character(ds$aa))
 
 
 save(ds,file='ds_agg.Rda')
