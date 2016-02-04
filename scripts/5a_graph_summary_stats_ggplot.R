@@ -1,7 +1,7 @@
 plot_ds <- merge(dict,stats)
 dir.create(paste0(path,'ggplot'))
 # set the range of variable that go on the x axis
-x_vals <- c('day_seq')
+x_vals <- c('response')
 metrics <- names(stats)[names(stats)!='fn']
 for(metric in metrics){
     for(x_val in x_vals){
@@ -20,6 +20,7 @@ for(metric in metrics){
     }
 }
 
+plot_ds <- plot_ds[plot_ds$type=='PDAC' | plot_ds$type=='FFPE',]
 for(metric in metrics){
     type_plot <- ggplot(plot_ds,
                     aes_q(x=plot_ds$type,y=as.name(metric))) +
@@ -27,10 +28,10 @@ for(metric in metrics){
         xlab('') +
         theme_bw() +
         theme(legend.position='none') +
-        geom_text(aes(label=patient,colour=arm),
+        geom_text(aes(label=patient),
            hjust=-0.5,size=2)
         plot_width=length(levels(plot_ds$type))
-        ggsave(type_plot,file=paste0(path,'ggplot/',metric,'-by_type.pdf'),
+        ggsave(type_plot,file=paste0(path,'ggplot/',metric,'-by_type_tumors.pdf'),
                     width=plot_width+0.5,height=6,units='in')
 }
 
