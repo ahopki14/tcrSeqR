@@ -140,6 +140,7 @@ iseqr_aggregate <- function(ds, inc_nt=TRUE){
 # define data columns
     dc <- names(ds)[names(ds)!='nt' & names(ds)!='aa']
 # do math
+	gc()
     sum_rows <- function(x){sapply(ds[x,dc],FUN=sum)}
     a <- sapply(ind,FUN=sum_rows)
     b <- data.frame(t(a))

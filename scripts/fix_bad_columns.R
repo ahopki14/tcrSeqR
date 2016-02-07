@@ -1,4 +1,5 @@
 all_files <- list.files(pattern='.tsv')
+dir.create('mod')
 for(a in all_files){
 	ds <- read.csv(a,sep='\t')
 	cols <- grep('nucleotide|aminoAcid|count|estimatedNumberGenomes',names(ds))
@@ -7,4 +8,6 @@ for(a in all_files){
 	if(length(count)!=1){stop('Loaded incorrect number of columns for count field')}
 	if(names(ds)[count]!='count'){names(ds)[count] <- 'count'}
 	write.table(ds,file=paste0('mod/',a),sep='\t',quote=FALSE,row.names=FALSE)
+	rm(ds)
+	gc()
 }
