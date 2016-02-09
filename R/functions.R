@@ -285,15 +285,21 @@ refactor <- function(df){
 	classes <- sapply(df,class)
 	for(a in seq(classes)){
 		if(classes[a]=='factor'){
+			warn <- character()
 			ord <- levels(df[,a])
 			levs <- unique(as.character(df[,a]))
 			loc <- rep(NA,length(levs))
-			for(b in seq_along(levs)){
-				loc[b] <- which(levs[b]==ord)
-			}
-			loc <- order(loc)
-			df[,a] <- factor(as.character(df[,a]),levels=levs[loc])
+			if(any(!is.na(levs))){
+				for(b in seq_along(levs)){
+					loc[b] <- which(levs[b]==ord)
+				}
+					loc <- order(loc)
+					df[,a] <-factor(as.character(df[,a]),levels=levs[loc])
+			}else{warn <- c(warn,names(classes)[a])}
 		}
 	}
+if(length(warn)>0){
+	warning(paste0('The following columns were omitted due to NAs:',paste0(warn,collapse=',')))
+}
 df
 }
