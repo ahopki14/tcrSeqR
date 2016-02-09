@@ -281,3 +281,19 @@ exp_clone <- function(x,y){ # x is the row of mat, s is the column sum of mat
 # an R terminal bell (require a shell script or alias which makes a noise and exits)
 bleep <- function(){system('bleep &')}
 
+refactor <- function(df){
+	classes <- sapply(df,class)
+	for(a in seq(classes)){
+		if(classes[a]=='factor'){
+			ord <- levels(df[,a])
+			levs <- unique(as.character(df[,a]))
+			loc <- rep(NA,length(levs))
+			for(b in seq_along(levs)){
+				loc[b] <- which(levs[b]==ord)
+			}
+			loc <- order(loc)
+			df[,a] <- factor(as.character(df[,a]),levels=levs[loc])
+		}
+	}
+df
+}
