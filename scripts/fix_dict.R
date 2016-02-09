@@ -1,5 +1,5 @@
 colnames(ds) <- gsub('sample','',colnames(ds))
-dict$fn <- gsub('\\.','',dict$fn)
+dict$fn <- gsub('-','',dict$fn)
 
 ord <- match(dict$fn,names(ds))
 ord[1] <- 1
