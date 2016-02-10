@@ -10,10 +10,13 @@ Created `r  format(Sys.Date(),"%m/%d/%y")`
 library(immunoSeqR)
 library(ggplot2)
 library(gridExtra)
-
+```
+```{r eval=FALSE}
 load('~/Documents/emj/ImmunoseqResults/mega/ds_agg.Rda')
 load('~/Documents/emj/ImmunoseqResults/mega/dict.Rda')
 load('~/Documents/emj/ImmunoseqResults/mega/stats.Rda')
+```
+```{r eval=FALSE,echo=FALSE}
 total_ds <- ds
 total_dict <- dict
 total_stats <- stats
@@ -32,6 +35,9 @@ The available metadata fields in the total_dictionary are: `r paste(names(total_
 
 \clearpage
 
+
+
+
 ## Neoadjuvant Study
 \includegraphics[width=\textwidth]{/home/ahopkins/Documents/emj/figures/J0810_timeline.pdf}
 
@@ -43,6 +49,21 @@ stats <- total_stats[which(total_dict$experiment=='Neoadjuvant')-2,]
 plot_ds <- merge(dict,stats)
 ```
 `r ncol(ds)-2` samples, of `r length(levels(dict$type))` types.
+
+```{r echo=FALSE}
+x_val <- 'response'
+metrics <- names(stats[names(stats)!='fn'])
+types <- levels(plot_ds$type)
+for(b in metrics){
+	l <- vector('list')
+	for(a in types){
+	    l[[a]] <- iseqr_plot_metrics(plot_ds,b,x_val,a)
+	}
+	do.call(grid.arrange,c(l,ncol=length(types)))
+}
+```
+
+
 
 ## Adjuvant Study
 \includegraphics[width=\textwidth]{/home/ahopkins/Documents/emj/figures/J9988_timeline.pdf}
@@ -56,6 +77,20 @@ plot_ds <- merge(dict,stats)
 ```
 `r ncol(ds)-2` samples, of `r length(levels(dict$type))` types.
 
+```{r echo=FALSE}
+x_val <- 'response'
+metrics <- names(stats[names(stats)!='fn'])
+types <- levels(plot_ds$type)
+for(b in metrics){
+    l <- vector('list')
+    for(a in types){
+        l[[a]] <- iseqr_plot_metrics(plot_ds,b,x_val,a)
+    }
+    do.call(grid.arrange,c(l,ncol=length(types)))
+}
+```
+
+
 ## SBRT Study
 
 ```{r eval=TRUE,echo=FALSE}
@@ -67,4 +102,17 @@ plot_ds <- merge(dict,stats)
 ```
 `r ncol(ds)-2` samples, of `r length(levels(dict$type))` types.
 
+
+```{r echo=FALSE}
+x_val <- 'arm'
+metrics <- names(stats[names(stats)!='fn'])
+types <- levels(plot_ds$type)
+for(b in metrics){
+    l <- vector('list')
+    for(a in types){
+        l[[a]] <- iseqr_plot_metrics(plot_ds,b,x_val,a)
+    }
+    do.call(grid.arrange,c(l,ncol=length(types)))
+}
+```
 
