@@ -289,7 +289,7 @@ refactor <- function(df){
 			ord <- levels(df[,a])
 			levs <- unique(as.character(df[,a]))
 			loc <- rep(NA,length(levs))
-			if(any(!is.na(levs))){
+			if(any(is.na(levs))){
 				for(b in seq_along(levs)){
 					loc[b] <- which(levs[b]==ord)
 				}
@@ -310,9 +310,9 @@ iseqr_check <- function(ds,dict,stats=NA,v=FALSE){
 		check_dict <- all(names(ds)==dict$fn,na.rm=TRUE)
 		if(!all(is.na(stats))){check_stats <- all(dict$fn[-c(1,2)]==stats$fn)}
 		else{check_stats <- TRUE}
-	}else if(ncol(ds)==nrow(dict)){ # for un-padded dictionary
+	}else if(ncol(ds)==nrow(dict)+2){ # for un-padded dictionary
 		if(v){print('Dictionary is NOT padded')}
-		check_dict <- all(names(ds)[-c(1,2)]==dict$fn)
+		check_dict <- all(names(ds)[names(ds)!='aa' & names(ds)!='syn']==dict$fn)
 		if(!all(is.na(stats))){check_stats <- all(dict$fn==stats$fn)}
         else{check_stats <- TRUE}	
 	}
@@ -320,3 +320,16 @@ out <- list(check_dict,check_stats)
 names(out) <- c('dict','stats')
 out
 }
+
+
+iseqr_plot_metrics <- function(plot_ds,metric,x_val,type){
+    g <- ggplot(plot_ds[plot_ds$type==type,],
+        aes_q(x=as.name(x_val),y=as.name(metric))) +
+    geom_point() +
+    xlab('') +
+    ggtitle(as.character(type)) +
+    theme_bw() +
+    geom_text(aes(label=patient),colour='grey',hjust=-0.5,size=2)
+    g
+}
+
