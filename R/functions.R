@@ -289,7 +289,7 @@ refactor <- function(df){
 			ord <- levels(df[,a])
 			levs <- unique(as.character(df[,a]))
 			loc <- rep(NA,length(levs))
-			if(any(is.na(levs))){
+			if(!any(is.na(levs))){
 				for(b in seq_along(levs)){
 					loc[b] <- which(levs[b]==ord)
 				}
@@ -322,7 +322,7 @@ out
 }
 
 
-iseqr_plot_metrics <- function(plot_ds,metric,x_val,type){
+iseqr_plot_metrics <- function(plot_ds,metric,x_val,type,...){
     g <- ggplot(plot_ds[plot_ds$type==type,],
         aes_q(x=as.name(x_val),y=as.name(metric))) +
     geom_point() +
@@ -330,6 +330,12 @@ iseqr_plot_metrics <- function(plot_ds,metric,x_val,type){
     ggtitle(as.character(type)) +
     theme_bw() +
     geom_text(aes(label=patient),colour='grey',hjust=-0.5,size=2)
-    g
+    g + ...
 }
 
+
+iseqr_clean_ds <- function(ds){
+	w <- grep('syn|aa|nt',names(ds))
+	ds <- ds[rowSums(ds[,-w])>0,]
+	ds
+}
