@@ -6,17 +6,19 @@ header-includes:
 # \texttt{immunoSeqR} Analysis
 Created `r  format(Sys.Date(),"%m/%d/%y")`
 
-```{r eval=FALSE,echo=FALSE}
-library(immunoSeqR)
-library(ggplot2)
-library(gridExtra)
+```{r eval=TRUE,echo=FALSE}
+require(immunoSeqR)
+require(ggplot2)
+require(gridExtra)
+r <- function(){render('~/Documents/emj/ImmunoseqResults/immunoSeqR/scripts/mega_analysis.Rmd',output_dir='~/Desktop/out/')}
+first_run <- TRUE
 ```
-```{r eval=FALSE}
+```{r eval=TRUE, cache=!first_run}
 load('~/Documents/emj/ImmunoseqResults/mega/ds_agg.Rda')
 load('~/Documents/emj/ImmunoseqResults/mega/dict.Rda')
 load('~/Documents/emj/ImmunoseqResults/mega/stats.Rda')
 ```
-```{r eval=FALSE,echo=FALSE}
+```{r eval=TRUE,echo=FALSE}
 total_ds <- ds
 total_dict <- dict
 total_stats <- stats
@@ -28,7 +30,8 @@ gc()
 ### Dataset
 
 
-The data set contains `r ncol(total_ds)-2` samples, of `r length(levels(total_dict$type))` types. There are `r format(nrow(total_ds),big.mark=',')` unique TCRs, collapsed from `r format(sum(total_ds$syn),big.mark=',')` distinct productive CDR3 sequences. This represents a average synonymity of `r summary(total_ds$syn)['Mean']`. The maximum synonymity was `r summary(total_ds$syn)['Max.']` (clone sequence `r total_ds$aa[which.max(total_ds$syn)]`).\par
+The data set contains `r ncol(total_ds)-2` samples, of `r length(levels(total_dict$type))` types. 
+There are `r format(nrow(total_ds),big.mark=',')` unique TCRs, collapsed from `r format(sum(total_ds$syn),big.mark=',')` distinct productive CDR3 sequences. This represents an average synonymity of `r summary(total_ds$syn)['Mean']`. The maximum synonymity was `r summary(total_ds$syn)['Max.']` (clone sequence `r total_ds$aa[which.max(total_ds$syn)]`).\par
 
 ### Metadata  
 The available metadata fields in the total_dictionary are: `r paste(names(total_dict)[-1],collapse=', ')`. The statistics computed are `r paste(names(stats)[names(stats)!='fn'],collapse=', ')`.
@@ -89,6 +92,14 @@ for(b in metrics){
     do.call(grid.arrange,c(l,ncol=length(types)))
 }
 ```
+## Adjuvant-Neoadjuvant Comparison
+```{r eval=TRUE,echo=FALSE}
+dict <- total_dict[which(total_dict$experiment=='Adjuvant|Neoadjuvant'),]
+dict <- refactor(dict)
+stats <- total_stats[which(total_dict$experiment=='Adjuvant|Neadjuvant')-2,]
+plot_ds <- merge(dict,stats)
+```
+
 
 
 ## SBRT Study
