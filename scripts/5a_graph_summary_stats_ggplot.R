@@ -3,7 +3,7 @@ if(nrow(plot_ds)!=nrow(ds)){stop('Could not merge, check the column names')}
 
 dir.create(paste0(path,'ggplot'))
 # set the range of variable that go on the x axis
-x_vals <- c('response','arm')
+x_vals <- c('os','margin','age','ptv80')
 metrics <- names(stats)[names(stats)!='fn']
 for(metric in metrics){
     for(x_val in x_vals){
@@ -14,7 +14,11 @@ for(metric in metrics){
             theme_bw() +                
 			geom_text(aes(label=patient),colour='grey',
                         hjust=-0.5,size=2)
-            plot_width= length(unique(plot_ds[,x_val]))            
+			if(class(plot_ds[,x_val])=='factor|character'){
+            	plot_width= length(unique(plot_ds[,x_val]))    
+			}else{
+				plot_width=5.5
+			}         
 ggsave(g,file=paste0(path,'ggplot/',metric,'-by_',x_val,'-',type,'.pdf'),
 		width=plot_width+0.5,height=6,units='in')
         }
