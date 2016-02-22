@@ -5,13 +5,13 @@ out <- data.frame(p_adj=numeric(),ind=numeric(),patient=character())
 for(a in seq_along(patients)){
 	w <- which(dict$patient==patients[a] & dict$type!='PDAC')
 	mat <- ds[,w] 
-    rownames(mat) <- seq(nrow(mat))
-	mat <- mat[mat[,1]>5 | mat[,2]>5,]
+        rownames(mat) <- seq(nrow(mat))
+	mat <- mat[mat[,1]+mat[,2]>5,] # sum not or see l34 of python
 	mat <- as.matrix(mat)
-	ps_mat <- mat
-	ps_mat[ps_mat==0] <- 1
-	fc <- abs(log(ps_mat[,2]/ps_mat[,1],2))
-	mat <- mat[fc>1,] 
+	#ps_mat <- mat
+	#ps_mat[ps_mat==0] <- 1 #no longer applied
+	#fc <- abs(log(ps_mat[,2]/ps_mat[,1],2))
+	#mat <- mat[fc>1,] 
 	s <- apply(mat,MARGIN=2,FUN=sum)
 	tm <- proc.time()
 	p_vals <- exp_clone(mat[,2],mat[,1])
