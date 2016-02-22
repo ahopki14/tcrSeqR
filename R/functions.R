@@ -322,15 +322,15 @@ out
 }
 
 
-iseqr_plot_metrics <- function(plot_ds,metric,x_val,type,...){
+iseqr_plot_metrics <- function(plot_ds,metric,x_val,type){
     g <- ggplot(plot_ds[plot_ds$type==type,],
         aes_q(x=as.name(x_val),y=as.name(metric))) +
     geom_point() +
     xlab('') +
     ggtitle(as.character(type)) +
-    theme_bw() +
-    geom_text(aes(label=patient),colour='grey',hjust=-0.5,size=2)
-    g + ...
+    theme_bw() + theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank()) + 
+    geom_text(aes(label=patient),colour='grey',hjust=-0.5,size=1)
+    g
 }
 
 
