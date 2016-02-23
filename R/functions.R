@@ -322,7 +322,7 @@ out
 }
 
 
-iseqr_plot_metrics <- function(plot_ds,metric,x_val,type){
+iseqr_plot_metrics <- function(plot_ds,metric,x_val,type,sm=TRUE){
     g <- ggplot(plot_ds[plot_ds$type==type,],
         aes_q(x=as.name(x_val),y=as.name(metric))) +
     geom_point() +
@@ -330,8 +330,25 @@ iseqr_plot_metrics <- function(plot_ds,metric,x_val,type){
     ggtitle(as.character(type)) +
     theme_bw() + theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank()) + 
     geom_text(aes(label=patient),colour='grey',hjust=-0.5,size=1)
-    g
+	if(sm){g <- g + geom_smooth(method=lm,alpha=0.1)}
+	g
 }
+
+iseqr_plot_factor <- function(plot_ds,metric,x_val,type){
+	if(!is.na(type)){
+		plot_ds <- plot_ds[plot_ds$type==type,]
+		title <- type
+	}else{title <- ''}
+    g <- ggplot(plot_ds,aes_q(x=as.name(x_val),y=as.name(metric))) +
+    geom_point() +
+    xlab('') +
+    ggtitle(as.character(title)) +
+    theme_bw() + theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank()) +
+    geom_text(aes(label=patient),colour='grey',hjust=-0.5,size=1) +
+    stat_summary(fun.data=mean_95,geom='errorbar',width=0.05,colour='red',alpha=0.4)
+	g
+}
+
 
 
 iseqr_clean_ds <- function(ds){
@@ -339,3 +356,30 @@ iseqr_clean_ds <- function(ds){
 	ds <- ds[rowSums(ds[,-w])>0,]
 	ds
 }
+
+mean_sd <- function(x){
+	m <- mean(x,na.rm=TRUE)
+	s <- sd(x,na.rm=TRUE)
+	c(y=m,ymin=m-s,ymax=m+s)
+}
+
+mean_95 <- function(x){
+	m <- mean(x,na.rm=TRUE)
+	n <- length(x)
+	i <- qt(0.975,df=n-1)*(sd(x)/sqrt(n))
+	c(y=m,ymin=m-i,ymax=m+i)
+}
+
+iseqr_summarize <- function(ds,split_on){
+    ds <- split(ds,ds[,split_on])
+    out <- matrix(nrow=length(ds),ncol=length(ds))
+    rownames(out) <- names(ds)
+    colnames(out) <- names(ds)
+    for(a in names(ds)){
+        for(b in names(ds)[names(ds)!=a]){
+            out[a,b] <- t.test(ds[[a]][metric],ds[[b]][metric])$p.value
+        }
+    }
+out
+}
+
