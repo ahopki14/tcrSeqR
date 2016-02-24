@@ -1,0 +1,113 @@
+---
+title: \texttt{immunoSeqR} Analysis
+#author: "Alex Hopkins"
+output: pdf_document
+header-includes:
+   - \usepackage{graphicx}
+
+---
+# SBRT Study
+Created `r  format(Sys.Date(),"%m/%d/%y")`
+
+```{r eval=TRUE,echo=FALSE}
+require(immunoSeqR)
+require(ggplot2)
+require(gridExtra)
+require(knitr)
+first_run <- FALSE
+verbose=FALSE
+
+```
+```{r eval=first_run}
+load('~/Documents/emj/ImmunoseqResults/mega/ds_agg.Rda')
+load('~/Documents/emj/ImmunoseqResults/mega/dict.Rda')
+load('~/Documents/emj/ImmunoseqResults/mega/stats.Rda')
+```
+```{r eval=first_run,echo=verbose,warn=FALSE}
+if(!all(unlist(iseqr_check(ds,dict,stats)))){stop('Check dictionary and stats.')}
+w <- which(dict$experiment=='SBRT')
+ds <- ds[,c(w,1,2)] # put syn and aa on the end, then dictionary does not need to be padded
+ds <- iseqr_clean_ds(ds)
+stats <- stats[w-2,]
+dict <- dict[w,] # will result in an unpadded dictionary, but will work with new ds
+dict <- refactor(dict)
+if(!all(unlist(iseqr_check(ds,dict,stats)))){stop('Error collapsing dictionary or stats.')}
+gc <- gc()
+```
+## Background
+
+### Dataset
+
+The data set contains `r ncol(ds)-2` samples, of `r length(levels(dict$type))` types. 
+There are `r format(nrow(ds),big.mark=',')` unique TCRs, collapsed from `r 
+format(sum(ds$syn),big.mark=',')` distinct productive CDR3 sequences. This represents an average 
+synonymity of `r summary(ds$syn)['Mean']`. The maximum synonymity (in the parent data set) was `r 
+summary(ds$syn)['Max.']` (clone sequence `r ds$aa[which.max(ds$syn)]`).\par
+
+### Metadata  
+The available metadata fields in the dictionary are: `r paste(names(dict)[-1],collapse=', ')`. The statistics computed are `r paste(names(stats)[names(stats)!='fn'],collapse=', ')`.
+
+\clearpage
+
+
+### By Type
+
+```{r eval=TRUE,echo=verbose,cache=FALSE}
+#put sum of seqs at the end
+stats <- stats[,c(1,3,2,4)]
+plot_ds <- merge(dict,stats)
+
+```
+```{r echo=verbose,fig.align='center'}
+metrics <- names(stats[names(stats)!='fn'])
+types <- levels(plot_ds$type)
+l <- vector('list')
+for(b in metrics){
+	    l[[b]] <- iseqr_plot_factor(plot_ds,b,'type',NA) + theme(axis.text=element_text(size=5))
+}
+do.call(grid.arrange,c(l,ncol=length(types)))
+```
+```{r echo=FALSE,results='asis'}
+for(a in metrics){
+	print(kable(iseqr_summarize(plot_ds,'type',metric=a),
+		format='markdown',
+		digits=3,
+		align='c'))
+}
+```
+
+\clearpage
+
+### By Treatment Arm
+```{r echo=verbose,fig.align='center'}
+x_val <- 'arm'
+metrics <- names(stats[names(stats)!='fn'])
+types <- levels(plot_ds$type)
+for(b in metrics){
+    l <- vector('list')
+    for(a in types){
+        l[[a]] <- iseqr_plot_factor(plot_ds,b,x_val,a)
+    }
+    do.call(grid.arrange,c(l,ncol=length(types)))
+}
+```
+\clearpage
+
+## Confounders
+
+### Cell Number
+
+```{r echo=verbose,cache=FALSE,fig.align='center',fig.height=3,fig.width=8}
+x_val <- 'cells'
+metrics <- names(stats[names(stats)!='fn'])
+types <- levels(plot_ds$type)
+for(b in metrics){
+    l <- vector('list')
+    for(a in types[types!='PDAC']){
+        l[[a]] <- iseqr_plot_metrics(plot_ds[!is.na(plot_ds$cells),],b,x_val,a) + 
+					theme(axis.text=element_text(size=5))
+    }
+    do.call(grid.arrange,c(l,ncol=length(types)))  
+	cat('  \n')
+}
+```
