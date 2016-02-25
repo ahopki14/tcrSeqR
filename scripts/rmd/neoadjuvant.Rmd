@@ -12,6 +12,7 @@ Created `r  format(Sys.Date(),"%m/%d/%y")`
 require(immunoSeqR)
 require(ggplot2)
 require(gridExtra)
+require(reshape2)
 first_run <- FALSE
 verbose=FALSE
 
@@ -29,8 +30,10 @@ ds <- iseqr_clean_ds(ds)
 stats <- stats[w-2,]
 dict <- dict[w,] # will result in an unpadded dictionary, but will work with new ds
 dict <- refactor(dict)
+olm <- olm[w-2,w-2]
+mm <- mm[w-2,w-2]
 if(!all(unlist(iseqr_check(ds,dict,stats)))){stop('Error collapsing dictionary or stats.')}
-gc()
+a <- gc()
 ```
 ## Background
 \includegraphics[width=\textwidth]{/home/ahopkins/Documents/emj/figures/J0810_timeline.pdf}
@@ -81,8 +84,26 @@ for(b in metrics){
 
 ```
 \clearpage
+
 ## Overlaps
 
+```{r echo=verbose,eval=TRUE,fig.align='center',fig.height=8}
+rownames(olm) <- paste0(dict$patient,dict$type)
+colnames(olm) <- rownames(olm)
+w <- c(which(dict$response=='NR'),which(dict$response=='R'))
+tdict <- dict[w,]
+tolm <- olm[w,w]
+tolm.m <- melt(tolm)
+g <- ggplot(tolm.m,aes(x=Var1,y=Var2)) +
+    geom_tile(aes(fill=value)) +
+    coord_fixed() +
+    scale_fill_gradient(low='white',high='black')+
+    theme(axis.text=element_text(size=5,colour=tdict$response),
+            axis.text.x=element_text(angle=90,hjust=1,vjust=0.5))+
+    xlab('') + ylab('') + ggtitle('Overlap')
+g
+```
+\clearpage
 
 ## Confounders
 
@@ -100,10 +121,11 @@ for(b in metrics){
     do.call(grid.arrange,c(l,ncol=length(types)))
 }
 ```
+\clearpage
 
 ### Age
 
-```{r echo=verbose,cache=FALSE,fig.align='center',fig.height=2.5,width=8}
+```{r echo=verbose,cache=FALSE,fig.align='center',fig.height=2.5}
 x_val <- 'age'
 metrics <- names(stats[names(stats)!='fn'])
 types <- levels(plot_ds$type)
@@ -116,6 +138,7 @@ for(b in metrics){
 	cat('  \n')
 }
 ```
+\clearpage
 
 ### Cell Number
 
