@@ -391,3 +391,12 @@ iseqr_summarize <- function(ds,split_on,metric){
 out
 }
 
+iseqr_lookup <- function(i,dict,i_col='patient',o_col='response'){
+    w <- which(dict[,i_col]==i)
+    o <- dict[w,o_col]
+    o <- as.character(o)
+    if(length(unique(o))!=1){stop(paste('Multiple matches?',paste(o,collapse=',')))}else{
+        unique(o)
+    }
+}
+
