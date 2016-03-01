@@ -401,7 +401,7 @@ iseqr_lookup <- function(i,dict,i_col='patient',o_col='response'){
     }
 }
 
-iseqr_exp_cl <- function(ds,dict,s1='PRE',s2='POST',catagory='type',by='patient'){
+iseqr_exp_cl <- function(ds,dict,s1='PRE',s2='POST',category='type',by='patient'){
     patients <- levels(dict[,by])
     out <- data.frame(p_adj=numeric(),ind=numeric(),patient=character())
     num_exp <- numeric()
