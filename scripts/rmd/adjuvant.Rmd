@@ -13,6 +13,11 @@ Created `r  format(Sys.Date(),"%m/%d/%y")`
 require(immunoSeqR)
 require(ggplot2)
 require(gridExtra)
+require(knitr)
+require(reshape2)
+r <- 
+function(){render('~/Documents/emj/ImmunoseqResults/immunoSeqR/scripts/rmd/adjuvant.Rmd',output_file=
+'~/Documents/emj/ImmunoseqResults/new/adjuvant.pdf')}
 first_run <- FALSE
 verbose=FALSE
 
@@ -32,6 +37,8 @@ dict <- dict[w,] # will result in an unpadded dictionary, but will work with new
 dict <- refactor(dict)
 wa <- which(names(dict)=='arm')
 dict <- dict[,-wa]
+olm <- olm[w-2,w-2]
+mm <- mm[w-2,w-2]
 if(!all(unlist(iseqr_check(ds,dict,stats)))){stop('Error collapsing dictionary or stats.')}
 gc()
 ```
@@ -74,6 +81,39 @@ for(b in metrics){
 	}
 	do.call(grid.arrange,c(l,ncol=length(types)))
 }
+```
+\clearpage
+
+## Overlaps
+
+```{r overlap,echo=verbose,eval=TRUE,fig.align='center',fig.height=8}
+rownames(mm) <- paste0(dict$patient,dict$type)
+colnames(mm) <- rownames(mm)
+w <- c(which(dict$response=='NR'),which(dict$response=='R'))
+tdict <- dict[w,]
+tmm <- mm[w,w]
+tmm.m <- melt(tmm)
+g <- ggplot(tmm.m,aes(x=Var1,y=Var2)) +
+    geom_tile(aes(fill=value)) +
+    coord_fixed() +
+    scale_fill_gradient(low='white',high='black')+
+    theme(axis.text=element_text(size=5,colour=tdict$response),
+            axis.text.x=element_text(angle=90,hjust=1,vjust=0.5))+
+    xlab('') + ylab('') + ggtitle('Morisita Overlap')
+g
+```
+\clearpage
+
+## Expanded Clones
+```{r, expanded_clones,echo=verbose, cache=TRUE}
+out <- iseqr_exp_cl(ds,dict)
+```
+```{r exp_cl_plot, echo=verbose,fig.align='center',fig.height=3,fig.width=5}
+resp <- sapply(names(out$num_exp),FUN=iseqr_lookup,dict=dict)
+df <- data.frame(patient=names(out$num_exp),response=resp,arm=arm,num_exp=out$num_exp)
+g <- iseqr_plot_factor(df,'num_exp','response',NA)
+g + ylab('Number of Changed Clones')
+
 ```
 \clearpage
 

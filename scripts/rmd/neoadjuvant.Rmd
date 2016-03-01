@@ -14,9 +14,10 @@ require(immunoSeqR)
 require(ggplot2)
 require(gridExtra)
 require(reshape2)
+require(knitr)
 first_run <- FALSE
 verbose=FALSE
-
+r <- function(){render('~/Documents/emj/ImmunoseqResults/immunoSeqR/scripts/rmd/neoadjuvant.Rmd',output_file='~/Documents/emj/ImmunoseqResults/new/neoadjuvant.pdf')}
 ```
 ```{r eval=first_run}
 load('~/Documents/emj/ImmunoseqResults/mega/ds_agg.Rda')
@@ -88,7 +89,7 @@ for(b in metrics){
 
 ## Overlaps
 
-```{r echo=verbose,eval=TRUE,fig.align='center',fig.height=8}
+```{r overlap,echo=verbose,eval=TRUE,fig.align='center',fig.height=8}
 rownames(mm) <- paste0(dict$patient,dict$type)
 colnames(mm) <- rownames(mm)
 w <- c(which(dict$response=='NR'),which(dict$response=='R'))
@@ -106,10 +107,27 @@ g
 ```
 \clearpage
 
+
+## Expanded Clones
+```{r, expanded_clones,echo=verbose, cache=TRUE}
+out <- iseqr_exp_cl(ds,dict)
+```
+```{r exp_cl_plot, echo=verbose,fig.align='center',fig.height=3,fig.width=5}
+resp <- sapply(names(out$num_exp),FUN=iseqr_lookup,dict=dict)
+arm <- sapply(names(out$num_exp),FUN=iseqr_lookup,dict=dict,o_col='arm')
+df <- data.frame(patient=names(out$num_exp),response=resp,arm=arm,num_exp=out$num_exp)
+g <- iseqr_plot_factor(df,'num_exp','response',NA)
+g <- g + ylab('Number of Changed Clones')
+f <- iseqr_plot_factor(df,'num_exp','arm',NA)
+f <- f + ylab('Number of Changed Clones')
+grid.arrange(g,f,ncol=2)
+
+```
+\clearpage
 ## Confounders
 
 ### Treatment Arm
-```{r echo=FALSE}
+```{r echo=verbose}
 a <- matrix(c('Arm A:','GVAX','Arm B:','GVAX + IV Cyclophosphamide','Arm C:','GVAX + Oral Cyclophosphamide'),ncol=2,byrow=2)
 kable(a) 
 ```
