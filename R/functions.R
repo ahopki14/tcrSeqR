@@ -264,7 +264,7 @@ find_clones <- function(path='~/Documents/emj/ImmunoseqResults/published_clones.
 }
 
 
-iseqr_fisher <- function(x,s){ # x is the row of mat, s is the column sum of mat
+fisher <- function(x,s){ # x is the row of mat, s is the column sum of mat
     tab <- rbind(x,s-x)
     fisher.test(tab,alternative='two.sided')$p.value
 }
@@ -273,7 +273,7 @@ exp_clone <- function(x,y,restrict=5){ # x and y are vectors of counts in the sa
     mat <- as.matrix(cbind(x,y))
 	if(restrict>0){mat <- mat[colSums(mat)>restrict,]}
     s <- apply(mat,MARGIN=2,FUN=sum)
-    p_vals <- apply(mat,MARGIN=1,FUN=iseqr_fisher,s=s)
+    p_vals <- apply(mat,MARGIN=1,FUN=fisher,s=s)
     p_vals
 }
 
@@ -399,5 +399,35 @@ iseqr_lookup <- function(i,dict,i_col='patient',o_col='response'){
     if(length(unique(o))!=1){stop(paste('Multiple matches?',paste(o,collapse=',')))}else{
         unique(o)
     }
+}
+
+iseqr_exp_cl <- function(ds,dict,s1='PRE',s2='POST',catagory='type',by='patient'){
+    patients <- levels(dict[,by])
+    out <- data.frame(p_adj=numeric(),ind=numeric(),patient=character())
+    num_exp <- numeric()
+    p <- matrix(nrow=nrow(ds),ncol=length(patients))
+    colnames(p) <- patients
+    for(a in seq_along(patients)){
+        w <- c(which(dict[,by]==patients[a] & (dict[,category]==s1)),
+                which(dict[,by]==patients[a] & dict[,category]==s2))
+        if(length(w)!=2){stop(paste('Multiple matches for:',patients[a],s1,s2))}
+        mat <- ds[,w]
+        rownames(mat) <- seq(nrow(mat))
+        mat$p_adj <- rep(1,nrow(mat))
+        mat <- as.matrix(mat)
+        ind <- which((mat[,1]+mat[,2])>5) # at least 5 in both
+        ind <- as.numeric(ind)
+        s <- apply(mat[ind,],MARGIN=2,FUN=sum)
+        tm <- proc.time()
+        p_vals <- exp_clone(mat[ind,2],mat[ind,1])
+        el<- proc.time()-tm
+        p_adj <- p.adjust(p_vals,method='BH')
+        mat[ind,3] <- p_adj
+        num_exp[a] <- length(which(mat[,3]<0.05))
+        names(num_exp)[a] <- patients[a]
+        p[,a] <- mat[,3]
+    }
+    out <- list(num_exp=num_exp,p=p)
+    out
 }
 
