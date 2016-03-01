@@ -2,6 +2,7 @@
 title: \texttt{immunoSeqR} Analysis
 #author: "Alex Hopkins"
 output: pdf_document
+geometry: margin=0.75in
 header-includes:
    - \usepackage{graphicx}
 ---
@@ -108,8 +109,11 @@ g
 ## Confounders
 
 ### Treatment Arm
-
-```{r echo=verbose,cache=FALSE,fig.align='center',fig.height=3}
+```{r echo=FALSE}
+a <- matrix(c('Arm A:','GVAX','Arm B:','GVAX + IV Cyclophosphamide','Arm C:','GVAX + Oral Cyclophosphamide'),ncol=2,byrow=2)
+kable(a) 
+```
+```{r echo=verbose,cache=FALSE,fig.align='center',fig.height=2.5}
 x_val <- 'arm'
 metrics <- names(stats[names(stats)!='fn'])
 types <- levels(plot_ds$type)

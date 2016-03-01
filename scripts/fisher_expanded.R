@@ -2,57 +2,28 @@
 
 patients <- levels(dict$patient)
 out <- data.frame(p_adj=numeric(),ind=numeric(),patient=character())
+num_exp <- numeric()
+p <- matrix(nrow=nrow(ds),ncol=length(patients))
+colnames(p) <- patients
 for(a in seq_along(patients)){
 	w <- which(dict$patient==patients[a] & dict$type!='PDAC')
 	mat <- ds[,w] 
-        rownames(mat) <- seq(nrow(mat))
-	mat <- mat[mat[,1]+mat[,2]>5,] # sum not or see l34 of python
+    rownames(mat) <- seq(nrow(mat))
+	mat$p_adj <- rep(1,nrow(mat))
 	mat <- as.matrix(mat)
-	#ps_mat <- mat
-	#ps_mat[ps_mat==0] <- 1 #no longer applied
-	#fc <- abs(log(ps_mat[,2]/ps_mat[,1],2))
-	#mat <- mat[fc>1,] 
-	s <- apply(mat,MARGIN=2,FUN=sum)
+	ind <- which((mat[,1]+mat[,2])>5) # at least 5 in both
+	ind <- as.numeric(ind)
+	s <- apply(mat[ind,],MARGIN=2,FUN=sum)
 	tm <- proc.time()
-	p_vals <- exp_clone(mat[,2],mat[,1])
+	p_vals <- exp_clone(mat[ind,2],mat[ind,1])
 	el<- proc.time()-tm
 	p_adj <- p.adjust(p_vals,method='BH')
-	exp_cl <- length(p_adj[p_adj<0.05])
-	exp_cl_pct <- round(100*exp_cl/length(p_adj),2)
-	pdf(file=paste0(path,'Expanded_Clones/',patients[a],'-hist.pdf'),
-		width=8,height=8) 
-	hist(p_adj[p_adj<0.05],breaks=500,
-		main=paste0(patients[a],'\n',exp_cl,' clones (',exp_cl_pct,'%)'),
-		xlab='P values')
-	dev.off()
-    ind <- as.numeric(rownames(mat))
-    hits <- ds[ind,c(1,2,w)]
-    hits$p_adj <- p_adj
-    hits$p_val <- p_vals
-    hits <- hits[order(hits$p_adj),]
-	p_adj_ord <- p_adj[order(p_adj)]
-	tout <- data.frame(p_adj=p_adj_ord, ind=seq(length(p_adj)), 
-			   patient=rep(patients[a],length(p_adj))) 
-	out <- rbind(out,tout)
+	mat[ind,3] <- p_adj
+	num_exp[a] <- length(which(mat[,3]<0.05))
+	names(num_exp)[a] <- patients[a]
+	p[,a] <- mat[,3]	
 }
-
-
-x <- seq(0,0.05,length=1000)
-
-tmp <- function(x,y){
-	length(y[y<x])
-}
-for(a in seq_along(patients)){
-#	r <-  dict$response[dict$patient==patients[a] & 
-#			    dict$type=='PRE'][3]
-	col <- 'red'
-#	if(r=='R'){col='black'}
-	y <- out$p_adj[out$patient==patients[a]]
-	num <- sapply(x,FUN=tmp,y=y)
-pdf(file=paste0(path,'Expanded_Clones/',
-	patients[a],'-exp_plot.pdf'))
-	plot(x,num,pch=20,col=col,main=patients[a],
-		xlab='FDR Cutoff',
-		ylab='Number of Clones')
-dev.off()
-}
+resp <- sapply(names(num_exp),FUN=iseqr_lookup,dict=dict)
+df <- data.frame(patient=names(num_exp),response=resp,num_exp=num_exp)
+g <- iseqr_plot_factor(df,'num_exp','response',NA)
+g + ylab('Number of Expanded Clones')
