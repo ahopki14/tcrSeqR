@@ -84,6 +84,18 @@ for(b in metrics){
 ```
 \clearpage
 
+### By Type
+```{r echo=verbose,fig.align='center'}
+metrics <- names(stats[names(stats)!='fn'])
+l <- vector('list')
+for(b in metrics){
+        l[[b]] <- iseqr_plot_factor(plot_ds,b,'type',NA) + theme(axis.text=element_text(size=5))
+}
+    do.call(grid.arrange,c(l,ncol=length(types)))
+
+```
+\clearpage
+
 ## Overlaps
 
 ```{r overlap,echo=verbose,eval=TRUE,fig.align='center',fig.height=8}
@@ -108,9 +120,9 @@ g
 ```{r, expanded_clones,echo=verbose, cache=TRUE}
 out <- iseqr_exp_cl(ds,dict)
 ```
-```{r exp_cl_plot, echo=verbose,fig.align='center',fig.height=3,fig.width=5}
+```{r exp_cl_plot, echo=verbose,fig.align='center',fig.height=3,fig.width=2.5}
 resp <- sapply(names(out$num_exp),FUN=iseqr_lookup,dict=dict)
-df <- data.frame(patient=names(out$num_exp),response=resp,arm=arm,num_exp=out$num_exp)
+df <- data.frame(patient=names(out$num_exp),response=resp,num_exp=out$num_exp)
 g <- iseqr_plot_factor(df,'num_exp','response',NA)
 g + ylab('Number of Changed Clones')
 

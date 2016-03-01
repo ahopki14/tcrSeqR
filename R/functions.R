@@ -404,6 +404,7 @@ iseqr_lookup <- function(i,dict,i_col='patient',o_col='response'){
 iseqr_exp_cl <- function(ds,dict,s1='PRE',s2='POST',category='type',by='patient'){
     patients <- levels(dict[,by])
     out <- data.frame(p_adj=numeric(),ind=numeric(),patient=character())
+	big_out <- list()
     num_exp <- numeric()
     p <- matrix(nrow=nrow(ds),ncol=length(patients))
     colnames(p) <- patients
@@ -426,8 +427,10 @@ iseqr_exp_cl <- function(ds,dict,s1='PRE',s2='POST',category='type',by='patient'
         num_exp[a] <- length(which(mat[,3]<0.05))
         names(num_exp)[a] <- patients[a]
         p[,a] <- mat[,3]
+		big_out[[a]] <- mat
+		names(big_out)[a] <- patients[a]
     }
-    out <- list(num_exp=num_exp,p=p)
+    out <- list(num_exp=num_exp,p=p,total=big_out)
     out
 }
 
