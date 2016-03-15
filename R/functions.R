@@ -266,7 +266,7 @@ find_clones <- function(path='~/Documents/emj/ImmunoseqResults/published_clones.
 
 fisher <- function(x,s){ # x is the row of mat, s is the column sum of mat
     tab <- rbind(x,s-x)
-    fisher.test(tab,alternative='two.sided')$p.value
+    fisher.test(tab,alternative='greater')$p.value
 }
 
 exp_clone <- function(x,y,restrict=5){ # x and y are vectors of counts in the samples compared

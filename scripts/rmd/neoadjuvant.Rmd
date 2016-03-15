@@ -17,26 +17,16 @@ require(reshape2)
 require(knitr)
 first_run <- FALSE
 verbose=FALSE
-r <- function(){render('~/Documents/emj/ImmunoseqResults/immunoSeqR/scripts/rmd/neoadjuvant.Rmd',output_file='~/Documents/emj/ImmunoseqResults/new/neoadjuvant.pdf')}
+r <- function(){render('~/Documents/emj/ImmunoseqResults/immunoSeqR/scripts/rmd/neoadjuvant.Rmd',
+output_file='~/Documents/emj/ImmunoseqResults/new/neoadjuvant.pdf')}
 ```
 ```{r eval=first_run}
-load('~/Documents/emj/ImmunoseqResults/mega/ds_agg.Rda')
-load('~/Documents/emj/ImmunoseqResults/mega/dict.Rda')
-load('~/Documents/emj/ImmunoseqResults/mega/stats.Rda')
+ds <- readRDS('~/Documents/emj/ImmunoseqResults/mega/ds_agg_Neoadjuvant.Rds')
+dict <- readRDS('~/Documents/emj/ImmunoseqResults/mega/dict_Neoadjuvant.Rds')
+stats <- readRDS('~/Documents/emj/ImmunoseqResults/mega/stats_Neoadjuvant.Rds')
+load('~/Documents/emj/ImmunoseqResults/mega/olm_Neoadjuvant.Rda')
 ```
-```{r eval=first_run,echo=verbose,warn=FALSE}
-if(!all(unlist(iseqr_check(ds,dict,stats)))){stop('Check dictionary and stats.')}
-w <- which(dict$experiment=='Neoadjuvant')
-ds <- ds[,c(w,1,2)] # put syn and aa on the end, then dictionary does not need to be padded
-ds <- iseqr_clean_ds(ds)
-stats <- stats[w-2,]
-dict <- dict[w,] # will result in an unpadded dictionary, but will work with new ds
-dict <- refactor(dict)
-olm <- olm[w-2,w-2]
-mm <- mm[w-2,w-2]
-if(!all(unlist(iseqr_check(ds,dict,stats)))){stop('Error collapsing dictionary or stats.')}
-a <- gc()
-```
+
 ## Background
 \includegraphics[width=\textwidth]{/home/ahopkins/Documents/emj/figures/J0810_timeline.pdf}
 
@@ -110,7 +100,8 @@ g
 
 ## Expanded Clones
 ```{r, expanded_clones,echo=verbose, cache=TRUE}
-out <- iseqr_exp_cl(ds,dict)
+ds_nt <- readRDS('~/Documents/emj/ImmunoseqResults/mega/ds_Neoadjuvant.Rda')
+out <- iseqr_exp_cl(ds_nt,dict)
 ```
 ```{r exp_cl_plot, echo=verbose,fig.align='center',fig.height=3,fig.width=5}
 resp <- sapply(names(out$num_exp),FUN=iseqr_lookup,dict=dict)
