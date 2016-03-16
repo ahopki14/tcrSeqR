@@ -264,21 +264,6 @@ find_clones <- function(path='~/Documents/emj/ImmunoseqResults/published_clones.
 }
 
 
-fisher <- function(x,s){ # x is the row of mat, s is the column sum of mat
-    tab <- rbind(x,s-x)
-    fisher.test(tab,alternative='greater')$p.value
-}
-
-exp_clone <- function(x,y,restrict=5){ # x and y are vectors of counts in the samples compared
-    mat <- as.matrix(cbind(x,y))
-	if(restrict>0){mat <- mat[colSums(mat)>restrict,]}
-    s <- apply(mat,MARGIN=2,FUN=sum)
-    p_vals <- apply(mat,MARGIN=1,FUN=fisher,s=s)
-    p_vals
-}
-
-
-
 # an R terminal bell (require a shell script or alias which makes a noise and exits)
 bleep <- function(){system('bleep &')}
 
@@ -400,6 +385,21 @@ iseqr_lookup <- function(i,dict,i_col='patient',o_col='response'){
         unique(o)
     }
 }
+
+fisher <- function(x,s){ # x is the row of mat, s is the column sum of mat
+    tab <- rbind(x,s-x)
+    fisher.test(tab,alternative='greater')$p.value
+}
+
+exp_clone <- function(x,y,restrict=5){ # x and y are vectors of counts in the samples compared
+    mat <- as.matrix(cbind(x,y))
+    if(restrict>0){mat <- mat[colSums(mat)>restrict,]}
+    s <- apply(mat,MARGIN=2,FUN=sum)
+    p_vals <- apply(mat,MARGIN=1,FUN=fisher,s=s)
+    p_vals
+}
+
+
 
 iseqr_exp_cl <- function(ds,dict,s1='PRE',s2='POST',category='type',by='patient'){
     patients <- levels(dict[,by])
