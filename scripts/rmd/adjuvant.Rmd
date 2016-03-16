@@ -15,6 +15,7 @@ require(ggplot2)
 require(gridExtra)
 require(knitr)
 require(reshape2)
+require(rmarkdown)
 r <- 
 function(){render('~/Documents/emj/ImmunoseqResults/immunoSeqR/scripts/rmd/adjuvant.Rmd',output_file=
 '~/Documents/emj/ImmunoseqResults/new/adjuvant.pdf')}
@@ -23,24 +24,10 @@ verbose=FALSE
 
 ```
 ```{r eval=first_run}
-load('~/Documents/emj/ImmunoseqResults/mega/ds_agg.Rda')
-load('~/Documents/emj/ImmunoseqResults/mega/dict.Rda')
-load('~/Documents/emj/ImmunoseqResults/mega/stats.Rda')
-```
-```{r eval=first_run,echo=verbose,warn=FALSE}
-if(!all(unlist(iseqr_check(ds,dict,stats)))){stop('Check dictionary and stats.')}
-w <- which(dict$experiment=='Adjuvant')
-ds <- ds[,c(w,1,2)] # put syn and aa on the end, then dictionary does not need to be padded
-ds <- iseqr_clean_ds(ds)
-stats <- stats[w-2,]
-dict <- dict[w,] # will result in an unpadded dictionary, but will work with new ds
-dict <- refactor(dict)
-wa <- which(names(dict)=='arm')
-dict <- dict[,-wa]
-olm <- olm[w-2,w-2]
-mm <- mm[w-2,w-2]
-if(!all(unlist(iseqr_check(ds,dict,stats)))){stop('Error collapsing dictionary or stats.')}
-gc()
+ds <- readRDS('~/Documents/emj/ImmunoseqResults/mega/ds_agg_Adjuvant.Rds')
+dict <- readRDS('~/Documents/emj/ImmunoseqResults/mega/dict_Adjuvant.Rds')
+stats <- readRDS('~/Documents/emj/ImmunoseqResults/mega/stats_Adjuvant.Rds')
+load('~/Documents/emj/ImmunoseqResults/mega/olm_Adjuvant.Rda')
 ```
 ## Background
 \includegraphics[width=\textwidth]{/home/ahopkins/Documents/emj/figures/J9988_timeline.pdf}
@@ -118,15 +105,18 @@ g
 
 ## Expanded Clones
 ```{r, expanded_clones,echo=verbose, cache=TRUE}
-out <- iseqr_exp_cl(ds,dict)
+#ds_nt <- readRDS('~/Documents/emj/ImmunoseqResults/mega/ds_Adjuvant.Rds')
+#out <- iseqr_exp_cl(ds_nt,dict)
 ```
-```{r exp_cl_plot, echo=verbose,fig.align='center',fig.height=3,fig.width=2.5}
+```{r exp_cl_plot, echo=verbose,fig.align='center',fig.height=3,fig.width=5}
 resp <- sapply(names(out$num_exp),FUN=iseqr_lookup,dict=dict)
 df <- data.frame(patient=names(out$num_exp),response=resp,num_exp=out$num_exp)
 g <- iseqr_plot_factor(df,'num_exp','response',NA)
-g + ylab('Number of Changed Clones')
-
+g <- g + ylab('Number of Expanded Clones')
+g
 ```
+
+
 \clearpage
 
 ## Confounders

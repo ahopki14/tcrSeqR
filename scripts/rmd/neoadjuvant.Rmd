@@ -101,19 +101,17 @@ g
 
 ## Expanded Clones
 ```{r, expanded_clones,echo=verbose, cache=TRUE}
-rm(ds)
-a <- gc()
-ds_nt <- readRDS('~/Documents/emj/ImmunoseqResults/mega/ds_Neoadjuvant.Rds')
-out <- iseqr_exp_cl(ds_nt,dict)
+#ds_nt <- readRDS('~/Documents/emj/ImmunoseqResults/mega/ds_Neoadjuvant.Rds')
+#out <- iseqr_exp_cl(ds_nt,dict)
 ```
 ```{r exp_cl_plot, echo=verbose,fig.align='center',fig.height=3,fig.width=5}
 resp <- sapply(names(out$num_exp),FUN=iseqr_lookup,dict=dict)
 arm <- sapply(names(out$num_exp),FUN=iseqr_lookup,dict=dict,o_col='arm')
 df <- data.frame(patient=names(out$num_exp),response=resp,arm=arm,num_exp=out$num_exp)
 g <- iseqr_plot_factor(df,'num_exp','response',NA)
-g <- g + ylab('Number of Changed Clones')
+g <- g + ylab('Number of Expanded Clones')
 f <- iseqr_plot_factor(df,'num_exp','arm',NA)
-f <- f + ylab('Number of Changed Clones')
+f <- f + ylab('Number of Expanded Clones')
 grid.arrange(g,f,ncol=2)
 
 ```
