@@ -115,6 +115,35 @@ f <- f + ylab('Number of Expanded Clones')
 grid.arrange(g,f,ncol=2)
 
 ```
+```{r exp_cl_vs_Tumor, echo=verbose}
+mats <- out$total
+patients <- names(mats)
+resp <- sapply(patients,FUN=iseqr_lookup,dict=dict)
+mats <- mats[order(resp)]
+resp <- resp[order(resp)]
+patients <- patients[order(resp)]
+
+plots <- list()
+for(a in seq_along(mats)){
+	tds <- as.data.frame(mats[[a]])
+	w <- which(dict$patient==patients[a] & dict$type=='PDAC')
+	tds[,4] <- ds_nt[,w]		
+	names(tds)[4] <- 'PDAC'
+	ttds <- tds
+	ttds[ttds[,1]==0,1] <- 1
+	ttds[ttds[,2]==0,2] <- 1
+	tds$lfc <- log(ttds[,2]/ttds[,1],2)
+	plots[[a]] <- ggplot(tds[which(tds$PDAC>0),],aes(x=lfc,y=PDAC)) + 
+		geom_point() +
+		ylab('Tumor Counts') + 
+		xlab('LFC Pre-Post') + 
+		ggtitle(paste0(patients[a],'(',resp[a],')'))
+		#scale_x_reverse()
+}
+g <- do.call(grid.arrange,c(plots,ncol=2))
+
+```
+
 \clearpage
 ## Confounders
 
