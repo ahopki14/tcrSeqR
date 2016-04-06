@@ -9,7 +9,7 @@ paste('Removed ',length(w),' clones with stop codons')
 w <- which(ds$aa =='')
 if(length(w)>0){ds <- ds[-w,]} #remove clones with no translation
 paste('Removed ',length(w),' clones with no translation')
-paste0('Leaving ',nrow(ds),' clones \n')
+paste0('Leaving ',nrow(ds),' clones')
 
 ds$nt <- as.character(ds$nt)
 len <- sapply(ds$nt,nchar)
@@ -48,12 +48,24 @@ for(a in seq_along(to_fix)){
 		w_toss <- which(tlen<max(tlen))
 		for(toss in w_toss){
 			keep <- grep(ds$nt[to_fix[[a]][toss]],ds$nt[to_fix[[a]][-toss]])
-			if(length(keep)>1){idk[[a]] <- to_fix[[a]]}
 			if(length(keep)==1){
 				k.ind <- to_fix[[a]][keep]	
 				t.ind <- to_fix[[a]][toss]
 				ds[k.ind,-md] <- colSums(ds[c(k.ind,t.ind),-md])
 				to_toss <- c(to_toss,t.ind)
+			}
+			if(length(keep)>1){
+				s <- rowSums(ds[to_fix[[a]][keep],-md])
+				biggest <- which(s==max(s))
+				if(length(biggest==1)){
+					k.ind <- to_fix[[a]][keep][biggest]
+					t.ind <- to_fix[[a]][toss]
+                	ds[k.ind,-md] <- colSums(ds[c(k.ind,t.ind),-md])
+                	to_toss <- c(to_toss,t.ind)	
+				}
+				if(length(biggest>1)){
+					idk[[a]] <- to_fix[[a]]
+				}
 			}
 		}	
 	}
