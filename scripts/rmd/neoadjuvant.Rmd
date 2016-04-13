@@ -102,7 +102,7 @@ g
 ## Expanded Clones
 ```{r, expanded_clones,echo=verbose, cache=TRUE}
 #ds_nt <- readRDS('~/Documents/emj/ImmunoseqResults/mega/ds_Neoadjuvant.Rds')
-#out <- iseqr_exp_cl(ds_nt,dict)
+out <- iseqr_exp_cl(ds_nt,dict)
 ```
 ```{r exp_cl_plot, echo=verbose,fig.align='center',fig.height=3,fig.width=5}
 resp <- sapply(names(out$num_exp),FUN=iseqr_lookup,dict=dict)
@@ -127,13 +127,13 @@ plots <- list()
 for(a in seq_along(mats)){
 	tds <- as.data.frame(mats[[a]])
 	w <- which(dict$patient==patients[a] & dict$type=='PDAC')
-	tds[,4] <- ds_nt[,w]		
+	tds[,4] <- ds[,w]		
 	names(tds)[4] <- 'PDAC'
 	ttds <- tds
 	ttds[ttds[,1]==0,1] <- 1
 	ttds[ttds[,2]==0,2] <- 1
 	tds$lfc <- log(ttds[,2]/ttds[,1],2)
-	plots[[a]] <- ggplot(tds[which(tds$PDAC>0),],aes(x=lfc,y=PDAC)) + 
+	plots[[a]] <- ggplot(tds[which(tds$PDAC>0),],aes(x=lfc,y=PDAC,color=p_adj)) + 
 		geom_point() +
 		ylab('Tumor Counts') + 
 		xlab('LFC Pre-Post') + 
