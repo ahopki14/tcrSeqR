@@ -433,3 +433,23 @@ iseqr_exp_cl <- function(ds,dict,s1='PRE',s2='POST',category='type',by='patient'
     out
 }
 
+shared <- function(x,y){
+	if(length(x)!=length(y)){stop('Vectors must be same length')}
+	w <- which(x>0)
+	out <- length(which(y[w]>0))
+	out
+}
+
+
+tert <- function(x){
+	q <- quantile(x,c(1/3,2/3))
+	w1 <- which(x<=q[[1]])
+	w2 <- which(x<=q[[2]] & x>q[[1]])
+	w3 <- which(x>q[[2]])
+	out <- character(length=length(x))
+	out[w1] <- 1
+	out[w2] <- 2
+	out[w3] <- 3
+	out <- factor(out,levels=c('1','2','3'))
+	out
+}
