@@ -19,7 +19,8 @@ require(rmarkdown)
 first_run <- FALSE
 verbose=FALSE
 r <- function(){render('~/Documents/emj/ImmunoseqResults/immunoSeqR/scripts/rmd/neoadjuvant.Rmd',
-output_file='~/Documents/emj/ImmunoseqResults/new/neoadjuvant.pdf')}
+output_file='~/Documents/emj/ImmunoseqResults/new/neoadjuvant.pdf',
+intermediates_dir='~/Documents/emj/ImmunoseqResults/new/')}
 ```
 ```{r eval=first_run}
 ds <- readRDS('~/Documents/emj/ImmunoseqResults/mega/ds_agg_Neoadjuvant.Rds')
@@ -101,7 +102,7 @@ g
 
 ## Expanded Clones
 ```{r, expanded_clones,echo=verbose, cache=TRUE}
-#ds_nt <- readRDS('~/Documents/emj/ImmunoseqResults/mega/ds_Neoadjuvant.Rds')
+ds_nt <- readRDS('~/Documents/emj/ImmunoseqResults/mega/ds_Neoadjuvant.Rds')
 out <- iseqr_exp_cl(ds_nt,dict)
 ```
 ```{r exp_cl_plot, echo=verbose,fig.align='center',fig.height=3,fig.width=5}
@@ -120,28 +121,39 @@ mats <- out$total
 patients <- names(mats)
 resp <- sapply(patients,FUN=iseqr_lookup,dict=dict)
 mats <- mats[order(resp)]
-resp <- resp[order(resp)]
 patients <- patients[order(resp)]
+resp <- resp[order(resp)]
+nr <- length(which(resp=='NR'))
+r <- length(which(resp=='R'))
+layout <- matrix(nrow=max(r,nr),ncol=2)
+layout[seq(nr),1] <- seq(nr)
+layout[,2] <- seq(r)+nr
 
 plots <- list()
 for(a in seq_along(mats)){
 	tds <- as.data.frame(mats[[a]])
 	w <- which(dict$patient==patients[a] & dict$type=='PDAC')
-	tds[,4] <- ds[,w]		
+	tds[,4] <- ds_nt[,w]		
 	names(tds)[4] <- 'PDAC'
 	ttds <- tds
 	ttds[ttds[,1]==0,1] <- 1
 	ttds[ttds[,2]==0,2] <- 1
 	tds$lfc <- log(ttds[,2]/ttds[,1],2)
-	plots[[a]] <- ggplot(tds[which(tds$PDAC>0),],aes(x=lfc,y=PDAC,color=p_adj)) + 
+	rm(ttds)
+	lowest <- min(tds$p_adj[tds$p_adj>0]) # lowest non-0 p-val
+	tds$p_adj[tds$p_adj==0] <- lowest
+	tds <- tds[which(tds$PDAC>0),]
+	l <- max(abs(-log(tds$p_adj)))
+	plots[[a]] <- ggplot(tds,aes(x=-log(p_adj),y=PDAC,color=lfc)) + 
 		geom_point() +
 		ylab('Tumor Counts') + 
-		xlab('LFC Pre-Post') + 
-		ggtitle(paste0(patients[a],'(',resp[a],')'))
-		#scale_x_reverse()
+		xlab('-log(p)') + 
+		ggtitle(paste0(patients[a],'(',resp[a],')')) +
+		scale_colour_gradient2(low='red',mid='black',high='green',midpoint=0)+
+		scale_x_continuous(limits=c(-l,l))
 }
-g <- do.call(grid.arrange,c(plots,ncol=2))
-
+g <- grid.arrange(grobs=plots,layout_matrix=layout)
+ggsave(g,file='~/Desktop/test.pdf',height=20)
 ```
 
 \clearpage
