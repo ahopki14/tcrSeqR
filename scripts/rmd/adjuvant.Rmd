@@ -104,16 +104,67 @@ g
 \clearpage
 
 ## Expanded Clones
-```{r, expanded_clones,echo=verbose, cache=TRUE}
-#ds_nt <- readRDS('~/Documents/emj/ImmunoseqResults/mega/ds_Adjuvant.Rds')
-#out <- iseqr_exp_cl(ds_nt,dict)
+```{r, expanded_clones,echo=verbose,eval=FALSE}
+#rm(ds)
+ds_nt <- readRDS('~/Documents/emj/ImmunoseqResults/mega/fixed/ds_Adjuvant_fixed.Rds')
+```
+```{r calc_exp_cl,echo=verbose,cache=TRUE}
+out <- iseqr_exp_cl(ds_nt,dict)
+#source('~/Documents/emj/ImmunoseqResults/immunoSeqR/scripts/exp_cl.R')
 ```
 ```{r exp_cl_plot, echo=verbose,fig.align='center',fig.height=3,fig.width=5}
 resp <- sapply(names(out$num_exp),FUN=iseqr_lookup,dict=dict)
-df <- data.frame(patient=names(out$num_exp),response=resp,num_exp=out$num_exp)
+arm <- sapply(names(out$num_exp),FUN=iseqr_lookup,dict=dict,o_col='arm')
+df <- data.frame(patient=names(out$num_exp),response=resp,arm=arm,num_exp=out$num_exp)
 g <- iseqr_plot_factor(df,'num_exp','response',NA)
 g <- g + ylab('Number of Expanded Clones')
+f <- iseqr_plot_factor(df,'num_exp','arm',NA)
+f <- f + ylab('Number of Expanded Clones')
+grid.arrange(g,f,ncol=2)
+
+```
+```{r exp_cl_vs_Tumor, echo=verbose}
+mats <- out$total
+patients <- names(mats)
+resp <- sapply(patients,FUN=iseqr_lookup,dict=dict)
+mats <- mats[order(resp)]
+patients <- patients[order(resp)]
+resp <- resp[order(resp)]
+nr <- length(which(resp=='NR'))
+r <- length(which(resp=='R'))
+layout <- matrix(nrow=max(r,nr),ncol=2)
+layout[seq(nr),1] <- seq(nr)
+layout[,2] <- seq(r)+nr
+
+plots <- list()
+for(a in seq_along(mats)){
+    tds <- as.data.frame(mats[[a]])
+    w <- which(dict$patient==patients[a] & dict$type=='PDAC')
+    tds[,4] <- ds_nt[,w]
+    names(tds)[4] <- 'PDAC'
+    #calculate the lfc
+    ttds <- tds
+    ttds[ttds[,1]==0,1] <- 1
+    ttds[ttds[,2]==0,2] <- 1
+    tds$lfc <- log(ttds[,2]/ttds[,1],2)
+    rm(ttds)
+    #
+    lowest <- min(tds$p_adj[tds$p_adj>0]) # lowest non-0 p-val
+    tds$p_adj[tds$p_adj==0] <- lowest # clip any p=0 to next lowest
+    tds <- tds[which(tds$PDAC>0),] # restrict to tumor
+    l <- max(abs(-log(tds$p_adj,10))) # plot limit
+    sh <- shared(tds$PDAC,rowSums(tds[,c(1,2)]))
+    plots[[a]] <- ggplot(tds,aes(x=-log(p_adj,10),y=PDAC,color=lfc)) +
+        geom_point() + theme_bw()+
+        ylab('Tumor Counts') +
+        xlab('-log(p)') +
+        ggtitle(paste0(patients[a],'(',resp[a],')',' ',sh,' ','shared')) +
+        scale_colour_gradient2(low='red',mid='black',high='green',midpoint=0)+
+        scale_x_continuous(limits=c(0,l))
+}
+g <- grid.arrange(grobs=plots,layout_matrix=layout)
 g
+#ggsave(g,file='~/Desktop/test_fixed.pdf',height=20)
 ```
 
 
