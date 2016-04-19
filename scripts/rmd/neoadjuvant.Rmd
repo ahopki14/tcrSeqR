@@ -16,7 +16,7 @@ require(gridExtra)
 require(reshape2)
 require(knitr)
 require(rmarkdown)
-first_run <- TRUE
+first_run <- FALSE
 verbose=FALSE
 r <- function(){render('~/Documents/emj/ImmunoseqResults/immunoSeqR/scripts/rmd/neoadjuvant.Rmd',
 output_file='~/Documents/emj/ImmunoseqResults/new/neoadjuvant.pdf',
@@ -101,12 +101,13 @@ g
 
 
 ## Expanded Clones
-```{r, expanded_clones,echo=verbose,eval=first_run}
-rm(ds)
+```{r, expanded_clones,echo=verbose,eval=FALSE}
+#rm(ds)
 ds_nt <- readRDS('~/Documents/emj/ImmunoseqResults/mega/fixed/ds_Neoadjuvant_fixed.Rds')
 ```
 ```{r calc_exp_cl,echo=verbose,cache=TRUE}
-out <- iseqr_exp_cl(ds_nt,dict)
+#out <- iseqr_exp_cl(ds_nt,dict)
+#source('~/Documents/emj/ImmunoseqResults/immunoSeqR/scripts/exp_cl.R')
 ```
 ```{r exp_cl_plot, echo=verbose,fig.align='center',fig.height=3,fig.width=5}
 resp <- sapply(names(out$num_exp),FUN=iseqr_lookup,dict=dict)
@@ -159,7 +160,8 @@ for(a in seq_along(mats)){
 		scale_x_continuous(limits=c(0,l))
 }
 g <- grid.arrange(grobs=plots,layout_matrix=layout)
-ggsave(g,file='~/Desktop/test_fixed.pdf',height=20)
+g
+#ggsave(g,file='~/Desktop/test_fixed.pdf',height=20)
 ```
 
 \clearpage
