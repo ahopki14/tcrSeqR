@@ -16,7 +16,7 @@ require(gridExtra)
 require(reshape2)
 require(knitr)
 require(rmarkdown)
-first_run <- FALSE
+first_run <- TRUE
 verbose=FALSE
 r <- function(){render('~/Documents/emj/ImmunoseqResults/immunoSeqR/scripts/rmd/neoadjuvant.Rmd',
 output_file='~/Documents/emj/ImmunoseqResults/new/neoadjuvant.pdf',
@@ -101,8 +101,11 @@ g
 
 
 ## Expanded Clones
-```{r, expanded_clones,echo=verbose, cache=TRUE}
-ds_nt <- readRDS('~/Documents/emj/ImmunoseqResults/mega/ds_Neoadjuvant.Rds')
+```{r, expanded_clones,echo=verbose,eval=first_run}
+rm(ds)
+ds_nt <- readRDS('~/Documents/emj/ImmunoseqResults/mega/fixed/ds_Neoadjuvant_fixed.Rds')
+```
+```{r calc_exp_cl,echo=verbose,cache=TRUE}
 out <- iseqr_exp_cl(ds_nt,dict)
 ```
 ```{r exp_cl_plot, echo=verbose,fig.align='center',fig.height=3,fig.width=5}
@@ -135,25 +138,28 @@ for(a in seq_along(mats)){
 	w <- which(dict$patient==patients[a] & dict$type=='PDAC')
 	tds[,4] <- ds_nt[,w]		
 	names(tds)[4] <- 'PDAC'
+	#calculate the lfc
 	ttds <- tds
 	ttds[ttds[,1]==0,1] <- 1
 	ttds[ttds[,2]==0,2] <- 1
 	tds$lfc <- log(ttds[,2]/ttds[,1],2)
 	rm(ttds)
+	#
 	lowest <- min(tds$p_adj[tds$p_adj>0]) # lowest non-0 p-val
-	tds$p_adj[tds$p_adj==0] <- lowest
-	tds <- tds[which(tds$PDAC>0),]
-	l <- max(abs(-log(tds$p_adj)))
-	plots[[a]] <- ggplot(tds,aes(x=-log(p_adj),y=PDAC,color=lfc)) + 
-		geom_point() +
+	tds$p_adj[tds$p_adj==0] <- lowest # clip any p=0 to next lowest
+	tds <- tds[which(tds$PDAC>0),] # restrict to tumor
+	l <- max(abs(-log(tds$p_adj,10))) # plot limit
+	sh <- shared(tds$PDAC,rowSums(tds[,c(1,2)]))
+	plots[[a]] <- ggplot(tds,aes(x=-log(p_adj,10),y=PDAC,color=lfc)) + 
+		geom_point() + theme_bw()+
 		ylab('Tumor Counts') + 
 		xlab('-log(p)') + 
-		ggtitle(paste0(patients[a],'(',resp[a],')')) +
+		ggtitle(paste0(patients[a],'(',resp[a],')',' ',sh,' ','shared')) +
 		scale_colour_gradient2(low='red',mid='black',high='green',midpoint=0)+
-		scale_x_continuous(limits=c(-l,l))
+		scale_x_continuous(limits=c(0,l))
 }
 g <- grid.arrange(grobs=plots,layout_matrix=layout)
-ggsave(g,file='~/Desktop/test.pdf',height=20)
+ggsave(g,file='~/Desktop/test_fixed.pdf',height=20)
 ```
 
 \clearpage
