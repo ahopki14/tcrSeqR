@@ -338,7 +338,7 @@ iseqr_plot_factor <- function(plot_ds,metric,x_val,type){
     ggtitle(as.character(title)) +
     theme_bw() + theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank()) +
     geom_text(aes(label=patient),colour='grey',hjust=-0.5,size=1) +
-    stat_summary(fun.data=mean_95,geom='errorbar',width=0.05,colour='red',alpha=0.4)+
+    stat_summary(fun.data=mean_95,geom='errorbar',width=0.05,colour='red')+
     geom_point()
 	g
 }
