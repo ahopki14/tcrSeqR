@@ -24,7 +24,8 @@ verbose=FALSE
 
 ```
 ```{r eval=first_run}
-ds <- readRDS('~/Documents/emj/ImmunoseqResults/mega/ds_agg_Adjuvant.Rds')
+#ds <- readRDS('~/Documents/emj/ImmunoseqResults/mega/ds_agg_Adjuvant.Rds')
+load('~/Documents/emj/ImmunoseqResults/mega/sum.ds_adjuvant.Rda')
 dict <- readRDS('~/Documents/emj/ImmunoseqResults/mega/dict_Adjuvant.Rds')
 stats <- readRDS('~/Documents/emj/ImmunoseqResults/mega/stats_Adjuvant.Rds')
 load('~/Documents/emj/ImmunoseqResults/mega/olm_Adjuvant.Rda')
@@ -33,12 +34,12 @@ load('~/Documents/emj/ImmunoseqResults/mega/olm_Adjuvant.Rda')
 \includegraphics[width=\textwidth]{/home/ahopkins/Documents/emj/figures/J9988_timeline.pdf}
 
 ### Dataset
+The data set contains `r sum.ds$nsamp` samples, of `r  sum.ds$ntypes` types.
+There are `r  sum.ds$unique.tcr` unique TCRs, collapsed from `r  sum.ds$total.tcr` distinct
+productive CDR3 sequences. This represents an average synonymity of `r  sum.ds$avg.syn`.
+The maximum synonymity (in the parent data set) was `r  sum.ds$max.syn` (clone sequence `r
+sum.ds$max.syn.aa `).\par
 
-The data set contains `r ncol(ds)-2` samples, of `r length(levels(dict$type))` types. 
-There are `r format(nrow(ds),big.mark=',')` unique TCRs, collapsed from `r 
-format(sum(ds$syn),big.mark=',')` distinct productive CDR3 sequences. This represents an average 
-synonymity of `r summary(ds$syn)['Mean']`. The maximum synonymity (in the parent data set) was `r 
-summary(ds$syn)['Max.']` (clone sequence `r ds$aa[which.max(ds$syn)]`).\par
 
 ### Metadata  
 The available metadata fields in the dictionary are: `r paste(names(dict)[-1],collapse=', ')`. The statistics computed are `r paste(names(stats)[names(stats)!='fn'],collapse=', ')`.
@@ -57,7 +58,7 @@ w <- which(plot_ds$fn=='3026PDAC')
 plot_ds <- plot_ds[-w,]
 
 ```
-```{r echo=verbose,fig.align='center'}
+```{r by_response,echo=verbose,fig.align='center'}
 x_val <- 'response'
 metrics <- names(stats[names(stats)!='fn'])
 types <- levels(plot_ds$type)
@@ -72,7 +73,7 @@ for(b in metrics){
 \clearpage
 
 ### By Type
-```{r echo=verbose,fig.align='center'}
+```{r by_type,echo=verbose,fig.align='center'}
 metrics <- names(stats[names(stats)!='fn'])
 l <- vector('list')
 for(b in metrics){
@@ -106,22 +107,22 @@ g
 ## Expanded Clones
 ```{r, expanded_clones,echo=verbose,eval=FALSE}
 #rm(ds)
-ds_nt <- readRDS('~/Documents/emj/ImmunoseqResults/mega/fixed/ds_Adjuvant_fixed.Rds')
+#ds_nt <- readRDS('~/Documents/emj/ImmunoseqResults/mega/fixed/ds_Adjuvant_fixed.Rds')
 ```
 ```{r calc_exp_cl,echo=verbose,cache=TRUE}
-out <- iseqr_exp_cl(ds_nt,dict)
+#out <- iseqr_exp_cl(ds_nt,dict)
 #source('~/Documents/emj/ImmunoseqResults/immunoSeqR/scripts/exp_cl.R')
 ```
-```{r exp_cl_plot, echo=verbose,fig.align='center',fig.height=3,fig.width=5}
+```{r exp_cl_plot, echo=verbose,fig.align='center',fig.height=3,fig.width=2}
 resp <- sapply(names(out$num_exp),FUN=iseqr_lookup,dict=dict)
 arm <- sapply(names(out$num_exp),FUN=iseqr_lookup,dict=dict,o_col='arm')
 df <- data.frame(patient=names(out$num_exp),response=resp,arm=arm,num_exp=out$num_exp)
 g <- iseqr_plot_factor(df,'num_exp','response',NA)
 g <- g + ylab('Number of Expanded Clones')
-f <- iseqr_plot_factor(df,'num_exp','arm',NA)
-f <- f + ylab('Number of Expanded Clones')
-grid.arrange(g,f,ncol=2)
-
+#f <- iseqr_plot_factor(df,'num_exp','arm',NA)
+#f <- f + ylab('Number of Expanded Clones')
+#grid.arrange(g,f,ncol=2)
+g
 ```
 ```{r exp_cl_vs_Tumor, echo=verbose}
 mats <- out$total
@@ -152,21 +153,28 @@ for(a in seq_along(mats)){
     lowest <- min(tds$p_adj[tds$p_adj>0]) # lowest non-0 p-val
     tds$p_adj[tds$p_adj==0] <- lowest # clip any p=0 to next lowest
     tds <- tds[which(tds$PDAC>0),] # restrict to tumor
-    l <- max(abs(-log(tds$p_adj,10))) # plot limit
+    suppressWarnings(
+        l <- max(abs(-log(tds$p_adj,10))) # plot limit
+    )
+    if(l<1.3){l <- 1.3} # minimum of -log(0.05,10)
     sh <- shared(tds$PDAC,rowSums(tds[,c(1,2)]))
-    plots[[a]] <- ggplot(tds,aes(x=-log(p_adj,10),y=PDAC,color=lfc)) +
-        geom_point() + theme_bw()+
-        ylab('Tumor Counts') +
-        xlab('-log(p)') +
-        ggtitle(paste0(patients[a],'(',resp[a],')',' ',sh,' ','shared')) +
-        scale_colour_gradient2(low='red',mid='black',high='green',midpoint=0)+
-        scale_x_continuous(limits=c(0,l))
+    if(nrow(tds)>0){
+        plots[[a]] <- ggplot(tds,aes(x=-log(p_adj,10),y=PDAC,color=lfc)) +
+            geom_point() + theme_bw()+
+            ylab('Tumor Counts') +
+            xlab('-log(p)') +
+            ggtitle(paste0(patients[a],'(',resp[a],')',' ',sh,' ','shared')) +
+            scale_colour_gradient2(low='red',mid='black',high='green',midpoint=0)+
+            scale_x_continuous(limits=c(0,l))
+    }else{
+			plots[[a]] <- suppressWarnings(ggplot() + geom_blank()+
+							ggtitle(paste0(patients[a],'(',resp[a],')',' ',sh,' ','shared'))
+						)
+	}
 }
 g <- grid.arrange(grobs=plots,layout_matrix=layout)
-g
-#ggsave(g,file='~/Desktop/test_fixed.pdf',height=20)
+ggsave(g,file='~/Desktop/test_fixed_adj.pdf',height=2*nrow(layout),width=8)
 ```
-
 
 \clearpage
 
