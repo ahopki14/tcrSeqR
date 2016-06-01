@@ -181,71 +181,6 @@ morisita <- function(x,y){
     m
 }
 
-iseqr_load <- function(x){
-    if(x=='nadj'){print('Loading Neoadjuvant Study')
-    load('~/Documents/emj/ImmunoseqResults/neoadjuvant_study/dict_new.Rda',envir=.GlobalEnv)
-    load('~/Documents/emj/ImmunoseqResults/neoadjuvant_study/ds_nadj_agg.Rda',envir=.GlobalEnv)
-    load('~/Documents/emj/ImmunoseqResults/neoadjuvant_study/stats.Rda',envir=.GlobalEnv)
-    assign('path','~/Documents/emj/ImmunoseqResults/neoadjuvant_study/plots/',envir=.GlobalEnv)
-    }
-    if(x=='adj'){print('Loading Adjuvant Study')
-    load('~/Documents/emj/ImmunoseqResults/adjuvant_study/dict.Rda',envir=.GlobalEnv)
-    load('~/Documents/emj/ImmunoseqResults/adjuvant_study/ds_adj_agg.Rda',envir=.GlobalEnv)
-    load('~/Documents/emj/ImmunoseqResults/adjuvant_study/stats.Rda',envir=.GlobalEnv)
-    assign('path','~/Documents/emj/ImmunoseqResults/adjuvant_study/plots/',envir=.GlobalEnv)
-    }
-    if(x=='pilot'){print('Loading Pilot Study')
-    load('~/Documents/emj/ImmunoseqResults/sampleExport.2014-07-31_10-10-24/rerun/dict.Rda',envir=.GlobalEnv)
-    load('~/Documents/emj/ImmunoseqResults/sampleExport.2014-07-31_10-10-24/rerun/ds_agg.Rda',envir=.GlobalEnv)
-    load('~/Documents/emj/ImmunoseqResults/sampleExport.2014-07-31_10-10-24/rerun/stats.Rda',envir=.GlobalEnv)
-    assign('path','~/Documents/emj/ImmunoseqResults/sampleExport.2014-07-31_10-10-24/rerun/plots/',envir=.GlobalEnv)
-    }
-    if(x=='sbrt'){print('Loading SBRT Study')
-    load('~/Documents/emj/ImmunoseqResults/sbrt_study/dict.Rda',envir=.GlobalEnv)
-    load('~/Documents/emj/ImmunoseqResults/sbrt_study/ds_sbrt_agg.Rda',envir=.GlobalEnv)
-    load('~/Documents/emj/ImmunoseqResults/sbrt_study/stats.Rda',envir=.GlobalEnv)
-    assign('path','~/Documents/emj/ImmunoseqResults/sbrt_study/plots/',envir=.GlobalEnv)
-    }
-    if(x=='baseline'){print('Loading Baseline Study')
-    load('/home/ahopkins/Documents/emj/ImmunoseqResults/sampleExport.2015-05-21_09-55-12/dict.Rda',envir=.GlobalEnv)
-    load('/home/ahopkins/Documents/emj/ImmunoseqResults/sampleExport.2015-05-21_09-55-12/ds_agg.Rda',envir=.GlobalEnv)
-    load('/home/ahopkins/Documents/emj/ImmunoseqResults/sampleExport.2015-05-21_09-55-12/stats.Rda',envir=.GlobalEnv)
-    assign('path','/home/ahopkins/Documents/emj/ImmunoseqResults/sampleExport.2015-05-21_09-55-12/plots/',envir=.GlobalEnv)
-    }
-
-#################################################### Expencted Genomes Data ########################################
-    if(x=='nadj_expgen'){print('Loading Neoadjuvant Study Expected Genomes')
-    load('~/Documents/emj/ImmunoseqResults/neoadjuvant_study/exp_gen/dict.Rda',envir=.GlobalEnv)
-    load('~/Documents/emj/ImmunoseqResults/neoadjuvant_study/exp_gen/ds_nadj_agg_expgen.Rda',envir=.GlobalEnv)
-    load('~/Documents/emj/ImmunoseqResults/neoadjuvant_study/exp_gen/stats.Rda',envir=.GlobalEnv)
-    assign('path','~/Documents/emj/ImmunoseqResults/neoadjuvant_study/exp_gen/plots/',envir=.GlobalEnv)
-    }
-    if(x=='adj_expgen'){print('Loading Adjuvant Study Expected Genomes')
-    load('~/Documents/emj/ImmunoseqResults/adjuvant_study/exp_gen/dict.Rda',envir=.GlobalEnv)
-    load('~/Documents/emj/ImmunoseqResults/adjuvant_study/exp_gen/ds_adj_agg_expgen.Rda',envir=.GlobalEnv)
-    load('~/Documents/emj/ImmunoseqResults/adjuvant_study/exp_gen/stats.Rda',envir=.GlobalEnv)
-    assign('path','~/Documents/emj/ImmunoseqResults/adjuvant_study/exp_gen/plots/',envir=.GlobalEnv)
-    }
-    if(x=='pilot_expgen'){print('Loading Pilot Study Expected Genomes')
-    load('~/Documents/emj/ImmunoseqResults/sampleExport.2014-07-31_10-10-24/exp_gen/dict.Rda',envir=.GlobalEnv)
-    load('~/Documents/emj/ImmunoseqResults/sampleExport.2014-07-31_10-10-24/exp_gen/ds_pilot_agg_expgen.Rda',envir=.GlobalEnv)
-    load('~/Documents/emj/ImmunoseqResults/sampleExport.2014-07-31_10-10-24/exp_gen/stats.Rda',envir=.GlobalEnv)
-    assign('path','~/Documents/emj/ImmunoseqResults/sampleExport.2014-07-31_10-10-24/exp_gen/plots/',envir=.GlobalEnv)
-    }
-    if(x=='sbrt_expgen'){print('Loading SBRT Study Expected Genomes')
-    load('~/Documents/emj/ImmunoseqResults/sbrt_study/exp_gen/dict.Rda',envir=.GlobalEnv)
-    load('~/Documents/emj/ImmunoseqResults/sbrt_study/exp_gen/ds_sbrt_agg_exp_gen.Rda',envir=.GlobalEnv)
-    load('~/Documents/emj/ImmunoseqResults/sbrt_study/exp_gen/stats.Rda',envir=.GlobalEnv)
-    assign('path','~/Documents/emj/ImmunoseqResults/sbrt_study/exp_gen/plots/',envir=.GlobalEnv)
-    }
-    if(x=='baseline_expgen'){print('Loading Baseline Study Expected Genomes')
-    load('/home/ahopkins/Documents/emj/ImmunoseqResults/sampleExport.2015-05-21_09-55-12/exp_gen/dict.Rda',envir=.GlobalEnv)
-    load('/home/ahopkins/Documents/emj/ImmunoseqResults/sampleExport.2015-05-21_09-55-12/exp_gen/ds_baseline_agg_expgen.Rda',
-        envir=.GlobalEnv)
-    load('/home/ahopkins/Documents/emj/ImmunoseqResults/sampleExport.2015-05-21_09-55-12/exp_gen/stats.Rda',envir=.GlobalEnv)
-    assign('path','/home/ahopkins/Documents/emj/ImmunoseqResults/sampleExport.2015-05-21_09-55-12/exp_gen/plots/',envir=.GlobalEnv)
-    }
-}
 
 find_clones <- function(path='~/Documents/emj/ImmunoseqResults/published_clones.txt',
     ds=ds){
@@ -265,7 +200,10 @@ find_clones <- function(path='~/Documents/emj/ImmunoseqResults/published_clones.
 
 
 # an R terminal bell (require a shell script or alias which makes a noise and exits)
-bleep <- function(){system('bleep &')}
+bleep <- function(){
+  system('bleep &')
+  system('notify-send -t 3000 "immunoSeqR" "Done"')
+}
 
 refactor <- function(df){
 	classes <- sapply(df,class)
