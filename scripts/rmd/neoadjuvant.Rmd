@@ -92,7 +92,7 @@ tmm.m <- melt(tmm)
 g <- ggplot(tmm.m,aes(x=Var1,y=Var2)) +
     geom_tile(aes(fill=value)) +
     coord_fixed() +
-    scale_fill_gradient(low='white',high='black')+
+    scale_fill_gradient(low='white',high='black',na.value='white')+
     theme(axis.text=element_text(size=5,colour=tdict$response),
             axis.text.x=element_text(angle=90,hjust=1,vjust=0.5))+
     xlab('') + ylab('') + ggtitle('Morisita Overlap')
