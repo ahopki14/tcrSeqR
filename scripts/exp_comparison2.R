@@ -7,9 +7,15 @@ load('~/Desktop/adj_plot_ds.Rda')
 adj <- plot_ds
 load('~/Desktop/sbrt_plot_ds.Rda')
 sbrt <- plot_ds
+load('~/Desktop/ipi_plot_ds.Rda')
+ipi <- plot_ds
 
 plot_ds <- rbind.fill(nadj,adj,sbrt)
+plot_ds2 <- rbind.fill(nadj,adj,sbrt,ipi)
 
+plot_ds2$experiment <- as.character(plot_ds2$experiment)
+plot_ds2$experiment[is.na(plot_ds2$experiment)] <- 'Ipi'
+plot_ds2$experiment <- factor(plot_ds2$experiment,levels=c('Adjuvant','Neoadjuvant','Ipi','SBRT'))
 
 
 
@@ -54,4 +60,10 @@ pre <- iseqr_plot_factor(plot_ds_r,'Total Sequences','experiment','PRE')
 post <- iseqr_plot_factor(plot_ds_r,'Total Sequences','experiment','POST')
 ts <- grid.arrange(pre,post,pdac,ncol=3)
 ggsave(ts,file=paste0(path,'TotalSequences_r.pdf'),width=8,height=4)
+
+# for the ipi study,
+
+pre <- iseqr_plot_factor(plot_ds2,'Clonality','experiment','PRE')
+post <- iseqr_plot_factor(plot_ds2,'Clonality','experiment','POST')
+
 
