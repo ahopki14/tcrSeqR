@@ -328,7 +328,7 @@ iseqr_plot_metrics <- function(plot_ds,metric,x_val,type,sm=TRUE){
 	g
 }
 
-iseqr_plot_factor <- function(plot_ds,metric,x_val,type){
+iseqr_plot_factor <- function(plot_ds,metric,x_val,type=NA){
 	if(!is.na(type)){
 		plot_ds <- plot_ds[plot_ds$type==type,]
 		title <- type
