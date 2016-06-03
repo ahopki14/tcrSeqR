@@ -153,7 +153,7 @@ g
 #ds_nt <- readRDS('~/Documents/emj/ImmunoseqResults/ipi/fixed/ds_ipi_fixed.Rds')
 ```
 ```{r calc_exp_cl,echo=verbose,cache=TRUE}
-#out <- iseqr_exp_cl(ds_nt,dict)
+out <- iseqr_exp_cl(ds_nt,dict)
 #out <- readRDS('~/Documents/emj/ImmunoseqResults/ipi/fixed/exp_cl_out_nadj.Rds')
 ```
 ```{r exp_cl_plot, echo=verbose,fig.align='center',fig.height=3,fig.width=5}
