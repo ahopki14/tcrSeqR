@@ -326,7 +326,7 @@ iseqr_lookup <- function(i,dict,i_col='patient',o_col='response'){
 
 fisher <- function(x,s){ # x is the row of mat, s is the column sum of mat
     tab <- rbind(x,s-x)
-    fisher.test(tab,alternative='greater')$p.value
+    fisher.test(tab,alternative='two-sided')$p.value
 }
 
 exp_clone <- function(x,y){ # x and y are vectors of counts in the samples compared
@@ -390,4 +390,14 @@ tert <- function(x){
 	out[w3] <- 3
 	out <- factor(out,levels=c('1','2','3'))
 	out
+}
+
+is.clean <- function(ds){
+  has.stop <- grep('\\*',ds$aa)
+  has.no.trans <- which(ds$aa=='')
+  if(length(has.stop)==0 & length(has.no.trans)==0){out <- TRUE}
+  else
+    out <- FALSE
+    warning(paste0(length(has.stop),' Stop Codons and ',length(has.no.trans),' Untranslated'))
+  out
 }
