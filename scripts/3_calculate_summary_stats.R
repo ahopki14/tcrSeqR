@@ -34,16 +34,16 @@ stats$fn <- rownames(stats)
 nsamp <- length(names(ds))-2
 olm <- data.frame(matrix(NA,nrow=nsamp,ncol=nsamp))
 mm <- data.frame(matrix(NA,nrow=nsamp,ncol=nsamp))
-for(a in 3:(nsamp+2)){
-	for(b in 3:(nsamp+2)){
+for(a in 1:(nsamp)){
+	for(b in 1:(nsamp)){
 		if(a!=b){
-			olm[a-2,b-2] <- overlap(ds[ ,a],ds[ ,b])
-			mm[a-2,b-2] <- morisita(ds[ ,a],ds[ ,b])
+			olm[a,b] <- overlap(ds[ ,a],ds[ ,b])
+			mm[a,b] <- morisita(ds[ ,a],ds[ ,b])
 		}
-		colnames(olm)[b-2] <- names(ds)[b]
-		rownames(olm)[a-2] <- names(ds)[a] 
-		colnames(mm)[b-2] <- names(ds)[b]
-                rownames(mm)[a-2] <- names(ds)[a]
+		colnames(olm)[b] <- names(ds)[b]
+		rownames(olm)[a] <- names(ds)[a] 
+		colnames(mm)[b] <- names(ds)[b]
+                rownames(mm)[a] <- names(ds)[a]
 	}
 }
 olm <- as.matrix(olm)
