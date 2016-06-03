@@ -5,7 +5,7 @@
 Calculate the clonality or entropy of a distribution
 }
 \description{
-Calculates the clonality (normalized Shannon Entropy) 
+Calculates the clonality (1 - normalized Shannon Entropy) 
 }
 \usage{
 clonality(x,entropy=FALSE)
