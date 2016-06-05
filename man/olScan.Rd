@@ -1,46 +1,29 @@
 \name{olScan}
 \alias{olScan}
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{
-Calculate the overlap as more samples are added
-}
-\description{
-Calculate the overlap between two samples using progressively more samples (in descending order of abundance in the first sample)
-}
-\usage{
-olScan(x,y,byN=10)
-}
-%- maybe also 'usage' for other objects documented here.
+\title{Scans the overlap between samples}
+\description{This function examines the overlap between two samples, across a variety of N, 
+where N is the number of samples included when ranked by most abundant (in sample 1). 
+Essentially, it first asks 'what is the overlap of the top <byN> clones?', Then the top 2 x 
+<byN> clones? This is repeated until all clones are included. The result is a curve which 
+approaches the actual overlap between the samples. }
+\usage{out <- olScan(sample1,sample2,byN)}
 \arguments{
-  \item{x}{First data set}
-  \item{y}{Second data set}
-  \item{byN}{Step size}
+  \item{sample1}{The first sample from an immunoSeq dataset (this is the one used for ranking) } 
+  \item{sample2}{The second sample}
+  \item{byN}{The step size}
 }
-\details{
-%%  ~~ If necessary, more details than the description above ~~
-}
+\details{}
 \value{
-\item{ol}{Vector of overlap values calculated}
+  \item{out}{A numeric vector, contating the overlaps}
 }
-\references{
-%% ~put references to the literature/web site here ~
-}
+\references{}
 \author{
 Alexander Hopkins
 }
 \note{
-%%  ~~further notes~~
+Because the first sample is used for sorting, the order of sample1 and sample2 matters.
 }
 
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
-\seealso{
-
-}
-\examples{
-
-}
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\seealso{}
+\examples{}
+\keyword{}
