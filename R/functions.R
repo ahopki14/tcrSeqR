@@ -228,20 +228,22 @@ if(length(warn)>0){
 df
 }
 
-iseqr_check <- function(ds,dict,stats=NA,v=FALSE){
+iseqr_check <- function(dict,ds,stats=NA,v=FALSE){
 	if(ncol(ds)==nrow(dict)){ #for padded dictionary
-		if(v){print('Dictionary IS padded')}
+		if(v){warning('Dictionary is padded (likely using an old version)')}
 		check_dict <- all(names(ds)==dict$fn,na.rm=TRUE)
 		if(!all(is.na(stats))){check_stats <- all(dict$fn[-c(1,2)]==stats$fn)}
 		else{check_stats <- TRUE}
 	}else if(ncol(ds)==nrow(dict)+2){ # for un-padded dictionary
-		if(v){print('Dictionary is NOT padded')}
-		check_dict <- all(names(ds)[names(ds)!='aa' & names(ds)!='syn']==dict$fn)
-		if(!all(is.na(stats))){check_stats <- all(dict$fn==stats$fn)}
-        else{check_stats <- TRUE}	
+		if(v){print('Dictionary has correct size...')}
+		w <- grep('aa|nt|syn',names(ds))
+    check_dict <- all(names(ds)[-w]==dict$fn)
+		if(!all(is.na(stats))){
+        check_stats <- all(dict$fn==stats$fn)}
+        else{check_stats <- NA}	
 	}
 out <- list(check_dict,check_stats)
-names(out) <- c('dict','stats')
+names(out) <- c('ds','stats')
 out
 }
 
