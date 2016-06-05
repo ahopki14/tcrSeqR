@@ -302,8 +302,8 @@ mean_95 <- function(x){
 	c(y=m,ymin=m-i,ymax=m+i)
 }
 
-iseqr_summarize <- function(ds,split_on,metric){
-    ds <- split(ds,ds[,split_on])
+iseqr_summarize <- function(plot_ds,split_on,metric){
+    ds <- split(plot_ds,plot_ds[,split_on])
     out <- matrix(nrow=length(ds),ncol=length(ds))
     rownames(out) <- names(ds)
     colnames(out) <- names(ds)
