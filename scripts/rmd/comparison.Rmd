@@ -1,0 +1,27 @@
+---
+title: \texttt{immunoSeqR} Analysis
+#author: "Alex Hopkins"
+output: pdf_document
+geometry: margin=0.75in
+header-includes:
+   - \usepackage{graphicx}
+---
+# Comparison of Studies
+Created `r  format(Sys.Date(),"%m/%d/%y")`
+
+```{r eval=TRUE,echo=FALSE}
+require(immunoSeqR)
+require(ggplot2)
+require(gridExtra)
+require(reshape2)
+require(knitr)
+require(rmarkdown)
+first_run <- TRUE
+verbose=FALSE
+r <- function(){render('~/Documents/emj/ImmunoseqResults/immunoSeqR/scripts/rmd/comparison.Rmd',
+output_file='~/Documents/emj/ImmunoseqResults/new/comparison.pdf',
+intermediates_dir='~/Documents/emj/ImmunoseqResults/new/')}
+```
+```{r eval=first_run}
+```
+

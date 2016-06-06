@@ -23,11 +23,11 @@ output_file='~/Documents/emj/ImmunoseqResults/new/sbrt.pdf')}
 
 ```
 ```{r eval=first_run}
-#ds <- readRDS('~/Documents/emj/ImmunoseqResults/mega/ds_agg_SBRT.Rds')
-load('~/Documents/emj/ImmunoseqResults/mega/sum.ds_sbrt.Rda')
-dict <- readRDS('~/Documents/emj/ImmunoseqResults/mega/dict_sbrt.Rds')
-stats <- readRDS('~/Documents/emj/ImmunoseqResults/mega/stats_SBRT.Rds')
-load('~/Documents/emj/ImmunoseqResults/mega/olm_SBRT.Rda')
+ds <- readRDS('~/Documents/emj/ImmunoseqResults/data/sbrt/ds_agg.Rds')
+load('~/Documents/emj/ImmunoseqResults/data/sbrt/sum.ds.Rda')
+dict <- readRDS('~/Documents/emj/ImmunoseqResults/data/sbrt/dict.Rds')
+stats <- readRDS('~/Documents/emj/ImmunoseqResults/data/sbrt/stats.Rds')
+load('~/Documents/emj/ImmunoseqResults/data/sbrt/olm.Rda')
 
 ```
 

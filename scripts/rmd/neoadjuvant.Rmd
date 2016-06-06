@@ -23,11 +23,10 @@ output_file='~/Documents/emj/ImmunoseqResults/new/neoadjuvant.pdf',
 intermediates_dir='~/Documents/emj/ImmunoseqResults/new/')}
 ```
 ```{r eval=first_run}
-#ds <- readRDS('~/Documents/emj/ImmunoseqResults/mega/ds_agg_Neoadjuvant.Rds')
-dict <- readRDS('~/Documents/emj/ImmunoseqResults/mega/dict_Neoadjuvant.Rds')
-stats <- readRDS('~/Documents/emj/ImmunoseqResults/mega/stats_Neoadjuvant.Rds')
-load('~/Documents/emj/ImmunoseqResults/mega/olm_Neoadjuvant.Rda')
-load('~/Documents/emj/ImmunoseqResults/mega/sum.ds_neoadjuvant.Rda')
+dict <- readRDS('~/Documents/emj/ImmunoseqResults/data/neoadjuvant/dict.Rds')
+stats <- readRDS('~/Documents/emj/ImmunoseqResults/data/neoadjuvant/stats.Rds')
+load('~/Documents/emj/ImmunoseqResults/data/neoadjuvant/olm.Rda')
+load('~/Documents/emj/ImmunoseqResults/mega/sum.ds.Rda')
 ```
 
 ## Background

@@ -23,11 +23,10 @@ output_file='~/Documents/emj/ImmunoseqResults/new/ipi.pdf',
 intermediates_dir='~/Documents/emj/ImmunoseqResults/new/')}
 ```
 ```{r eval=first_run}
-ds <- readRDS('~/Documents/emj/ImmunoseqResults/ipi/ds_agg_ipi.Rds')
-dict <- readRDS('~/Documents/emj/ImmunoseqResults/ipi/dict_ipi.Rds')
-stats <- readRDS('~/Documents/emj/ImmunoseqResults/ipi/stats_ipi.Rds')
-load('~/Documents/emj/ImmunoseqResults/ipi/olm_ipi.Rda')
-load('~/Documents/emj/ImmunoseqResults/ipi/sum.ds_ipi.Rda')
+dict <- readRDS('~/Documents/emj/ImmunoseqResults/data/ipi/dict.Rds')
+stats <- readRDS('~/Documents/emj/ImmunoseqResults/data/ipi/stats.Rds')
+load('~/Documents/emj/ImmunoseqResults/data/ipi/olm.Rda')
+load('~/Documents/emj/ImmunoseqResults/data/ipi/sum.ds.Rda')
 ```
 
 ## Background
@@ -51,7 +50,7 @@ The available metadata fields in the dictionary are: `r paste(names(dict)[-1],co
 
 ```{r eval=TRUE,echo=verbose,cache=FALSE}
 #put sum of seqs at the end
-#stats <- stats[,c(1,3,2,4)]
+stats <- stats[,c(1,3,2,4)]
 plot_ds <- merge(dict,stats)
 ```
 ```{r by_response,echo=verbose,fig.align='center'}
