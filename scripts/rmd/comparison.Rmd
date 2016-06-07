@@ -15,6 +15,7 @@ require(ggplot2)
 require(gridExtra)
 require(reshape2)
 require(knitr)
+require(plyr)
 require(rmarkdown)
 first_run <- TRUE
 verbose=FALSE
@@ -23,5 +24,11 @@ output_file='~/Documents/emj/ImmunoseqResults/new/comparison.pdf',
 intermediates_dir='~/Documents/emj/ImmunoseqResults/new/')}
 ```
 ```{r eval=first_run}
+neoadjuvant <- readRDS('~/Documents/emj/ImmunoseqResults/data/neoadjuvant/plot_ds.Rds')
+adjuvant <- readRDS('~/Documents/emj/ImmunoseqResults/data/adjuvant/plot_ds.Rds')
+ipi <- readRDS('~/Documents/emj/ImmunoseqResults/data/ipi/plot_ds.Rds')
+sbrt <- readRDS('~/Documents/emj/ImmunoseqResults/data/sbrt/plot_ds.Rds')
+baseline <- readRDS('~/Documents/emj/ImmunoseqResults/data/baseline/plot_ds.Rds')
 ```
+plot_ds <- rbind.fill(neoadjuvant,adjuvant,ipi,sbrt,baseline)
 

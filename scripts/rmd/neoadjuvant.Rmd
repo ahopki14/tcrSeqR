@@ -25,8 +25,9 @@ intermediates_dir='~/Documents/emj/ImmunoseqResults/new/')}
 ```{r eval=first_run}
 dict <- readRDS('~/Documents/emj/ImmunoseqResults/data/neoadjuvant/dict.Rds')
 stats <- readRDS('~/Documents/emj/ImmunoseqResults/data/neoadjuvant/stats.Rds')
+exp_clones <- readRDS('~/Documents/emj/ImmunoseqResults/data/neoadjuvant/exp_clones.Rds')
 load('~/Documents/emj/ImmunoseqResults/data/neoadjuvant/olm.Rda')
-load('~/Documents/emj/ImmunoseqResults/mega/sum.ds.Rda')
+load('~/Documents/emj/ImmunoseqResults/data/neoadjuvant/sum.ds.Rda')
 ```
 
 ## Background
@@ -67,6 +68,20 @@ for(b in metrics){
 ```
 \clearpage
 
+### Change in Metrics
+
+```{r delta_metrics,eval=TRUE,echo=verbose,}
+d_plot_ds <- delta_stats(plot_ds,'PRE','POST','type',names(plot_ds)[12:14],'patient',merge=TRUE)
+w <- grep('Log',names(d_plot_ds))
+l <- vector('list')
+for(a in seq(length(w))){
+  l[[a]] <- iseqr_plot_factor(d_plot_ds,names(d_plot_ds)[w[a]],'response','POST') +
+                              geom_hline(yintercept=0,alpha=0.1)
+}
+do.call(grid.arrange,c(l,ncol=length(w)))
+````
+\clearpage 
+
 ### By Type
 ```{r by_type,echo=verbose,fig.align='center'}
 metrics <- names(stats[names(stats)!='fn'])
@@ -101,29 +116,17 @@ g
 
 
 ## Expanded Clones
-```{r expanded_clones,echo=verbose,eval=FALSE}
-#rm(ds)
-#ds_nt <- readRDS('~/Documents/emj/ImmunoseqResults/mega/fixed/ds_Neoadjuvant_fixed.Rds')
-```
-```{r calc_exp_cl,echo=verbose,cache=TRUE}
-#out <- iseqr_exp_cl(ds_nt,dict)
-#out <- readRDS('~/Documents/emj/ImmunoseqResults/mega/fixed/exp_cl_out_nadj.Rds')
-```
 ```{r exp_cl_plot, echo=verbose,fig.align='center',fig.height=3,fig.width=5}
-resp <- sapply(names(out$num_exp),FUN=iseqr_lookup,dict=dict)
-arm <- sapply(names(out$num_exp),FUN=iseqr_lookup,dict=dict,o_col='arm')
-df <- data.frame(patient=names(out$num_exp),response=resp,arm=arm,num_exp=out$num_exp)
-g <- iseqr_plot_factor(df,'num_exp','response',NA)
-g <- g + ylab('Number of Expanded Clones')
-f <- iseqr_plot_factor(df,'num_exp','arm',NA)
-f <- f + ylab('Number of Expanded Clones')
+df <- merge(plot_ds,exp_clones,by=c('patient','type'),all=TRUE)
+g <- iseqr_plot_factor(df,names(exp_clones)[1],'response',type='POST') 
+f <- iseqr_plot_factor(df,names(exp_clones)[1],'arm',type='POST')
 grid.arrange(g,f,ncol=2)
 
 ```
 
 \clearpage
 
-```{r exp_cl_vs_Tumor, echo=verbose,fig.align='center',fig.height=36,fig.width=8}
+```{r exp_cl_vs_Tumor,eval=FALSE, echo=verbose,fig.align='center',fig.height=36,fig.width=8}
 mats <- out$total
 patients <- names(mats)
 resp <- sapply(patients,FUN=iseqr_lookup,dict=dict)
