@@ -328,7 +328,7 @@ iseqr_lookup <- function(i,dict,i_col='patient',o_col='response'){
 
 fisher <- function(x,s){ # x is the row of mat, s is the column sum of mat
     tab <- rbind(x,s-x)
-    fisher.test(tab,alternative='two-sided')$p.value
+    fisher.test(tab,alternative='two.sided')$p.value
 }
 
 exp_clone <- function(x,y){ # x and y are vectors of counts in the samples compared
@@ -340,10 +340,11 @@ exp_clone <- function(x,y){ # x and y are vectors of counts in the samples compa
 
 
 
-iseqr_exp_cl <- function(ds,dict,s1='PRE',s2='POST',category='type',by='patient'){
+iseqr_exp_cl <- 
+function(ds,dict,s1='PRE',s2='POST',category='type',by='patient',inc.all=FALSE){
     patients <- levels(dict[,by])
     out <- data.frame(p_adj=numeric(),ind=numeric(),patient=character())
-	big_out <- list()
+  	big_out <- list()
     num_exp <- numeric()
     p <- matrix(nrow=nrow(ds),ncol=length(patients))
     colnames(p) <- patients
@@ -366,11 +367,19 @@ iseqr_exp_cl <- function(ds,dict,s1='PRE',s2='POST',category='type',by='patient'
         num_exp[a] <- length(which(mat[,3]<0.05))
         names(num_exp)[a] <- patients[a]
         p[,a] <- mat[,3]
-		big_out[[a]] <- mat
-		names(big_out)[a] <- patients[a]
+    		if(inc.all){
+          big_out[[a]] <- mat
+    		  names(big_out)[a] <- patients[a]
+        }
     }
     out <- list(num_exp=num_exp,p=p,total=big_out)
-    out
+    if(inc.all){out}else{
+      tmp <- as.data.frame(out$num_exp)
+      names(tmp) <- paste0('Number of Expanded Clones vs ', s1)
+      tmp[,by] <- rownames(tmp)
+      tmp[,category] <- rep(s2,nrow(tmp))
+      tmp
+    }    
 }
 
 shared <- function(x,y){
@@ -403,3 +412,30 @@ is.clean <- function(ds){
     warning(paste0(length(has.stop),' Stop Codons and ',length(has.no.trans),' Untranslated'))
   out
 }
+
+delta_stats <- function(plot_ds,s1,s2,col,metrics,split_on,merge=FALSE){
+  orig <- plot_ds
+  col.n <- which(names(plot_ds)==col)
+  w <- sort(c(grep(s1,plot_ds$type),grep(s2,plot_ds$type)))
+  plot_ds <- plot_ds[w,]
+  items <- levels(plot_ds[,split_on])
+  out <- data.frame(matrix(nrow=length(items),ncol=length(metrics)))
+  names(out) <- paste('Log2 Fold Change in',metrics)
+  metric_ind <- grep(paste(metrics,collapse='|'),names(plot_ds))
+    for(a in seq_along(items)){
+      tds <- plot_ds[plot_ds[,split_on]==items[a],c(col.n,metric_ind)]
+      d <- which(tds[,1]==s1)
+      n <- which(tds[,1]==s2)
+      # compute the log fold change of (s2/s1)
+      out[a,] <- as.numeric(log(tds[n,-1]/tds[d,-1],2))
+      rownames(out)[a] <- items[a]
+    }
+  out[,split_on] <- rownames(out)
+  if(!merge){
+  out
+  } else{
+    out$type <- rep(s2,nrow(out))
+    orig  <- merge(orig,out,by=c(split_on,col),all=TRUE) 
+  }
+}
+
