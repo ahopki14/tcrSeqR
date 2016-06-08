@@ -25,7 +25,7 @@ intermediates_dir='~/Documents/emj/ImmunoseqResults/new/')}
 ```{r eval=first_run}
 dict <- readRDS('~/Documents/emj/ImmunoseqResults/data/neoadjuvant/dict.Rds')
 stats <- readRDS('~/Documents/emj/ImmunoseqResults/data/neoadjuvant/stats.Rds')
-exp_clones <- readRDS('~/Documents/emj/ImmunoseqResults/data/neoadjuvant/exp_clones.Rds')
+plot_ds <- readRDS('~/Documents/emj/ImmunoseqResults/data/neoadjuvant/plot_ds.Rds')
 load('~/Documents/emj/ImmunoseqResults/data/neoadjuvant/olm.Rda')
 load('~/Documents/emj/ImmunoseqResults/data/neoadjuvant/sum.ds.Rda')
 ```
@@ -49,11 +49,6 @@ The available metadata fields in the dictionary are: `r paste(names(dict)[-1],co
 
 ### By Response
 
-```{r eval=TRUE,echo=verbose,cache=FALSE}
-#put sum of seqs at the end
-stats <- stats[,c(1,3,2,4)]
-plot_ds <- merge(dict,stats)
-```
 ```{r by_response,echo=verbose,fig.align='center'}
 x_val <- 'response'
 metrics <- names(stats[names(stats)!='fn'])
@@ -71,12 +66,11 @@ for(b in metrics){
 ### Change in Metrics
 
 ```{r delta_metrics,eval=TRUE,echo=verbose,}
-d_plot_ds <- delta_stats(plot_ds,'PRE','POST','type',names(plot_ds)[12:14],'patient',merge=TRUE)
-w <- grep('Log',names(d_plot_ds))
+w <- grep('Log',names(plot_ds))
 l <- vector('list')
 for(a in seq(length(w))){
-  l[[a]] <- iseqr_plot_factor(d_plot_ds,names(d_plot_ds)[w[a]],'response','POST') +
-                              geom_hline(yintercept=0,alpha=0.1)
+  l[[a]] <- iseqr_plot_factor(plot_ds,names(plot_ds)[w[a]],'response','POST') +
+                              geom_hline(yintercept=0,alpha=0.1) + ggtitle('PRE to POST')
 }
 do.call(grid.arrange,c(l,ncol=length(w)))
 ````
@@ -87,7 +81,7 @@ do.call(grid.arrange,c(l,ncol=length(w)))
 metrics <- names(stats[names(stats)!='fn'])
 l <- vector('list')
 for(b in metrics){
-        l[[b]] <- iseqr_plot_factor(plot_ds,b,'type',NA) + theme(axis.text=element_text(size=5))
+  l[[b]] <- iseqr_plot_factor(plot_ds,b,'type',NA) + theme(axis.text=element_text(size=5))
 }
     do.call(grid.arrange,c(l,ncol=length(types)))
 
@@ -117,9 +111,9 @@ g
 
 ## Expanded Clones
 ```{r exp_cl_plot, echo=verbose,fig.align='center',fig.height=3,fig.width=5}
-df <- merge(plot_ds,exp_clones,by=c('patient','type'),all=TRUE)
-g <- iseqr_plot_factor(df,names(exp_clones)[1],'response',type='POST') 
-f <- iseqr_plot_factor(df,names(exp_clones)[1],'arm',type='POST')
+w <- grep('Number of Expanded',names(plot_ds))
+g <- iseqr_plot_factor(plot_ds,names(plot_ds)[w],'response',type='POST') 
+f <- iseqr_plot_factor(plot_ds,names(plot_ds)[w],'arm',type='POST')
 grid.arrange(g,f,ncol=2)
 
 ```
