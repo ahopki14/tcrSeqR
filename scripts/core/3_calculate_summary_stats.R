@@ -26,8 +26,6 @@ plot_ds <- merge(dict,stats)
 #calculate change in metrics
 plot_ds <- delta_stats(plot_ds,'PRE','POST','type',names(stats)[1:3],'patient',merge=TRUE)
 
-saveRDS(plot_ds,'plot_ds.Rds')
-
 
 # Calculate the overlap and morisitas
 nsamp <- length(names(ds))-2
@@ -53,6 +51,10 @@ save(olm,mm,file=paste0(path,'olm.Rda'))
 
 # Calculate Expanded Clones
 out <- iseqr_exp_cl(ds,dict,s1='PRE',s2='POST',category='type',by='patient',inc.all=FALSE)
+plot_ds <- merge(plot_ds,exp_clones,by=c('patient','type'),all=TRUE)
+saveRDS(plot_ds,'plot_ds.Rds')
+
+
 
 ##save
 saveRDS(out,file='exp_clones.Rds')
