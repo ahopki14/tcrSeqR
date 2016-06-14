@@ -351,26 +351,33 @@ function(ds,dict,s1='PRE',s2='POST',category='type',by='patient',inc.all=FALSE){
     for(a in seq_along(patients)){
         w <- c(which(dict[,by]==patients[a] & (dict[,category]==s1)),
                 which(dict[,by]==patients[a] & dict[,category]==s2))
-        if(length(w)!=2){stop(paste('Multiple matches for:',patients[a],s1,s2))}
-        mat <- ds[,w]
-        rownames(mat) <- seq(nrow(mat))
-        mat$p_adj <- rep(1,nrow(mat))
-        mat <- as.matrix(mat)
-        ind <- which((mat[,1]+mat[,2])>5) # at least 5 in both
-        ind <- as.numeric(ind)
-        s <- apply(mat[ind,],MARGIN=2,FUN=sum)
-        tm <- proc.time()
-        p_vals <- exp_clone(mat[ind,2],mat[ind,1])
-        el<- proc.time()-tm
-        p_adj <- p.adjust(p_vals,method='BH')
-        mat[ind,3] <- p_adj
-        num_exp[a] <- length(which(mat[,3]<0.05))
-        names(num_exp)[a] <- patients[a]
-        p[,a] <- mat[,3]
-    		if(inc.all){
-          big_out[[a]] <- mat
-    		  names(big_out)[a] <- patients[a]
-        }
+        if(length(w)>2){stop(paste('Multiple matches for:',patients[a],s1,s2))}
+        if(length(w)==2){
+          mat <- ds[,w]
+          rownames(mat) <- seq(nrow(mat))
+          mat$p_adj <- rep(1,nrow(mat))
+          mat <- as.matrix(mat)
+          ind <- which((mat[,1]+mat[,2])>5) # at least 5 in both
+          ind <- as.numeric(ind)
+          s <- apply(mat[ind,],MARGIN=2,FUN=sum)
+          tm <- proc.time()
+          p_vals <- exp_clone(mat[ind,2],mat[ind,1])
+          el<- proc.time()-tm
+          p_adj <- p.adjust(p_vals,method='BH')
+          mat[ind,3] <- p_adj
+          num_exp[a] <- length(which(mat[,3]<0.05))
+          p[,a] <- mat[,3]
+      		if(inc.all){
+           big_out[[a]] <- mat
+           names(big_out)[a] <- patients[a]
+         }
+       }else{
+          mat <- NA
+          big_out[[a]] <- NA
+          num_exp[a] <- NA
+       }
+       names(num_exp)[a] <- patients[a]
+
     }
     out <- list(num_exp=num_exp,p=p,total=big_out)
     if(inc.all){out}else{
@@ -416,7 +423,7 @@ is.clean <- function(ds){
 delta_stats <- function(plot_ds,s1,s2,col,metrics,split_on,merge=FALSE){
   orig <- plot_ds
   col.n <- which(names(plot_ds)==col)
-  w <- sort(c(grep(s1,plot_ds$type),grep(s2,plot_ds$type)))
+  w <- sort(c(grep(s1,plot_ds[,col]),grep(s2,plot_ds[,col])))
   plot_ds <- plot_ds[w,]
   items <- levels(plot_ds[,split_on])
   out <- data.frame(matrix(nrow=length(items),ncol=length(metrics)))
@@ -427,15 +434,24 @@ delta_stats <- function(plot_ds,s1,s2,col,metrics,split_on,merge=FALSE){
       d <- which(tds[,1]==s1)
       n <- which(tds[,1]==s2)
       # compute the log fold change of (s2/s1)
+      if(length(d)+length(n)==2){
       out[a,] <- as.numeric(log(tds[n,-1]/tds[d,-1],2))
+      }
       rownames(out)[a] <- items[a]
     }
   out[,split_on] <- rownames(out)
   if(!merge){
   out
   } else{
-    out$type <- rep(s2,nrow(out))
-    orig  <- merge(orig,out,by=c(split_on,col),all=TRUE) 
+    out[,col] <- rep(s2,nrow(out))
+    orig$sort_order <- seq(nrow(orig))
+    w <- which(is.na(out[,1]))
+    if(length(w)>0){
+      orig  <- merge(orig,out[-w,],by=c(split_on,col),all=TRUE)
+    }else{orig  <- merge(orig,out,by=c(split_on,col),all=TRUE)}
+    orig <- orig[orig$sort_order,]
+    w <- which(names(orig)=='sort_order')
+    orig <- orig[,-w] 
   }
 }
 
