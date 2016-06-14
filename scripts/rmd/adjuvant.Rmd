@@ -19,16 +19,23 @@ require(rmarkdown)
 r <- 
 function(){render('~/Documents/emj/ImmunoseqResults/immunoSeqR/scripts/rmd/adjuvant.Rmd',output_file=
 '~/Documents/emj/ImmunoseqResults/new/adjuvant.pdf')}
-first_run <- FALSE
+first_run <- TRUE
 verbose=FALSE
 
 ```
 ```{r eval=first_run}
-load('~/Documents/emj/ImmunoseqResults/data/adjuvant/sum.ds.Rda')
 dict <- readRDS('~/Documents/emj/ImmunoseqResults/data/adjuvant/dict.Rds')
 stats <- readRDS('~/Documents/emj/ImmunoseqResults/data/adjuvant/stats.Rds')
+plot_ds <- readRDS('~/Documents/emj/ImmunoseqResults/data/adjuvant/plot_ds.Rds')
 load('~/Documents/emj/ImmunoseqResults/data/adjuvant/olm.Rda')
+load('~/Documents/emj/ImmunoseqResults/data/adjuvant/sum.ds.Rda')
+
+#Filter one bad sample
+w <- which(plot_ds$patient=='3.026' & plot_ds$type=='PDAC')
+plot_ds <- plot_ds[-w,]
 ```
+
+
 ## Background
 \includegraphics[width=\textwidth]{/home/ahopkins/Documents/emj/figures/J9988_timeline.pdf}
 
@@ -48,15 +55,6 @@ The available metadata fields in the dictionary are: `r paste(names(dict)[-1],co
 
 ### By Response
 
-```{r eval=TRUE,echo=verbose,cache=FALSE}
-#put sum of seqs at the end
-stats <- stats[,c(1,3,2,4)]
-plot_ds <- merge(dict,stats)
-# Filter one bad sample
-w <- which(plot_ds$fn=='3026PDAC')
-plot_ds <- plot_ds[-w,]
-
-```
 ```{r by_response,echo=verbose,fig.align='center'}
 x_val <- 'response'
 metrics <- names(stats[names(stats)!='fn'])
@@ -69,6 +67,20 @@ for(b in metrics){
 	do.call(grid.arrange,c(l,ncol=length(types)))
 }
 ```
+
+\clearpage
+
+### Change in Metrics
+
+```{r delta_metrics,eval=TRUE,echo=verbose,}
+w <- grep('Log',names(plot_ds))
+l <- vector('list')
+for(a in seq(length(w))){
+  l[[a]] <- iseqr_plot_factor(plot_ds,names(plot_ds)[w[a]],'response','POST') +
+                              geom_hline(yintercept=0,alpha=0.1) + ggtitle('PRE to POST')
+}
+do.call(grid.arrange,c(l,ncol=length(w)))
+````
 \clearpage
 
 ### By Type
@@ -104,26 +116,12 @@ g
 \clearpage
 
 ## Expanded Clones
-```{r, expanded_clones,echo=verbose,eval=FALSE}
-#rm(ds)
-#ds_nt <- readRDS('~/Documents/emj/ImmunoseqResults/mega/fixed/ds_Adjuvant_fixed.Rds')
+```{r, expanded_clones,echo=verbose,eval=TRUE,fig.width=4}
+w <- grep('Number of Expanded',names(plot_ds))
+iseqr_plot_factor(plot_ds,names(plot_ds)[w],'response',type='POST')
+
 ```
-```{r calc_exp_cl,echo=verbose,cache=TRUE}
-#out <- iseqr_exp_cl(ds_nt,dict)
-#source('~/Documents/emj/ImmunoseqResults/immunoSeqR/scripts/exp_cl.R')
-```
-```{r exp_cl_plot, echo=verbose,fig.align='center',fig.height=3,fig.width=2}
-resp <- sapply(names(out$num_exp),FUN=iseqr_lookup,dict=dict)
-arm <- sapply(names(out$num_exp),FUN=iseqr_lookup,dict=dict,o_col='arm')
-df <- data.frame(patient=names(out$num_exp),response=resp,arm=arm,num_exp=out$num_exp)
-g <- iseqr_plot_factor(df,'num_exp','response',NA)
-g <- g + ylab('Number of Expanded Clones')
-#f <- iseqr_plot_factor(df,'num_exp','arm',NA)
-#f <- f + ylab('Number of Expanded Clones')
-#grid.arrange(g,f,ncol=2)
-g
-```
-```{r exp_cl_vs_Tumor, echo=verbose}
+```{r exp_cl_vs_Tumor, eval=FALSE,echo=verbose}
 mats <- out$total
 patients <- names(mats)
 resp <- sapply(patients,FUN=iseqr_lookup,dict=dict)

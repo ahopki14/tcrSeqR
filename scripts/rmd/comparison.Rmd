@@ -1,7 +1,9 @@
 ---
 title: \texttt{immunoSeqR} Analysis
 #author: "Alex Hopkins"
-output: pdf_document
+output: 
+  pdf_document:
+    keep_tex: true
 geometry: margin=0.75in
 header-includes:
    - \usepackage{graphicx}
@@ -23,12 +25,78 @@ r <- function(){render('~/Documents/emj/ImmunoseqResults/immunoSeqR/scripts/rmd/
 output_file='~/Documents/emj/ImmunoseqResults/new/comparison.pdf',
 intermediates_dir='~/Documents/emj/ImmunoseqResults/new/')}
 ```
-```{r eval=first_run}
+```{r eval=first_run,echo=FALSE}
+ opts_knit$set(base.dir = '~/Documents/emj/ImmunoseqResults/new/')
 neoadjuvant <- readRDS('~/Documents/emj/ImmunoseqResults/data/neoadjuvant/plot_ds.Rds')
 adjuvant <- readRDS('~/Documents/emj/ImmunoseqResults/data/adjuvant/plot_ds.Rds')
 ipi <- readRDS('~/Documents/emj/ImmunoseqResults/data/ipi/plot_ds.Rds')
 sbrt <- readRDS('~/Documents/emj/ImmunoseqResults/data/sbrt/plot_ds.Rds')
 baseline <- readRDS('~/Documents/emj/ImmunoseqResults/data/baseline/plot_ds.Rds')
 ```
+```{r echo=FALSE}
+ipi$experiment <- rep('anti-CTLA4',nrow(ipi))
 plot_ds <- rbind.fill(neoadjuvant,adjuvant,ipi,sbrt,baseline)
+plot_ds$experiment <- factor(plot_ds$experiment,levels=unique(plot_ds$experiment))
+```
+```{r all_metrics,echo=FALSE, fig.height=6}
+tds <- plot_ds
+tds$fac <- paste0(plot_ds$experiment,' (',plot_ds$type,')')
+tds$fac <- factor(tds$fac,levels=unique(tds$fac)[c(1,2,3,4,5,6,8,9,7,12,11,10)])
+w <- which(tds$experiment=='Healthy Donor')
+tds <- tds[-w,]
+g <- iseqr_plot_factor(tds,'Clonality','fac') + theme(axis.text=element_text(angle=90,hjust=1))
+h <- iseqr_plot_factor(tds,'Richness','fac') + theme(axis.text=element_text(angle=90,hjust=1))  
+i <- iseqr_plot_factor(tds,'Total Sequences','fac') + theme(axis.text=element_text(angle=90,hjust=1))  
+g  
+
+h  
+
+i
+
+```
+
+## Change in Metrics
+### Using POST1 and POSTSBRT
+
+```{r delta_metrics1, echo=FALSE}
+w <- c(which(plot_ds$type=='POST'),which(plot_ds$type=='POST1'),which(plot_ds$type=='POSTSBRT'))
+tds <- plot_ds[w,]
+
+g <- list()
+m <- names(tds)[15:17]
+for(a in 1:3){
+  g[[a]] <- iseqr_plot_factor(tds,m[a],'experiment') + 
+    geom_hline(yintercept=0,alpha=0.1) + 
+    theme(axis.text=element_text(angle=90,hjust=1))
+}
+do.call(grid.arrange,c(g,ncol=3))
+```
+
+###Using POST3 and POSTFOLF
+```{r delta_metrics2, echo=FALSE}
+w <- c(which(plot_ds$type=='POST'),which(plot_ds$type=='POST3'),which(plot_ds$type=='POSTFOLF'))
+tds <- plot_ds[w,]
+
+g <- list()
+m <- names(tds)[15:17]
+for(a in 1:3){
+  g[[a]] <- iseqr_plot_factor(tds,m[a],'experiment') + 
+    geom_hline(yintercept=0,alpha=0.1) +
+        theme(axis.text=element_text(angle=90,hjust=1))
+
+}
+do.call(grid.arrange,c(g,ncol=3))
+```
+
+## Expanded Clones
+```{r exp_cl, echo=FALSE}
+w <- c(which(plot_ds$type=='POST'),which(plot_ds$type=='POST1'),which(plot_ds$type=='POSTSBRT'))
+tds <- plot_ds[w,]
+
+m <- names(tds)[18]
+g <- iseqr_plot_factor(tds,m,'experiment') +
+    theme(axis.text=element_text(angle=90,hjust=1))
+g
+```
+
 
