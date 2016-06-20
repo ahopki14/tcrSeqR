@@ -26,7 +26,7 @@ output_file='~/Documents/emj/ImmunoseqResults/new/comparison.pdf',
 intermediates_dir='~/Documents/emj/ImmunoseqResults/new/')}
 ```
 ```{r eval=first_run,echo=FALSE}
- opts_knit$set(base.dir = '~/Documents/emj/ImmunoseqResults/new/')
+opts_knit$set(base.dir = '~/Documents/emj/ImmunoseqResults/new/')
 neoadjuvant <- readRDS('~/Documents/emj/ImmunoseqResults/data/neoadjuvant/plot_ds.Rds')
 adjuvant <- readRDS('~/Documents/emj/ImmunoseqResults/data/adjuvant/plot_ds.Rds')
 ipi <- readRDS('~/Documents/emj/ImmunoseqResults/data/ipi/plot_ds.Rds')
@@ -48,9 +48,9 @@ g <- iseqr_plot_factor(tds,'Clonality','fac') + theme(axis.text=element_text(ang
 h <- iseqr_plot_factor(tds,'Richness','fac') + theme(axis.text=element_text(angle=90,hjust=1))  
 i <- iseqr_plot_factor(tds,'Total Sequences','fac') + theme(axis.text=element_text(angle=90,hjust=1))  
 g  
-
+cat('\n\n')
 h  
-
+cat('\n\n')
 i
 
 ```
