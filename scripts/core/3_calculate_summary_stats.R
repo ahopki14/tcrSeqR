@@ -81,7 +81,8 @@ save(olm,mm,file=paste0(path,'olm.Rda'))
 # for adjuvant and neoadjuvant
 #plot_ds <- merge(plot_ds,exp_clones,by=c('patient','type'),all=TRUE)
 out <- iseqr_exp_cl(ds,dict,s1='PRETREAT',s2='POSTSBRT',category='type',by='patient',inc.all=FALSE)
-exp_clones <- out
+exp_clones <- as.data.frame(out$num_exp)
+exp_clones$patient <- rownames(exp_clones)
 
 plot_ds[,'Number of Expanded Clones vs PRE'] <- rep(NA,nrow(plot_ds))
 col <- grep('Number of Expanded Clones',names(plot_ds))
@@ -102,23 +103,25 @@ for(a in seq(nrow(exp_clones))){
 
 
 # for ipi
-out <- iseqr_exp_cl(ds,dict,s1='PRE',s2='POST1',category='type',by='patient',inc.all=FALSE)
-exp_clones <- out
+out1 <- iseqr_exp_cl(ds,dict,s1='PRE',s2='POST1',category='type',by='patient',inc.all=FALSE)
+exp_clones <- out1
 
 plot_ds[,'Number of Expanded Clones vs PRE'] <- rep(NA,nrow(plot_ds))
 col <- grep('Number of Expanded Clones',names(plot_ds))
 for(a in seq(nrow(exp_clones))){
-  w <- which(plot_ds$patient==exp_clones$patient[a] & plot_ds$type==exp_clones$type[a])
+  w <- which(as.character(plot_ds$patient)==as.character(exp_clones$patient[a]) &
+      as.character(plot_ds$type)==exp_clones$type[a])
   plot_ds[w,col] <- exp_clones[a,1]
 }
 
 # and again for POST3
-out <- iseqr_exp_cl(ds,dict,s1='PRE',s2='POST3',category='type',by='patient',inc.all=FALSE)
-exp_clones <- out
+out2 <- iseqr_exp_cl(ds,dict,s1='PRE',s2='POST3',category='type',by='patient',inc.all=FALSE)
+exp_clones <- out2
 
 col <- grep('Number of Expanded Clones',names(plot_ds))
 for(a in seq(nrow(exp_clones))){
-  w <- which(plot_ds$patient==exp_clones$patient[a] & plot_ds$type==exp_clones$type[a])
+  w <- which(as.character(plot_ds$patient)==as.character(exp_clones$patient[a]) &
+      as.character(plot_ds$type)==exp_clones$type[a])
   plot_ds[w,col] <- exp_clones[a,1]
 }
 

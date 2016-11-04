@@ -26,6 +26,7 @@ output_file='~/Documents/emj/ImmunoseqResults/new/sbrt.pdf')}
 ds <- readRDS('~/Documents/emj/ImmunoseqResults/data/sbrt/ds_agg.Rds')
 load('~/Documents/emj/ImmunoseqResults/data/sbrt/sum.ds.Rda')
 dict <- readRDS('~/Documents/emj/ImmunoseqResults/data/sbrt/dict.Rds')
+plot_ds <- readRDS('~/Documents/emj/ImmunoseqResults/data/sbrt/plot_ds.Rds')
 stats <- readRDS('~/Documents/emj/ImmunoseqResults/data/sbrt/stats.Rds')
 load('~/Documents/emj/ImmunoseqResults/data/sbrt/olm.Rda')
 
@@ -67,35 +68,17 @@ g
 ## Expanded Clones
 
 ### Pre vs Post-SBRT
-```{r expanded_clones,echo=verbose, cache=TRUE}
-#ds_nt <- readRDS('~/Documents/emj/ImmunoseqResults/mega/ds_SBRT.Rds')
-#out <- iseqr_exp_cl(ds_nt,s1='PRETREAT',s2='POSTSBRT',dict)
-```
 ```{r exp_cl_plot, echo=verbose,fig.align='center',fig.height=3,fig.width=5}
-resp <- sapply(names(out$num_exp),FUN=iseqr_lookup,dict=dict,o_col='os.tert')
-pt <- sapply(names(out$num_exp),FUN=iseqr_lookup,dict=dict,o_col='ptv80.tert')
-arm <- sapply(names(out$num_exp),FUN=iseqr_lookup,dict=dict,o_col='arm')
-df <- data.frame(patient=names(out$num_exp),response=resp,arm=arm,pt=pt,num_exp=out$num_exp)
-g <- iseqr_plot_factor(df,'num_exp','response',NA)
-g <- g + ylab('Number of Expanded Clones') + xlab('Survival Tertile')
-f <- iseqr_plot_factor(df,'num_exp','arm',NA) + xlab('Arm')
-f <- f + ylab('Number of Expanded Clones')
-i <- iseqr_plot_factor(df,'num_exp','pt',NA) + xlab('PTV80 Tertile')
-i <- i + ylab('Number of Expanded Clones')
+w <- grep('Number of Expanded',names(plot_ds))
+g <- iseqr_plot_factor(plot_ds,names(plot_ds)[w],'arm',type='POSTSBRT') + xlab('Arm')
+g
 
-grid.arrange(f,g,i,ncol=3)
+w <- grep('Number of Expanded',names(plot_ds))
+g <- iseqr_plot_factor(plot_ds,names(plot_ds)[w],'arm',type='POSTFOLF') + xlab('Arm')
+f
 
 ```
 
-###Post-SBRT vs Post-FOLF
-
-```{r expanded_clones2,echo=verbose, cache=TRUE}
-#w <- grep('10.003|10.011|10.017',dict$patient)
-#tdict <- dict[-w,]
-#tdict <- refactor(tdict)
-#tds <- ds_nt[,-w] 
-#out2 <- iseqr_exp_cl(tds,s1='POSTSBRT',s2='POSTFOLF',tdict)
-```
 
 ```{r exp_cl_plot2, echo=verbose,fig.align='center',fig.height=3,fig.width=5}
 resp <- sapply(names(out2$num_exp),FUN=iseqr_lookup,dict=tdict,o_col='os.tert')

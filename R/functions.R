@@ -1,11 +1,14 @@
 # merge the exported ImmunoSeq data into a data frame
+# This loads Adaptive tsv files into a single data frame
 iseqr_merge <- function(all_files,use_expected_genomes=FALSE){
     start <- proc.time() # start the clock
+#clean file names
 	name <- gsub(".tsv","",all_files)
 	name <- gsub("_","",name)
 	name <- gsub("-","",name)
 	name <- paste0('sample',name)
 	cnames <- names(read.delim(all_files[1],sep='\t',nrow=1))
+# picking which column in the tsv to use
 	if(!all(cnames[1:2] == c('nucleotide','aminoAcid'))){
         stop("Unexpected columns in file.")}
     if(use_expected_genomes){data_col <- grep('estimated',cnames,ignore.case=TRUE)}else{
@@ -15,6 +18,7 @@ iseqr_merge <- function(all_files,use_expected_genomes=FALSE){
     if(length(unique(name)) != length(name)){stop("Names do not appear to be unique")}
     nt_list <- vector()
     aa_list <- vector()
+# read in the nucleotide and amino acid names only
     for(a in seq_along(all_files)){
         tcnames <- names(read.delim(all_files[a],sep='\t',nrow=1))
         if(!all(tcnames==cnames)){stop(paste0('Error in ',all_files[a],'. Check the headers'))}
@@ -37,6 +41,7 @@ iseqr_merge <- function(all_files,use_expected_genomes=FALSE){
     ds <- list
     col_classes <- c('character','character',rep('NULL',length(cnames)-2))
     col_classes[data_col] <- 'integer'
+# now read in the counts, matching to the list made above
     for(a in seq_along(all_files)){
         tmp_ds <- read.delim(
             all_files[a],
@@ -81,6 +86,7 @@ ss2n <- function(x,y){
 
 
 # Overlap 
+# A basic overlap function
 overlap <- function(x,y){
     shared_x <- x[x>0 & y >0]
     shared_y <- y[x>0 & y >0]
@@ -92,6 +98,7 @@ overlap <- function(x,y){
 }
 
 # Overlap Scan
+# Calculates the overlap of two samples in bigger and bigger chuncks
 olScan <- function(x,y,byN=10){
     tds <- data.frame(x=x,y=y)
     tds <- tds[tds[,1]!=0 | tds[,2]!=0,]
@@ -181,7 +188,7 @@ morisita <- function(x,y){
     m
 }
 
-
+#pulls out clones from a text file
 find_clones <- function(path='~/Documents/emj/ImmunoseqResults/published_clones.txt',
     ds=ds){
     clones <- read.table(path)
@@ -205,6 +212,7 @@ bleep <- function(){
   system('notify-send -t 3000 "immunoSeqR" "Done"')
 }
 
+# after subsetting a dataframe, this refoactors all of the factor fields
 refactor <- function(df){
 	classes <- sapply(df,class)
 	for(a in seq(classes)){
@@ -228,6 +236,7 @@ if(length(warn)>0){
 df
 }
 
+#old, not needed anymore?
 iseqr_check <- function(dict,ds,stats=NA,v=FALSE){
 	if(ncol(ds)==nrow(dict)){ #for padded dictionary
 		if(v){warning('Dictionary is padded (likely using an old version)')}
@@ -326,9 +335,10 @@ iseqr_lookup <- function(i,dict,i_col='patient',o_col='response'){
     }
 }
 
-fisher <- function(x,s){ # x is the row of mat, s is the column sum of mat
+fisher <- function(x,s){ # x is 
+the row of mat, s is the column sum of mat
     tab <- rbind(x,s-x)
-    fisher.test(tab,alternative='two.sided')$p.value
+    fisher.test(tab,alternative='less')$p.value
 }
 
 exp_clone <- function(x,y){ # x and y are vectors of counts in the samples compared

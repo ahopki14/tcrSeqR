@@ -25,7 +25,7 @@ intermediates_dir='~/Documents/emj/ImmunoseqResults/new/')}
 ```{r eval=first_run}
 dict <- readRDS('~/Documents/emj/ImmunoseqResults/data/ipi/dict.Rds')
 stats <- readRDS('~/Documents/emj/ImmunoseqResults/data/ipi/stats.Rds')
-plot_ds <- readRDS('~/Documents/emj/ImmunoseqResults/data/ipi/plot_ds.Rds')
+plot_ds <- readRDS('~/Documents/emj/ImmunoseqResults/data/ipi/plot_ds_expanded_only.Rds')
 load('~/Documents/emj/ImmunoseqResults/data/ipi/olm.Rda')
 load('~/Documents/emj/ImmunoseqResults/data/ipi/sum.ds.Rda')
 ```
