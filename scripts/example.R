@@ -52,8 +52,6 @@ clonality(ds[,1])
 # quickly calculate for all samples
 sapply(ds[,-c(7,8)],clonality)
 
-?apply
-
 
 # What about richness?
 length(which(ds[,1]>0))
