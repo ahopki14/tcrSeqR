@@ -16,7 +16,7 @@ require(gridExtra)
 require(reshape2)
 require(knitr)
 require(rmarkdown)
-first_run <- FALSE
+first_run <- TRUE
 verbose=FALSE
 r <- function(){render('~/Documents/emj/ImmunoseqResults/immunoSeqR/scripts/rmd/ipi.Rmd',
 output_file='~/Documents/emj/ImmunoseqResults/new/ipi.pdf',
@@ -64,7 +64,7 @@ for(b in metrics){
 ```
 \clearpage
 
-## Change In Metrics
+## Change In Metrics By Response
 ```{r delta_metrics,eval=TRUE,echo=verbose}
 w <- grep('Log',names(plot_ds))
 l <- vector('list')
@@ -81,6 +81,75 @@ do.call(grid.arrange,c(m,ncol=length(w)))
 ```
 
 \clearpage
+
+### By CT Response (RECIST or irRC)
+
+```{r by_ct,echo=verbose,fig.align='center'}
+x_val <- 'CT'
+metrics <- names(stats[names(stats)!='fn'])
+types <- levels(plot_ds$type)
+for(b in metrics){
+  l <- vector('list')
+  for(a in types){
+      l[[a]] <- iseqr_plot_factor(plot_ds,b,x_val,a)
+  }
+  do.call(grid.arrange,c(l,ncol=length(types)))
+}
+```
+\clearpage
+
+## Change In Metrics By CT Response
+```{r delta_metrics_ct,eval=TRUE,echo=verbose}
+w <- grep('Log',names(plot_ds))
+l <- vector('list')
+m <- vector('list')
+for(a in seq(length(w))){
+  l[[a]] <- iseqr_plot_factor(plot_ds,names(plot_ds)[w[a]],'CT','POST1') +
+                              geom_hline(yintercept=0,alpha=0.1) + ggtitle('PRE to POST1')
+  m[[a]] <- iseqr_plot_factor(plot_ds,names(plot_ds)[w[a]],'CT','POST3') +
+                              geom_hline(yintercept=0,alpha=0.1) + ggtitle('PRE to POST3')
+}
+do.call(grid.arrange,c(l,ncol=length(w)))
+cat('\n\n')
+do.call(grid.arrange,c(m,ncol=length(w)))
+```
+
+\clearpage
+
+### By CA19-9 Response
+
+```{r by_ca199,echo=verbose,fig.align='center'}
+x_val <- 'CA19.9'
+metrics <- names(stats[names(stats)!='fn'])
+types <- levels(plot_ds$type)
+for(b in metrics){
+  l <- vector('list')
+  for(a in types){
+      l[[a]] <- iseqr_plot_factor(plot_ds,b,x_val,a)
+  }
+  do.call(grid.arrange,c(l,ncol=length(types)))
+}
+```
+\clearpage
+
+## Change In Metrics by CA19-9 Response
+```{r delta_metrics_ca199,eval=TRUE,echo=verbose}
+w <- grep('Log',names(plot_ds))
+l <- vector('list')
+m <- vector('list')
+for(a in seq(length(w))){
+  l[[a]] <- iseqr_plot_factor(plot_ds,names(plot_ds)[w[a]],'CA19.9','POST1') +
+                              geom_hline(yintercept=0,alpha=0.1) + ggtitle('PRE to POST1')
+  m[[a]] <- iseqr_plot_factor(plot_ds,names(plot_ds)[w[a]],'CA19.9','POST3') +
+                              geom_hline(yintercept=0,alpha=0.1) + ggtitle('PRE to POST3')
+}
+do.call(grid.arrange,c(l,ncol=length(w)))
+cat('\n\n')
+do.call(grid.arrange,c(m,ncol=length(w)))
+```
+
+\clearpage
+
 
 #By Adverse Event Status
 \textbf{Yes} indicates that the patient experienced a non-skin immune related adverse event of 
