@@ -79,8 +79,7 @@ morisita <- function(x,y){
 
 ## Functions for Fisher Test
 
-fisher <- function(x,s){ # x is
-the row of mat, s is the column sum of mat
+fisher <- function(x,s){ # x is the row of mat, s is the column sum of mat
     tab <- rbind(x,s-x)
     fisher.test(tab,alternative='less')$p.value
 }

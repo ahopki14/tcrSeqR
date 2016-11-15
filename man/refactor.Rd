@@ -16,7 +16,6 @@ refactored}
 \author{
 Alexander Hopkins
 }
-\notes{}
 
 \seealso{}
 \examples{}
