@@ -12,7 +12,7 @@ function(all_files,data='estimatedNumberGenomes',nucleotide='nucleotide',aminoAc
 # picking which column in the tsv to use
   if(!all(cnames[1:2] == c(nucleotide,aminoAcid))){
         stop("Unexpected columns in file.")}
-    data_col <- grep(data,cnames)}
+    data_col <- grep(data,cnames)
     if(length(data_col)!=1){stop('Unable to find data column.')}
 # Verify that names are OK
     if(length(unique(name)) != length(name)){stop("Names do not appear to be unique")}
@@ -28,8 +28,8 @@ function(all_files,data='estimatedNumberGenomes',nucleotide='nucleotide',aminoAc
             colClasses=c('character','character',rep('NULL',length(cnames)-2))
         )
         ds <- data.frame(ds)
-        nt_list <- c(nt_list,as.vector(ds$nucleotide))
-        aa_list <- c(aa_list,as.vector(ds$aminoAcid))
+        nt_list <- c(nt_list,as.vector(ds[,nucleotide]))
+        aa_list <- c(aa_list,as.vector(ds[,aminoAcid]))
         cat(c("done loading ", all_files[a],"\n"))
     }
 # clock
@@ -48,9 +48,9 @@ function(all_files,data='estimatedNumberGenomes',nucleotide='nucleotide',aminoAc
             sep='\t',
             colClasses=col_classes
             )
-        tmp_ds <- data.frame(nt=tmp_ds$nucleotide,count=tmp_ds[,3])
+        tmp_ds <- data.frame(nt=tmp_ds[,nucleotide],count=tmp_ds[,3])
         colnames(tmp_ds)[2] <- paste(name[a])
-        ds <- merge(ds,tmp_ds,by='nt',all=TRUE)
+        ds <- merge(ds,tmp_ds,by=nucleotide,all=TRUE)
         cat(c("done with", all_files[a],"\n"))
     }
     ds[is.na(ds)==TRUE] <- 0
