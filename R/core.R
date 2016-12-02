@@ -1,6 +1,7 @@
 # merge the exported ImmunoSeq data into a data frame
 # This loads Adaptive tsv files into a single data frame
-iseqr_merge <- function(all_files,use_expected_genomes=FALSE){
+iseqr_merge <- 
+function(all_files,data='estimatedNumberGenomes',nucleotide='nucleotide',aminoAcid='aminoAcid'){
     start <- proc.time() # start the clock
 #clean file names
   name <- gsub(".tsv","",all_files)
@@ -9,10 +10,9 @@ iseqr_merge <- function(all_files,use_expected_genomes=FALSE){
   name <- paste0('sample',name)
   cnames <- names(read.delim(all_files[1],sep='\t',nrow=1))
 # picking which column in the tsv to use
-  if(!all(cnames[1:2] == c('nucleotide','aminoAcid'))){
+  if(!all(cnames[1:2] == c(nucleotide,aminoAcid))){
         stop("Unexpected columns in file.")}
-    if(use_expected_genomes){data_col <- grep('estimated',cnames,ignore.case=TRUE)}else{
-        data_col <- grep('count',cnames)}
+    data_col <- grep(data,cnames)}
     if(length(data_col)!=1){stop('Unable to find data column.')}
 # Verify that names are OK
     if(length(unique(name)) != length(name)){stop("Names do not appear to be unique")}
