@@ -37,6 +37,7 @@ function(all_files,data='estimatedNumberGenomes',nucleotide='nucleotide',aminoAc
     cat(paste0('Loaded ',length(all_files),' samples in ',t,' minutes\n'))
 #
     list <- data.frame(nt=nt_list,aa=aa_list)
+    names(list) <- c(nucleotide,aminoAcid)
     list <- unique(list)
     ds <- list
     col_classes <- c('character','character',rep('NULL',length(cnames)-2))
@@ -48,7 +49,7 @@ function(all_files,data='estimatedNumberGenomes',nucleotide='nucleotide',aminoAc
             sep='\t',
             colClasses=col_classes
             )
-        tmp_ds <- data.frame(nt=tmp_ds[,nucleotide],count=tmp_ds[,3])
+        tmp_ds <- as.data.frame(tmp_ds[,c(nucleotide,data)])
         colnames(tmp_ds)[2] <- paste(name[a])
         ds <- merge(ds,tmp_ds,by=nucleotide,all=TRUE)
         cat(c("done with", all_files[a],"\n"))
@@ -64,6 +65,8 @@ function(all_files,data='estimatedNumberGenomes',nucleotide='nucleotide',aminoAc
     cat(paste0('Completed in ',t,' minutes\n'))
     cat("------------------\n")
   #
+    names(ds)[which(names(ds)==nucleotide)] <- 'nt'
+    names(ds)[which(names(ds)==nucleotide)] <- 'aa'
     ds
 }
 
