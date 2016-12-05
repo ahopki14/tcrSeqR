@@ -66,7 +66,7 @@ function(all_files,data='estimatedNumberGenomes',nucleotide='nucleotide',aminoAc
     cat("------------------\n")
   #
     names(ds)[which(names(ds)==nucleotide)] <- 'nt'
-    names(ds)[which(names(ds)==nucleotide)] <- 'aa'
+    names(ds)[which(names(ds)==aminoAcid)] <- 'aa'
     ds
 }
 
