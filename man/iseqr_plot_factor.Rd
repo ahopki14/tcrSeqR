@@ -13,6 +13,7 @@ plot_ds$<x_val>, and optionally restricting the data to plot_ds$type==<type>.}
 factor.}
   \item{type}{An optional argument to restrict the plot to a certain value in the type 
 column}
+  \item{hjust}{Distance to place text labels from point. Default is -0.5}
 }
 \details{}
 \value{

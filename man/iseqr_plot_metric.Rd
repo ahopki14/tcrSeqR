@@ -13,6 +13,7 @@ data to plot_ds$type==<type>.}
   \item{type}{An optional argument to restrict the plot to a certain value in the type 
 column}
   \item{sm}{Logical indicating if the geom_smooth linear model should also be plotted.}
+  \item{hjust}{Distance to place text labels from point. Default is -0.5}
 }
 \details{}
 \value{
