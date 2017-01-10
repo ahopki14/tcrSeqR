@@ -81,19 +81,24 @@ for(b in metrics){
 \clearpage
 
 ## Change In Metrics By Response
-```{r delta_metrics,eval=FALSE,echo=verbose}
+```{r delta_metrics,echo=verbose}
 w <- grep('Log',names(plot_ds))
 l <- vector('list')
 m <- vector('list')
+n <- vector('list')
 for(a in seq(length(w))){
   l[[a]] <- iseqr_plot_factor(plot_ds,names(plot_ds)[w[a]],'response','POST2') +
                               geom_hline(yintercept=0,alpha=0.1) + ggtitle('PRE to POST2')
   m[[a]] <- iseqr_plot_factor(plot_ds,names(plot_ds)[w[a]],'response','POST3') +
                               geom_hline(yintercept=0,alpha=0.1) + ggtitle('PRE to POST3')
+  n[[a]] <- iseqr_plot_factor(plot_ds,names(plot_ds)[w[a]],'response','PDACPOST') +
+                              geom_hline(yintercept=0,alpha=0.1) + ggtitle('PDACPRE to PDACPOST')
 }
 do.call(grid.arrange,c(l,ncol=length(w)))
 cat('\n\n')
 do.call(grid.arrange,c(m,ncol=length(w)))
+cat('\n\n')
+do.call(grid.arrange,c(n,ncol=length(w)))
 ```
 
 \clearpage
