@@ -150,6 +150,7 @@ delta_stats <- function(plot_ds,s1,s2,col,metrics,split_on,merge=FALSE){
   items <- levels(plot_ds[,split_on])
   out <- data.frame(matrix(nrow=length(items),ncol=length(metrics)))
   names(out) <- paste('Log2 Fold Change in',metrics)
+  rownames(out) <- paste0('r',seq(nrow(out)))
   metric_ind <- grep(paste(metrics,collapse='|'),names(plot_ds))
     for(a in seq_along(items)){
       tds <- plot_ds[plot_ds[,split_on]==items[a],c(col.n,metric_ind)]
