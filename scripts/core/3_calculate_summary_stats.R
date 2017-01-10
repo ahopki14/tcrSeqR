@@ -40,7 +40,6 @@ plot_ds[w,m_ind_1] <- tmp2[w,m_ind_2]
 
 #for ipi
 plot_ds <- merge(dict,stats)
-plot_ds$patient <- as.factor(plot_ds$patient)
 tmp2 <- delta_stats(plot_ds,'PRE','POST3','type',names(stats)[1:3],'patient',merge=TRUE)
 plot_ds <- delta_stats(plot_ds,'PRE','POST1','type',names(stats)[1:3],'patient',merge=TRUE)
 
@@ -49,6 +48,24 @@ m_ind_1 <- grep('Log2',names(plot_ds))
 m_ind_2 <- grep('Log2',names(tmp2))
 
 plot_ds[w,m_ind_1] <- tmp2[w,m_ind_2]
+
+#for pd1
+tmp2 <- delta_stats(plot_ds,'PRE','POST3','type',names(stats)[2:4],'patient',merge=TRUE)
+tmp3 <- delta_stats(plot_ds,'PDACPRE','PDACPOST','type',names(stats)[2:4],'patient',merge=TRUE)
+plot_ds <- delta_stats(plot_ds,'PRE','POST2','type',names(stats)[2:4],'patient',merge=TRUE)
+
+w <- which(plot_ds$type=='POST3')
+m_ind_1 <- grep('Log2',names(plot_ds))
+m_ind_2 <- grep('Log2',names(tmp2))
+
+plot_ds[w,m_ind_1] <- tmp2[w,m_ind_2]
+
+w <- which(plot_ds$type=='PDACPOST')
+m_ind_1 <- grep('Log2',names(plot_ds))
+m_ind_2 <- grep('Log2',names(tmp3))
+
+plot_ds[w,m_ind_1] <- tmp3[w,m_ind_2]
+
 
 
 
