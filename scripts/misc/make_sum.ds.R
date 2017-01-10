@@ -1,3 +1,4 @@
+# load agg_ds 
 sum.ds <- list()
 sum.ds$nsamp <- ncol(ds)-2
 sum.ds$ntypes <- length(levels(dict$type))
