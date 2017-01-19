@@ -6,7 +6,7 @@ geometry: margin=0.75in
 header-includes:
    - \usepackage{graphicx}
 ---
-# Anti-CTLA4 + GVAX Study
+# Anti-PD1 + LM + GVAX Study
 Created `r  format(Sys.Date(),"%m/%d/%y")`
 
 ```{r eval=TRUE,echo=FALSE}
@@ -16,17 +16,17 @@ require(gridExtra)
 require(reshape2)
 require(knitr)
 require(rmarkdown)
-first_run <- TRUE
+first_run <- FALSE
 verbose=FALSE
 r <- function(){render('~/Documents/emj/ImmunoseqResults/immunoSeqR/scripts/rmd/pd1.Rmd',
 output_file='~/Documents/emj/ImmunoseqResults/new/pd1.pdf',
 intermediates_dir='~/Documents/emj/ImmunoseqResults/new/')}
+opts_chunk$set(warning=FALSE)
 ```
 ```{r eval=first_run}
 dict <- readRDS('~/Documents/emj/ImmunoseqResults/data/pd1/dict.Rds')
 stats <- readRDS('~/Documents/emj/ImmunoseqResults/data/pd1/stats.Rds')
 plot_ds <- readRDS('~/Documents/emj/ImmunoseqResults/data/pd1/plot_ds.Rds')
-plot_ds$type <- droplevels(plot_ds$type)
 load('~/Documents/emj/ImmunoseqResults/data/pd1/olm.Rda')
 sum.ds <- readRDS('~/Documents/emj/ImmunoseqResults/data/pd1/sum.ds.Rds')
 ```
@@ -56,13 +56,19 @@ iseqr_plot_factor(plot_ds,'Total Sequences','type') +
         scale_y_log10(breaks=c(10,100,1000,10000))
 ```
 
-\clearpage
+```{r filter,echo=TRUE}
+# remove low read count samples
+w <- which(plot_ds[,'Total Sequences']<100)
+plot_ds <- plot_ds[-w,]
+#
+```
 
 ### By Response
 
 ```{r by_response,echo=verbose,fig.align='center',fig.width=8}
 x_val <- 'response'
-metrics <- names(stats[names(stats)!='fn'])[c(1,2,3)]
+#metrics <- names(stats[names(stats)!='fn'])[c(1,2,3)]
+metrics <- 'Clonality'
 types <- levels(plot_ds$type)
 for(b in metrics){
 	l <- vector('list')
@@ -103,19 +109,6 @@ do.call(grid.arrange,c(n,ncol=length(w)))
 
 \clearpage
 
-
-### By Type
-```{r by_type,eval=FALSE,echo=verbose,fig.align='center'}
-metrics <- names(stats[names(stats)!='fn'])
-l <- vector('list')
-for(b in metrics){
-        l[[b]] <- iseqr_plot_factor(plot_ds,b,'type',NA) + theme(axis.text=element_text(size=5))
-}
-    do.call(grid.arrange,c(l,ncol=length(types)))
-
-```
-\clearpage
-
 ### By Treatment Arm
 
 \begin{center}
@@ -126,34 +119,46 @@ Arm 2 & Cy + GVAX + LM \\
 \end{center}
 
 
-```{r eval=FALSE, echo=verbose,cache=FALSE,fig.align='center',fig.height=2.5}
+```{r by_arm, eval=TRUE, echo=verbose,cache=FALSE,fig.align='center',fig.width=8}
 x_val <- 'arm'
-metrics <- names(stats[names(stats)!='fn'])
+#metrics <- names(stats[names(stats)!='fn'])[c(1,2,3)]
+metrics <- 'Clonality'
 types <- levels(plot_ds$type)
 for(b in metrics){
-    l <- vector('list')
-    for(a in types){
-        l[[a]] <- iseqr_plot_factor(plot_ds,b,x_val,a)
-    }
-    do.call(grid.arrange,c(l,ncol=length(types)))
+        l <- vector('list')
+        for(a in types[1:3]){
+            l[[a]] <- iseqr_plot_factor(plot_ds,b,x_val,a)
+        }
+  l2 <- vector('list')
+  for(a in types[4:5]){
+      l2[[a]] <- iseqr_plot_factor(plot_ds,b,x_val,a)
+  }
+        do.call(grid.arrange,c(l,ncol=length(types)))
+        do.call(grid.arrange,c(l2,ncol=length(types)))
 }
+
 ```
 \clearpage
 
 ## Change In Metrics
-```{r delta_metrics_arm,eval=FALSE,echo=verbose,}
+```{r delta_metrics_arm,eval=TRUE,echo=verbose,}
 w <- grep('Log',names(plot_ds))
 l <- vector('list')
 m <- vector('list')
+n <- vector('list')
 for(a in seq(length(w))){
   l[[a]] <- iseqr_plot_factor(plot_ds,names(plot_ds)[w[a]],'arm','POST2') +
                               geom_hline(yintercept=0,alpha=0.1) + ggtitle('PRE to POST2')
   m[[a]] <- iseqr_plot_factor(plot_ds,names(plot_ds)[w[a]],'arm','POST3') +
                               geom_hline(yintercept=0,alpha=0.1) + ggtitle('PRE to POST3')
+  n[[a]] <- iseqr_plot_factor(plot_ds,names(plot_ds)[w[a]],'arm','PDACPOST') +
+                              geom_hline(yintercept=0,alpha=0.1) + ggtitle('PDACPRE to PDACPOST')
 }
 do.call(grid.arrange,c(l,ncol=length(w)))
 cat('\n\n')
 do.call(grid.arrange,c(m,ncol=length(w)))
+cat('\n\n')
+do.call(grid.arrange,c(n,ncol=length(w)))
 ```
 
 
@@ -184,14 +189,14 @@ g
 w <- grep('Number of Expanded',names(plot_ds))
 g <- iseqr_plot_factor(plot_ds,names(plot_ds)[w],'response',type='POST2') + xlab('Response')
 f <- iseqr_plot_factor(plot_ds,names(plot_ds)[w],'arm',type='POST2') + xlab('Arm')
-#grid.arrange(g,f,ncol=2)
-g
+grid.arrange(g,f,ncol=2)
+
 
 w <- grep('Number of Expanded',names(plot_ds))
 g <- iseqr_plot_factor(plot_ds,names(plot_ds)[w],'response',type='POST3') + xlab('Response')
 f <- iseqr_plot_factor(plot_ds,names(plot_ds)[w],'arm',type='POST3') + xlab('Arm')
-#grid.arrange(g,f,h,ncol=3)
-g
+grid.arrange(g,f,ncol=2)
+
 
 ```
 
@@ -201,9 +206,10 @@ g
 
 ### Sex
 
-```{r by_age,echo=verbose, cache=FALSE,fig.align='center',fig.width=8}
+```{r by_sex,echo=verbose, cache=FALSE,fig.align='center',fig.width=8}
 x_val <- 'sex'
-metrics <- names(stats[names(stats)!='fn'])[c(1,2,3)]
+#metrics <- names(stats[names(stats)!='fn'])[c(1,2,3)]
+metrics <- 'Clonality'
 types <- levels(plot_ds$type)
 for(b in metrics){
   l <- vector('list')
