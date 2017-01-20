@@ -270,13 +270,17 @@ w <- grep('Number of Expanded',names(plot_ds))
 g <- iseqr_plot_factor(plot_ds,names(plot_ds)[w],'response',type='POST1') + xlab('Response')
 f <- iseqr_plot_factor(plot_ds,names(plot_ds)[w],'arm',type='POST1') + xlab('Arm')
 h <- iseqr_plot_factor(plot_ds,names(plot_ds)[w],'nonskin.irae',type='POST1') + xlab('AE')
-grid.arrange(g,f,h,ncol=3)
+i <- iseqr_plot_factor(plot_ds,names(plot_ds)[w],'CA19.9',type='POST1') + xlab('CA19-9')
+j <- iseqr_plot_factor(plot_ds,names(plot_ds)[w],'CT',type='POST1') + xlab('CT')
+grid.arrange(g,f,h,i,j,ncol=5)
 
 w <- grep('Number of Expanded',names(plot_ds))
 g <- iseqr_plot_factor(plot_ds,names(plot_ds)[w],'response',type='POST3') + xlab('Response')
 f <- iseqr_plot_factor(plot_ds,names(plot_ds)[w],'arm',type='POST3') + xlab('Arm')
 h <- iseqr_plot_factor(plot_ds,names(plot_ds)[w],'nonskin.irae',type='POST3') + xlab('AE')
-grid.arrange(g,f,h,ncol=3)
+i <- iseqr_plot_factor(plot_ds,names(plot_ds)[w],'CA19.9',type='POST3') + xlab('CA19-9')
+j <- iseqr_plot_factor(plot_ds,names(plot_ds)[w],'CT',type='POST3') + xlab('CT')
+grid.arrange(g,f,h,i,j,ncol=5)
 
 
 ```
