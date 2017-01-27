@@ -32,16 +32,18 @@ adjuvant <- readRDS('~/Documents/emj/ImmunoseqResults/data/adjuvant/plot_ds.Rds'
 ipi <- readRDS('~/Documents/emj/ImmunoseqResults/data/ipi/plot_ds.Rds')
 sbrt <- readRDS('~/Documents/emj/ImmunoseqResults/data/sbrt/plot_ds.Rds')
 baseline <- readRDS('~/Documents/emj/ImmunoseqResults/data/baseline/plot_ds.Rds')
+pd1 <- readRDS('~/Documents/emj/ImmunoseqResults/data/pd1/plot_ds.Rds')
 ```
 ```{r echo=FALSE}
 ipi$experiment <- rep('anti-CTLA4',nrow(ipi))
-plot_ds <- rbind.fill(neoadjuvant,adjuvant,ipi,sbrt,baseline)
+pd1$experiment <- rep('anti-PD1',nrow(pd1))
+plot_ds <- rbind.fill(neoadjuvant,adjuvant,ipi,sbrt,pd1,baseline)
 plot_ds$experiment <- factor(plot_ds$experiment,levels=unique(plot_ds$experiment))
 ```
 ```{r all_metrics,echo=FALSE, fig.height=6}
 tds <- plot_ds
 tds$fac <- paste0(plot_ds$experiment,' (',plot_ds$type,')')
-tds$fac <- factor(tds$fac,levels=unique(tds$fac)[c(1,2,3,4,5,6,8,9,7,12,11,10)])
+tds$fac <- factor(tds$fac,levels=unique(tds$fac)[c(1,2,3,4,5,6,8,9,7,12,11,10,17,16,14,15,13)])
 w <- which(tds$experiment=='Healthy Donor')
 tds <- tds[-w,]
 g <- iseqr_plot_factor(tds,'Clonality','fac') + theme(axis.text=element_text(angle=90,hjust=1))
