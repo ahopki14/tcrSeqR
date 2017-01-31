@@ -11,6 +11,12 @@ header-includes:
 # Comparison of Studies
 Created `r  format(Sys.Date(),"%m/%d/%y")`
 
+```{r global_options, eval=TRUE, echo=FALSE}
+mycols <- colors()[c(28,128,81,256)]
+opts_knit$set(base.dir = '~/Documents/emj/ImmunoseqResults/new/')
+opts_chunk$set(echo=FALSE)
+```
+
 ```{r eval=TRUE,echo=FALSE}
 require(immunoSeqR)
 require(ggplot2)
@@ -19,28 +25,26 @@ require(reshape2)
 require(knitr)
 require(plyr)
 require(rmarkdown)
-first_run <- TRUE
-verbose=FALSE
 r <- function(){render('~/Documents/emj/ImmunoseqResults/immunoSeqR/scripts/rmd/comparison.Rmd',
 output_file='~/Documents/emj/ImmunoseqResults/new/comparison.pdf',
 intermediates_dir='~/Documents/emj/ImmunoseqResults/new/')}
-```
-```{r eval=first_run,echo=FALSE}
-opts_knit$set(base.dir = '~/Documents/emj/ImmunoseqResults/new/')
 neoadjuvant <- readRDS('~/Documents/emj/ImmunoseqResults/data/neoadjuvant/plot_ds.Rds')
+
+# Load all the data
 adjuvant <- readRDS('~/Documents/emj/ImmunoseqResults/data/adjuvant/plot_ds.Rds')
 ipi <- readRDS('~/Documents/emj/ImmunoseqResults/data/ipi/plot_ds.Rds')
 sbrt <- readRDS('~/Documents/emj/ImmunoseqResults/data/sbrt/plot_ds.Rds')
 baseline <- readRDS('~/Documents/emj/ImmunoseqResults/data/baseline/plot_ds.Rds')
 pd1 <- readRDS('~/Documents/emj/ImmunoseqResults/data/pd1/plot_ds.Rds')
-```
-```{r echo=FALSE}
+
+#merge into one
 ipi$experiment <- rep('anti-CTLA4',nrow(ipi))
 pd1$experiment <- rep('anti-PD1',nrow(pd1))
 plot_ds <- rbind.fill(neoadjuvant,adjuvant,ipi,sbrt,pd1,baseline)
 plot_ds$experiment <- factor(plot_ds$experiment,levels=unique(plot_ds$experiment))
 ```
-```{r all_metrics,echo=FALSE, fig.height=6}
+
+```{r all_metrics, fig.height=6}
 tds <- plot_ds
 tds$fac <- paste0(plot_ds$experiment,' (',plot_ds$type,')')
 tds$fac <- factor(tds$fac,levels=unique(tds$fac)[c(1,2,3,4,5,6,8,9,7,12,11,10,17,16,14,15,13)])
@@ -60,7 +64,7 @@ i
 ## Change in Metrics
 ### Using POST1 and POSTSBRT
 
-```{r delta_metrics1, echo=FALSE}
+```{r delta_metrics1}
 w <- c(which(plot_ds$type=='POST'),which(plot_ds$type=='POST1'),which(plot_ds$type=='POSTSBRT'))
 tds <- plot_ds[w,]
 
@@ -75,7 +79,7 @@ do.call(grid.arrange,c(g,ncol=3))
 ```
 
 ###Using POST3 and POSTFOLF
-```{r delta_metrics2, echo=FALSE}
+```{r delta_metrics2}
 w <- c(which(plot_ds$type=='POST'),which(plot_ds$type=='POST3'),which(plot_ds$type=='POSTFOLF'))
 tds <- plot_ds[w,]
 
@@ -91,7 +95,7 @@ do.call(grid.arrange,c(g,ncol=3))
 ```
 
 ## Expanded Clones
-```{r exp_cl, echo=FALSE}
+```{r exp_cl}
 w <- c(which(plot_ds$type=='POST'),which(plot_ds$type=='POST1'),which(plot_ds$type=='POSTSBRT'))
 tds <- plot_ds[w,]
 
@@ -100,5 +104,36 @@ g <- iseqr_plot_factor(tds,m,'experiment') +
     theme(axis.text=element_text(angle=90,hjust=1))
 g
 ```
+
+\clearpage
+
+At POST3:  
+J0834 had 3 rounds of Ipi +/- GVAX  
+J14113 had 2 rounds of GVAX +/- PD1 and one round of LM  
+
+```{r ctla4-vs-pd1,fig.cap='p=5e-11, p=5e-14'}
+tds <- plot_ds[plot_ds$experiment=='anti-CTLA4' | plot_ds$experiment=='anti-PD1',]
+g <- iseqr_plot_factor(tds,'Clonality','experiment','PRE')
+h <- iseqr_plot_factor(tds,'Clonality','experiment','POST3')
+g <- g + geom_point(aes(color=arm)) + scale_color_manual(values=mycols)
+h <- h + geom_point(aes(color=arm)) + scale_color_manual(values=mycols)
+grid.arrange(g,h,ncol=2)
+
+
+```
+
+```{r ,fig.cap='p=5e-9, 0.022'}
+g <- iseqr_plot_factor(tds,'Number of Expanded Clones vs PRE','experiment','POST3')
+h <- iseqr_plot_factor(tds,"Log2 Fold Change in Clonality",'experiment','POST3')
+g <- g + geom_point(aes(color=arm)) + scale_color_manual(values=mycols)
+h <- h + geom_point(aes(color=arm)) + scale_color_manual(values=mycols)
+grid.arrange(g,h,ncol=2)
+
+```
+
+
+
+
+
 
 
