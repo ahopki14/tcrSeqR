@@ -109,8 +109,23 @@ g
 
 At POST3:  
 J0834 had 3 rounds of Ipi +/- GVAX  
+
+\begin{center}
+\begin{tabular}{l l}
+Arm 1 & Ipilimumab \\
+Arm 2 & Ipilimumab + Cy + GVAX \\
+\end{tabular}
+\end{center}
+
+
 J14113 had 2 rounds of GVAX +/- PD1 and one round of LM  
 
+\begin{center}
+\begin{tabular}{l l}
+Arm A & GVAX + LM + Nivolumab  \\
+Arm B & GVAX + LM \\
+\end{tabular}
+\end{center}
 ```{r ctla4-vs-pd1,fig.cap='p=5e-11, p=5e-14'}
 tds <- plot_ds[plot_ds$experiment=='anti-CTLA4' | plot_ds$experiment=='anti-PD1',]
 g <- iseqr_plot_factor(tds,'Clonality','experiment','PRE')
