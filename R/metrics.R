@@ -76,7 +76,23 @@ morisita <- function(x,y){
     m
 }
 
+# Wrapper for Morisita
+iseqr_morisita <- function(dict,comps){
+patients <- unique(dict$patient)
+out <- dict[,c('patient','type')]
+out$morisita <- rep(NA, nrow(out))
+for(a in seq(length(patients))){
+	for(b in comps){
+		if(length(which(dict$patient==patients[a] & (dict$type==b[1]|dict$type==b[2]))) == 2){
+			out[out$patient==patients[a] & out$type == b[2],'morisita'] <- 
+			morisita(ds[,which(dict$patient==patients[a] & dict$type==b[1])],
+				 ds[,which(dict$patient==patients[a] & dict$type==b[2])])
+		}
+	}
 
+}
+out
+}
 ## Functions for Fisher Test
 
 fisher <- function(x,s){ # x is the row of mat, s is the column sum of mat
