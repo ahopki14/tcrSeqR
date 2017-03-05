@@ -143,6 +143,17 @@ for(a in seq(nrow(exp_clones))){
 }
 
 
+# for PD1 tumors
+out2 <- iseqr_exp_cl(ds,dict,s1='PDACPRE',s2='PDACPOST',category='type',by='patient',inc.all=FALSE)
+exp_clones <- out2
+
+col <- grep('Number of Expanded Clones',names(plot_ds))
+for(a in seq(nrow(exp_clones))){
+  w <- which(as.character(plot_ds$patient)==as.character(exp_clones$patient[a]) &
+      as.character(plot_ds$type)==exp_clones$type[a])
+  plot_ds[w,col] <- exp_clones[a,1]
+}
+
 
 saveRDS(plot_ds,'plot_ds.Rds')
 
