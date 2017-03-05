@@ -112,6 +112,7 @@ exp_clone <- function(x,y){ # x and y are vectors of counts in the samples compa
 iseqr_exp_cl <-
 function(ds,dict,s1='PRE',s2='POST',category='type',by='patient',inc.all=FALSE){
     patients <- levels(dict[,by])
+	if(length(patients==0){stop('Is dict$patients a factor?')}
     out <- data.frame(p_adj=numeric(),ind=numeric(),patient=character())
     big_out <- list()
     num_exp <- numeric()
