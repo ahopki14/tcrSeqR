@@ -25,6 +25,25 @@ all_files <- list.files(pattern=".tsv")
 
 # construct the dataset with iseqr_merge
 ds <- iseqr_merge(all_files)
-
-
 ``` 
+
+## Collapsing Data 
+Many nucleic acid sequences can encode the same CDR3, so many analyses may require aggregated
+data (data in which synonymous nucleotide sequences are combined into a single amino acid level
+representation). Metrics such as Clonality and Richness should typically be computed from aggregated
+data.  
+An imported dataset can be aggregated using `iseqr_aggregate()`
+
+```R
+# Remove Empty Sequences
+length(which(ds$aa==''))
+ds <- ds[ds$aa!='',]
+
+# Remove Sequences with stop codons
+length(grep('\\*',ds$aa))
+ds <- ds[grep('\\*',ds$aa,invert=TRUE),]
+
+# aggregate the data
+# this collapses synonymous nucleotide sequences
+ds_agg <- iseqr_aggregate(ds,inc_nt=FALSE)
+```  
