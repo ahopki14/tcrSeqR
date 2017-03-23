@@ -56,10 +56,10 @@ look like
 
 fn | patient | type | response
 ---|---------|------|---------- 
-  samplept1post|       1| Tumor|        R
+  samplept1post|       1|  Post|        R
    samplept1pre|       1|   Pre|        R
- samplept1tumor|       1|  Post|        R
-  samplept2post|       2| Tumor|       NR
+ samplept1tumor|       1| Tumor|        R
+  samplept2post|       2|  Post|       NR
    samplept2pre|       2|   Pre|       NR
- samplept2tumor|       2|  Post|       NR
+ samplept2tumor|       2| Tumor|       NR
 
