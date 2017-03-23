@@ -55,7 +55,8 @@ associated with each sample. This is accomplished with a dictionary, which is si
 look like 
 
               fn | patient | type | response
-  samplept1post|       1| Tumor|      R
+-----------------|---------|------|---------- 
+  samplept1post|       1| Tumor|        R
    samplept1pre|       1|   Pre|        R
  samplept1tumor|       1|  Post|        R
   samplept2post|       2| Tumor|       NR
