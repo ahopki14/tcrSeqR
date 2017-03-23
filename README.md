@@ -63,3 +63,25 @@ fn | patient | type | response
    samplept2pre|       2|   Pre|       NR
  samplept2tumor|       2| Tumor|       NR
 
+In this example, `fn` refers to the original filename of the tsv (which is brought in as the
+column name in the dataset), `patient` is a patient/subject number, `type` is a sample type (in
+this case pre and post treatment as well as tumor) and `response` indicates if a patient was a
+responder or non-responder.  
+It is essential that the order of the dictionary be the same as the order of the dataset. 
+
+
+## Metrics 
+A variety of metrics are available in `immunoSeqR`, including `clonality`, `overlap`, and `morisita`. 
+These typically operate on a single sample, and therefore need to be used with `apply` to
+calculate the metric for all samples
+
+```R
+sapply(ds],clonality)
+```
+
+Other metrics include wrappers that calculate the metric in an intelligent way using the
+metadata. For example, `iseqr_morisita()` can calculate the Morisita Index for any pairs of
+samples in a dataset, and `iseqr_exp_cl()` can identify the T cells which expand after treatment.
+
+
+
