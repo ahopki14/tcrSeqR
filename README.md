@@ -47,3 +47,18 @@ ds <- ds[grep('\\*',ds$aa,invert=TRUE),]
 # this collapses synonymous nucleotide sequences
 ds_agg <- iseqr_aggregate(ds,inc_nt=FALSE)
 ```  
+
+## Building a Metadata Dictionary
+`immunoSeqR` can help make plots of various metrics, but it needs to be aware of the metadata
+associated with each sample. This is accomplished with a dictionary, which is simply a
+`data.frame` in which each row corresponds to a column in the dataset. A simple example might
+look like 
+
+              fn | patient | type | response
+  samplept1post|       1| Tumor|      R
+   samplept1pre|       1|   Pre|        R
+ samplept1tumor|       1|  Post|        R
+  samplept2post|       2| Tumor|       NR
+   samplept2pre|       2|   Pre|       NR
+ samplept2tumor|       2|  Post|       NR
+
