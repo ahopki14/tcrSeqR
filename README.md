@@ -54,8 +54,8 @@ associated with each sample. This is accomplished with a dictionary, which is si
 `data.frame` in which each row corresponds to a column in the dataset. A simple example might
 look like 
 
-              fn | patient | type | response
------------------|---------|------|---------- 
+fn | patient | type | response
+---|---------|------|---------- 
   samplept1post|       1| Tumor|        R
    samplept1pre|       1|   Pre|        R
  samplept1tumor|       1|  Post|        R
