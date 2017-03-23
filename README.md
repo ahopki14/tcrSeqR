@@ -76,7 +76,7 @@ These typically operate on a single sample, and therefore need to be used with `
 calculate the metric for all samples
 
 ```R
-sapply(ds],clonality)
+sapply(ds,clonality)
 ```
 
 Other metrics include wrappers that calculate the metric in an intelligent way using the
