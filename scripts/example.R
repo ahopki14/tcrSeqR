@@ -4,7 +4,7 @@ setwd(path)
 all_files <- list.files(pattern=".tsv")
 
 # construct the dataset with iseqr_merge
-ds <- iseqr_merge(all_files,use_expected_genomes=TRUE)
+ds <- iseqr_merge(all_files)
 
 
 
