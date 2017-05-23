@@ -28,6 +28,7 @@ iseqr_plot_factor <- function(plot_ds,metric,x_val,type=NA,hjust=-0.5,labels=TRU
     ggtitle(as.character(title)) +
     theme_bw() + theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank()) +
     stat_summary(fun.data=mean_95,geom='errorbar',width=0.05,colour='red')+
+    stat_summary(fun.data=mean_only,geom='errorbar',width=0.25,colour='red')+
     geom_point()
   if(labels){g + geom_text(aes(label=patient),colour='grey',hjust=hjust,size=1)}else{g}
 }

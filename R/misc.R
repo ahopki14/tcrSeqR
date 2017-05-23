@@ -178,3 +178,7 @@ delta_stats <- function(plot_ds,s1,s2,col,metrics,split_on,merge=FALSE){
   }
 }
 
+biocload <- function(){
+source("https://bioconductor.org/biocLite.R")
+}
+

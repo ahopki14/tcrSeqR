@@ -77,7 +77,10 @@ morisita <- function(x,y){
 }
 
 # Wrapper for Morisita
-iseqr_morisita <- function(dict,comps){
+iseqr_morisita <- function(dict,comps, ds){
+#check if ds and dict are in correct order
+stopifnot(dict$fn == names(ds)[1:(length(names(ds))-2)])
+#
 patients <- unique(dict$patient)
 out <- dict[,c('patient','type')]
 out$morisita <- rep(NA, nrow(out))
@@ -112,7 +115,7 @@ exp_clone <- function(x,y){ # x and y are vectors of counts in the samples compa
 iseqr_exp_cl <-
 function(ds,dict,s1='PRE',s2='POST',category='type',by='patient',inc.all=FALSE){
     patients <- levels(dict[,by])
-	if(length(patients==0){stop('Is dict$patients a factor?')}
+	if(length(patients)==0){stop("Is dict$patients a factor?")}
     out <- data.frame(p_adj=numeric(),ind=numeric(),patient=character())
     big_out <- list()
     num_exp <- numeric()
