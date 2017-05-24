@@ -77,25 +77,30 @@ morisita <- function(x,y){
 }
 
 # Wrapper for Morisita
-iseqr_morisita <- function(dict,comps, ds){
-#check if ds and dict are in correct order
-stopifnot(dict$fn == names(ds)[1:(length(names(ds))-2)])
-#
-patients <- unique(dict$patient)
-out <- dict[,c('patient','type')]
-out$morisita <- rep(NA, nrow(out))
-for(a in seq(length(patients))){
-	for(b in comps){
-		if(length(which(dict$patient==patients[a] & (dict$type==b[1]|dict$type==b[2]))) == 2){
-			out[out$patient==patients[a] & out$type == b[2],'morisita'] <- 
-			morisita(ds[,which(dict$patient==patients[a] & dict$type==b[1])],
-				 ds[,which(dict$patient==patients[a] & dict$type==b[2])])
+iseqr_morisita <- function(plot_ds,comps, ds, merge=T){
+	stopifnot(dict$fn == names(ds)[1:(length(names(ds))-2)])
+	patients <- unique(as.character(plot_ds$patient))
+	out <- data.frame(patient=character(), type=character(), morisita=numeric())
+	for(a in seq(length(patients))){
+		for(b in comps){
+			m <- numeric()
+			if(length(which(dict$patient==patients[a] & (dict$type==b[1]|dict$type==b[2]))) == 2){
+				m <-morisita(ds[,which(plot_ds$patient==patients[a] & plot_ds$type==b[[1]])],
+					     ds[,which(plot_ds$patient==patients[a] & plot_ds$type==b[[2]])])
+			}
+			if(length(m)>0){
+				out <- rbind(out, data.frame(patient=patients[a],type=b[[2]],morisita=m))
+			}
+			
 		}
 	}
+	if(merge){
+		out <- merge(plot_ds, out, by=c('patient','type'), all.x=T, sort=F)
+	}
+	out
+}
 
-}
-out
-}
+
 ## Functions for Fisher Test
 
 fisher <- function(x,s){ # x is the row of mat, s is the column sum of mat
