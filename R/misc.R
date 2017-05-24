@@ -142,41 +142,28 @@ is.clean <- function(ds){
   out
 }
 
-delta_stats <- function(plot_ds,s1,s2,col,metrics,split_on,merge=FALSE){
-  orig <- plot_ds
-  col.n <- which(names(plot_ds)==col)
-  w <- sort(c(grep(s1,plot_ds[,col]),grep(s2,plot_ds[,col])))
-  plot_ds <- plot_ds[w,]
-  items <- levels(plot_ds[,split_on])
-  out <- data.frame(matrix(nrow=length(items),ncol=length(metrics)))
-  names(out) <- paste('Log2 Fold Change in',metrics)
-  rownames(out) <- paste0('r',seq(nrow(out)))
-  metric_ind <- grep(paste(metrics,collapse='|'),names(plot_ds))
-    for(a in seq_along(items)){
-      tds <- plot_ds[plot_ds[,split_on]==items[a],c(col.n,metric_ind)]
-      d <- which(tds[,1]==s1)
-      n <- which(tds[,1]==s2)
-      # compute the log fold change of (s2/s1)
-      if(length(d)+length(n)==2){
-      out[a,] <- as.numeric(log(tds[n,-1]/tds[d,-1],2))
-      }
-      rownames(out)[a] <- items[a]
-    }
-  out[,split_on] <- rownames(out)
-  if(!merge){
-  out
-  } else{
-    out[,col] <- rep(s2,nrow(out))
-    orig$sort_order <- seq(nrow(orig))
-    w <- which(is.na(out[,1]))
-    if(length(w)>0){
-      orig  <- merge(orig,out[-w,],by=c(split_on,col),all=TRUE)
-    }else{orig  <- merge(orig,out,by=c(split_on,col),all=TRUE)}
-    orig <- orig[orig$sort_order,]
-    w <- which(names(orig)=='sort_order')
-    orig <- orig[,-w] 
-  }
+#calculate the change in any statistic over any comparison
+delta_stats <- function(plot_ds,comps, metric, merge=T){
+	patients <- unique(plot_ds$patient)
+	name <- paste('Log2 Fold Change in',metric) 
+	out <- data.frame(patient=character(), type=character(), name=numeric())
+	for(a in seq(length(patients))){
+		for(b in comps){
+			fc <- filter(plot_ds, type==b[[2]] & patient==patients[a])[,metric] /
+				filter(plot_ds, type==b[[1]] & patient==patients[a])[,metric]
+			lfc <- log2(fc)
+			if(length(lfc)>0){
+				out <- rbind(out, data.frame(patient=patients[a],type=b[[2]],name=lfc))
+		}
+		}
+	}
+	names(out)[3] <- name
+	if(merge){
+	out <- merge(plot_ds, out, by=c('patient','type'), all=T)
+	}
+	out
 }
+
 
 biocload <- function(){
 source("https://bioconductor.org/biocLite.R")
