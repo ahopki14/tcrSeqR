@@ -88,6 +88,11 @@ mean_95 <- function(x){
 	c(y=m,ymin=m-i,ymax=m+i)
 }
 
+mean_only <- function(x){
+	m <- mean(x,na.rm=TRUE)
+	c(y=m,ymin=m,ymax=m)
+}
+
 iseqr_summarize <- function(plot_ds,split_on,metric){
     ds <- split(plot_ds,plot_ds[,split_on])
     out <- matrix(nrow=length(ds),ncol=length(ds))
