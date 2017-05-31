@@ -29,6 +29,8 @@ plot_ds <- iseqr_order(plot_ds, ds)
 
 
 # Calculate overlaps
+#this is done on the aggregated data too
 
+comps <- list(c('PRE','POST'))
 plot_ds <- iseqr_morisita(plot_ds, comps, ds, merge=T)
 plot_ds <- iseqr_order(plot_ds, ds)
