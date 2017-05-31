@@ -70,7 +70,7 @@ simpson <- function(x){
 
 # Morisita's overlap index
 morisita <- function(x,y){
-    if(length(x) != length(y)){stop("Vectors must be same length")}
+    stopifnot(length(x) != length(y))
     prod <- x*y
     m <- (2*(sum(prod))) / ((simpson(x) + simpson(y))*sum(x)*sum(y))
     m
@@ -78,13 +78,13 @@ morisita <- function(x,y){
 
 # Wrapper for Morisita
 iseqr_morisita <- function(plot_ds,comps, ds, merge=T){
-	stopifnot(dict$fn == names(ds)[1:(length(names(ds))-2)])
+	stopifnot(plot_ds$fn == names(ds)[1:(length(names(ds))-2)])
 	patients <- unique(as.character(plot_ds$patient))
 	out <- data.frame(patient=character(), type=character(), morisita=numeric())
 	for(a in seq(length(patients))){
 		for(b in comps){
 			m <- numeric()
-			if(length(which(dict$patient==patients[a] & (dict$type==b[1]|dict$type==b[2]))) == 2){
+			if(length(which(plot_ds$patient==patients[a] & (plot_ds$type==b[1]|plot_ds$type==b[2]))) == 2){
 				m <-morisita(ds[,which(plot_ds$patient==patients[a] & plot_ds$type==b[[1]])],
 					     ds[,which(plot_ds$patient==patients[a] & plot_ds$type==b[[2]])])
 			}
