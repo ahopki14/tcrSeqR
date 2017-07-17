@@ -1,5 +1,10 @@
+library(immunoSeqR)
+library(dplyr)
+library(ggplot2)
+
+
 #set path to adaptive tsv files
-path <- '~/Documents/emj/ImmunoseqResults/immunoSeqR/data/ex_tsv/'
+path <- '~/Documents/emj/ImmunoseqResults/immunoSeqR/data/ex_tsv/tsv'
 setwd(path)
 all_files <- list.files(pattern=".tsv")
 
@@ -21,36 +26,34 @@ ds <- ds[grep('\\*',ds$aa,invert=TRUE),]
 ds_agg <- iseqr_aggregate(ds,inc_nt=FALSE)
 
 #moving the aa and nt columns to the end makes life easier
-ds <- ds[,c(3:8,1,2)]
-ds_agg <- ds_agg[,c(3:8,1,2)]
+ds <- ds[,c(3:66,1,2)]
+ds_agg <- ds_agg[,c(3:66,1,2)]
 
-#Construct a dictionary
-dict <- data.frame(fn =names(ds)[1:6],
-                   patient=as.factor(c(rep("1",3),rep("2",3))),
-                   type=factor(rep(c("Tumor","Pre","Post"),2),levels=c("Pre","Post","Tumor")),
-                   response=factor(c(rep("R",3),rep("NR",3)))
-                  )
+#load the dictionary
+dict <- readRDS('dict.Rds')
+#put it in the correct order
+dict <- iseqr_order(dict, ds_agg)
 
 #going forward, use on the aggregated dataset
 ds <- ds_agg
 
 # rows of dictionary correspond to cols of ds
 names(ds)
-names(ds)[-c(7,8)] == dict$fn
+names(ds) == dict$fn
 
 # so you can do this:
-w <- which(dict$type=='Pre') # restrict to Pre-vac sample types
+w <- which(dict$type=='PRE') # restrict to Pre-vac sample types
 head(ds[,w])
 
 # or this:
-w <- which(dict$patient=='1') # restrict to patient 1
+w <- which(dict$patient=='8.001') # restrict to patient 1
 head(ds[,w])
 
 # Clonality of first sample
 clonality(ds[,1])
 
 # quickly calculate for all samples
-sapply(ds[,-c(7,8)],clonality)
+sapply(ds[,-c(65,66)],clonality)
 
 
 # What about richness?
@@ -60,4 +63,13 @@ length(which(ds[,1]>0))
 # overlap
 overlap(ds[,1],ds[,2])
 morisita(ds[,1],ds[,2])
+
+# make plot_ds with script using
+comps <- list(c('PRE','POST1'), c('PRE','POST3'))
+
+#now plot whatever you want
+iseqr_plot_factor(plot_ds, 'Clonality', 'response', type='PRE')
+iseqr_plot_factor(plot_ds, 'Log2.Fold.Change.in.Clonality', 'arm', type='POST3')
+iseqr_plot_metrics(plot_ds, 'Total.Sequences', 'ALC', type='PRE')
+
 

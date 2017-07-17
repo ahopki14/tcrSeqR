@@ -200,5 +200,4 @@ stars <- function(t){
 	}
 }
 
-}
 

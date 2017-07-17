@@ -22,6 +22,7 @@ plot_ds <- merge(dict,stats)
 plot_ds <- iseqr_order(plot_ds, ds)
 
 #calculate change in metrics
+comps <- list(c('PRE','POST')) # or whatever
 plot_ds <- delta_stats(plot_ds, comps, 'Richness')
 plot_ds <- delta_stats(plot_ds, comps, 'Clonality')
 
@@ -31,6 +32,9 @@ plot_ds <- iseqr_order(plot_ds, ds)
 # Calculate overlaps
 #this is done on the aggregated data too
 
-comps <- list(c('PRE','POST'))
 plot_ds <- iseqr_morisita(plot_ds, comps, ds, merge=T)
 plot_ds <- iseqr_order(plot_ds, ds)
+
+
+#Clean up names
+names(plot_ds) <- gsub(' ','.',names(plot_ds))
