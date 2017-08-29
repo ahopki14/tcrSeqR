@@ -1,4 +1,7 @@
 library(shiny)
+library(ggplot2)
+library(immunoSeqR)
+plot_ds <- readRDS('~/Documents/emj/ImmunoseqResults/data/ipi/plot_ds.Rds')
 
 timepoints <- levels(plot_ds$type)
 metrics <- names(plot_ds)[11:16]
@@ -6,7 +9,7 @@ x_vals <- names(plot_ds)[6:8]
 
 
 ui <- fluidPage(
-		titlePanel('immunoSeqR Shiny'),
+		titlePanel('immunoSeqR'),
 		sidebarLayout(
 		  sidebarPanel(
 		  	selectInput(inputId='metric', label='Metric', choices=metrics),
