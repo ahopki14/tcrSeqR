@@ -74,57 +74,70 @@ function(all_files,data='estimatedNumberGenomes',nucleotide='nucleotide',aminoAc
 # Aggregate
 # ds is a data frame made with iseqr_merge (needs 'aa' and 'nt', others will be lost)
 # ds_out is a data frame of the aggregated data
-iseqr_aggregate <- function(ds, inc_nt=TRUE){
-    start <- proc.time()
-# restrict to productive and sanitize factor
-    ds <- ds[ds$aa!='',]
-    ds$aa <- as.factor(as.character(ds$aa))
-# make indicies and synonymity
-    ind <- split(seq_len(nrow(ds)),ds$aa)
-    syn <- sapply(ind,length)
-# define data columns
-    dc <- names(ds)[names(ds)!='nt' & names(ds)!='aa']
-# do math
-  gc()
-    sum_rows <- function(x){sapply(ds[x,dc],FUN=sum)}
-    a <- sapply(ind,FUN=sum_rows)
-    b <- data.frame(t(a))
-# put together ds_out
-    rn <- data.frame(aa=rownames(b))
-    rownames(b) <- seq_len(nrow(b))
-    syn <- data.frame(syn)
-    ds_out <- cbind(syn,rn,b)
-    rownames(ds_out) <- seq_len(nrow(ds_out))
-# combine synonymous nucleotide sequences into a single char (comma sep)
-    if(inc_nt){
-        paste_names <- function(x){toString(ds[x,'nt'])}
-        nt <- sapply(ind,FUN=paste_names)
-        nt <- data.frame(nt)
-        ds_out <- cbind(nt, ds_out)
-    }
-# Print sanity check
-    t <- round((proc.time()-start)[['elapsed']]/60,2)
-    cat(paste0('Collapsed ',length(syn[syn>1]),' TCRs\n', 'Left ',length(syn[syn==1]),' TCRs\n'))
-    cat(paste0('Completed in ',t,' minutes\n'))
-#
-    ds_out
+iseqr_aggregate <- function(ds){
+	stopifnot(class(ds)=='SummarizedExperiment')
+	stopifnot(assayNames(ds)=='tcr_nt')
+	start <- proc.time()
+	# restrict to productive and sanitize factor
+	w_remove <- which(rownames(ds)=='')
+	w_keep <- which(rownames(ds)!='')
+	ds <- ds[w_keep,]
+	#ds$aa <- as.factor(as.character(ds$aa))
+	# make indicies and synonymity
+	ind <- split(seq_len(nrow(ds)),rownames(ds))
+	syn <- sapply(ind,length)
+	#split out columns to be fixed
+	f <- syn>1 # id clones which need to be collapsed
+	to_fix <- as.vector(unlist(ind[f]))
+	ok <- ds[-to_fix,]
+	stopifnot(length(rownames(ok))==length(unique(rownames(ok))))
+	to_fix <- ds[to_fix,]
+	# do math
+	gc()
+	ind_to_fix <- split(seq_len(nrow(to_fix)),rownames(to_fix))
+	sum_rows <- function(x){colSums(assay(to_fix)[unlist(ind_to_fix[x]),])}
+	fixed_mat <- sapply(seq(length(ind_to_fix)),FUN=sum_rows)
+	fixed_mat <- t(fixed_mat)
+	rownames(fixed_mat) <- names(ind_to_fix)
+	#assemble a SE of the fixed sequences
+	fixed <- SummarizedExperiment(assays=list(tcr_nt=fixed_mat))
+	rowData(fixed) <- DataFrame(nt='NA',aa=rownames(fixed_mat))
+	ds_out <- rbind(ok, fixed)
+	names(ds_out@assays$data) <- 'tcr'
+	#Now deal with the dictionary
+	dict <- iseqr_order(dict, ds,reorder=T)
+	# Print sanity check
+	t <- round((proc.time()-start)[['elapsed']]/60,2)
+	cat(paste0('Collapsed ',sum(syn[syn>1]),' TCRs to ',length(syn[syn>1]),'\n',
+		   'Left ',length(syn[syn==1]),' TCRs\n'))
+	cat(paste0('Removed ',length(w_remove),' Non-productive TCRs\n'))
+	stopifnot(nrow(ds_out) + sum(syn[syn>1]) - length(syn[syn>1]) == nrow(ds))
+	cat(paste0('Completed in ',t,' minutes\n'))
+	#
+	ds_out
 }
 
-iseqr_make_se <- function(ds_agg, dict){
+iseqr_make_se <- function(ds, dict){
 	require(SummarizedExperiment)
 	#reoder the dictionary to match the ds
-	dict <- iseqr_order(dict, ds_agg, reorder=T)
+	dict <- iseqr_order(dict, ds, reorder=T)
 	#get metadata and data column locations
-	w_m <- grep('aa|nt|syn', names(ds_agg))
-	w_d <- grep('aa|nt|syn', names(ds_agg), invert=T)
+	w_m <- grep('aa|nt|syn', names(ds))
+	w_d <- grep('aa|nt|syn', names(ds), invert=T)
 	# make the SE object with the data
-	ds_se <- SummarizedExperiment(assays=list(tcr=as.matrix(ds_agg[,w_d], rownames=F)))
+	if(!any(grepl('syn',names(ds)))){
+		#if nt data
+		ds_se <- SummarizedExperiment(assays=list(tcr_nt=as.matrix(ds[,w_d], rownames=F)))
+				}else{
+		#if agg data
+		ds_se <- SummarizedExperiment(assays=list(tcr=as.matrix(ds[,w_d], rownames=F)))
+	}
 	# add some metadata
-	colnames(se) <- names(ds[,w_d])
-	rownames(ds_se) <- ds_agg$aa
-	rowData(ds_se) <- DataFrame(ds_agg[,w_m])
+	rownames(ds_se) <- ds$aa
+	rowData(ds_se) <- DataFrame(ds[,w_m])
 	stopifnot(all(colnames(ds_se)==dict$fn))
 	colData(ds_se) <- DataFrame(dict)
+	colnames(ds_se) <- colnames(ds[,w_d])
 	#return the SE object
 	ds_se
 }
