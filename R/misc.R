@@ -173,7 +173,7 @@ delta_stats <- function(plot_ds,comps, metric, merge=T){
 iseqr_order <- function(plot_ds,ds, reorder=T){
 	ord <- match(names(ds), plot_ds$fn)
 	ord <- ord[!is.na(ord)]
-	w <- grep('syn|aa', names(ds))
+	w <- grep('syn|aa|nt', names(ds))
 	stopifnot(names(ds)[-w] == plot_ds$fn[ord])
 	if(reorder){
 		plot_ds[ord,]
@@ -200,4 +200,4 @@ stars <- function(t){
 	}
 }
 
-
+size <- function(x){format(object.size(x), units='MB')}
