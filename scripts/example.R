@@ -11,35 +11,22 @@ all_files <- list.files(pattern=".tsv")
 # construct the dataset with iseqr_merge
 ds <- iseqr_merge(all_files)
 
+#load the dictionary
+dict <- readRDS('dict.Rds')
 
-
-# Remove Empty Sequences
-length(which(ds$aa==''))
-ds <- ds[ds$aa!='',]
-
-# Remove Sequences with stop codons
-length(grep('\\*',ds$aa))
-ds <- ds[grep('\\*',ds$aa,invert=TRUE),]
+#make SummarizedExperiment object
+ds <- iseqr_make_se(ds,dict)
 
 # aggregate the data
 # this collapses synonymous nucleotide sequences
-ds_agg <- iseqr_aggregate(ds,inc_nt=FALSE)
+ds_agg <- iseqr_aggregate(ds)
 
-#moving the aa and nt columns to the end makes life easier
-ds <- ds[,c(3:66,1,2)]
-ds_agg <- ds_agg[,c(3:66,1,2)]
-
-#load the dictionary
-dict <- readRDS('dict.Rds')
-#put it in the correct order
-dict <- iseqr_order(dict, ds_agg)
 
 #going forward, use on the aggregated dataset
 ds <- ds_agg
 
-# rows of dictionary correspond to cols of ds
-names(ds)
-names(ds) == dict$fn
+
+###############################################################
 
 # so you can do this:
 w <- which(dict$type=='PRE') # restrict to Pre-vac sample types
