@@ -1,13 +1,8 @@
-setClass("tcr",representation(
-			      seq="matrix",
-			      receptors="character",
-			      colData="data.frame",
-			      rowData="data.frame"
-			      )
-# to do:
-)
+setClass("tcr",contains='SummarizedExperiment')
 
-
+tcr <- function(se=SummarizedExperiment(assays=list(tcr_null=matrix()))){
+	new('tcr',se)
+}
 
 data <- new("tcr", seq=assay(ds),
 	    receptors=as.character(rowData(ds)$aa),
@@ -15,18 +10,17 @@ data <- new("tcr", seq=assay(ds),
 
 setMethod("show", "tcr",
 	function(object){
-		cat(class(object), "Experiment with", nrow(object@seq), 
-		    "receptors and", ncol(object@seq), "samples\n")
-		if(!any(grepl('syn',names(object@rowData)))){
-			cat('Nucleotide Data (NOT Aggregated)\n')}else{
-				cat('Aggregated Data\n')
+		cat(class(object), "Experiment with", nrow(object@assays), 
+		    "receptors and", ncol(object@assays), "samples\n")
+		if(names(object@assays)=='tcr_nt'){
+			cat('Nucleotide Data (NOT Aggregated)\n')}else 
+				if(names(object@assays)=='tcr'){
+				cat('Aggregated Data\n')}else{
+					cat('Empty Data Set\n')
 		}
 		#
-		cat('Metadata:\n')
-		print(head(object@colData))
-		cat(rep(' ', 15), '.\n')
-		cat(rep(' ', 15), '.\n')
-		cat(rep(' ', 15), '.\n')
+		cat('Metadata Available:\n')
+		cat(head(names(colData(object)),15), '\n')
 	}
 	# to do:
 )
