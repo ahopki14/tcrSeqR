@@ -1,4 +1,4 @@
-iseqr_plot_metrics <- function(plot_ds,metric,x_val,type=NA,sm=TRUE,hjust=-0.5,labels=TRUE){
+iseqr_plot_metrics <- function(plot_ds,metric,x_val,type=NA,sm=TRUE,hjust=-0.5,labels=TRUE,...){
   if(!is.na(type)){
     plot_ds <- plot_ds[plot_ds$type==type,]
     title <- type
@@ -19,7 +19,7 @@ iseqr_plot_metrics <- function(plot_ds,metric,x_val,type=NA,sm=TRUE,hjust=-0.5,l
   g
 }
 
-iseqr_plot_factor <- function(plot_ds,metric,x_val,type=NA,hjust=-0.5,labels=TRUE){
+iseqr_plot_factor <- function(plot_ds,metric,x_val,type=NA,hjust=-0.5,labels=TRUE,...){
   if(!is.na(type)){
     plot_ds <- plot_ds[plot_ds$type==type,]
     title <- type
@@ -34,3 +34,15 @@ iseqr_plot_factor <- function(plot_ds,metric,x_val,type=NA,hjust=-0.5,labels=TRU
   if(labels){g + geom_text(aes(label=patient),colour='grey',hjust=hjust,size=1)}else{g}
 }
 
+
+
+setMethod("iseqr_plot_factor",signature="tcr", 
+	  definition=function(plot_ds,metric,x_val,...){
+	iseqr_plot_factor(as.data.frame(colData(plot_ds)),metric,x_val, ...)
+	}
+)
+setMethod("iseqr_plot_metrics",signature="tcr", 
+	  definition=function(plot_ds,metric,x_val,...){
+	iseqr_plot_metrics(as.data.frame(colData(plot_ds)),metric,x_val, ...)
+	}
+)
