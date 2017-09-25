@@ -75,7 +75,7 @@ function(all_files,data='estimatedNumberGenomes',nucleotide='nucleotide',aminoAc
 # ds is a data frame made with iseqr_merge (needs 'aa' and 'nt', others will be lost)
 # ds_out is a data frame of the aggregated data
 iseqr_aggregate <- function(ds){
-	stopifnot(class(ds)=='SummarizedExperiment')
+	stopifnot(class(ds)=='tcr')
 	stopifnot(assayNames(ds)=='tcr_nt')
 	start <- proc.time()
 	# restrict to productive and sanitize factor
@@ -117,7 +117,7 @@ iseqr_aggregate <- function(ds){
 	ds_out
 }
 
-iseqr_make_se <- function(ds, dict){
+iseqr_make_tcr <- function(ds, dict){
 	require(SummarizedExperiment)
 	#reoder the dictionary to match the ds
 	dict <- iseqr_order(dict, ds, reorder=T)
@@ -139,23 +139,5 @@ iseqr_make_se <- function(ds, dict){
 	colData(ds_se) <- DataFrame(dict)
 	colnames(ds_se) <- colnames(ds[,w_d])
 	#return the SE object
-	ds_se
+	tcr(ds_se)
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
