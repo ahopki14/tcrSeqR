@@ -14,8 +14,8 @@ ds <- iseqr_merge(all_files)
 #load the dictionary
 dict <- readRDS('dict.Rds')
 
-#make SummarizedExperiment object
-ds <- iseqr_make_se(ds,dict)
+#make tcr object
+ds <- iseqr_make_tcr(ds,dict)
 
 # aggregate the data
 # this collapses synonymous nucleotide sequences
