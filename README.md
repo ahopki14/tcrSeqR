@@ -52,7 +52,7 @@ column name in the dataset), `patient` is a patient/subject number, `type` is a 
 this case pre and post treatment as well as tumor) and `response` indicates if a patient was a
 responder or non-responder.  
 
-##Creating the `tcr` object
+## Creating the `tcr` object
 Next, the data is combined with any metadata available to create the `tcr`
 object. To match the samples to their metadata, the metadata must contain a
 column called `fn` which matches the filenames of the sample tsv file
