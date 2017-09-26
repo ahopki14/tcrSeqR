@@ -6,10 +6,15 @@ An R package for analyzing TCR sequencing data from Adaptive Biotechnology's Imm
 It is primarily a set of tools for importing the data into R, but it also includes a number of
 scripts that can be used as examples for analyzing complex experiments.
 
-The data is imported into a single `data.frame` containing all of the samples. Rows represent
-unique T cell clones and columns represent samples. When clones are not shared between samples,
+The data is imported into a single `tcr` object, containing all of the samples and associated metadata.
+the `tcr` class extends `SummarizedExperiment` and has a number of custom
+methods. The data is represented as a table with rows representing
+unique T cell clones and columns representing samples. When clones are not shared between samples,
 the table is completed by adding zeros. This results in a larger than necessary table, but saves
 time by not having to join samples on the fly. 
+
+Metadata for the samples, as well as metrics summarizing them are stored in the
+colData slot of the `tcr` object. 
 
 `scripts/example.R` contains a full example using some small sample files.
 
@@ -26,27 +31,6 @@ all_files <- list.files(pattern=".tsv")
 # construct the dataset with iseqr_merge
 ds <- iseqr_merge(all_files)
 ``` 
-
-## Collapsing Data 
-Many nucleic acid sequences can encode the same CDR3, so many analyses may require aggregated
-data (data in which synonymous nucleotide sequences are combined into a single amino acid level
-representation). Metrics such as Clonality and Richness should typically be computed from aggregated
-data.  
-An imported dataset can be aggregated using `iseqr_aggregate()`
-
-```R
-# Remove Empty Sequences
-length(which(ds$aa==''))
-ds <- ds[ds$aa!='',]
-
-# Remove Sequences with stop codons
-length(grep('\\*',ds$aa))
-ds <- ds[grep('\\*',ds$aa,invert=TRUE),]
-
-# aggregate the data
-# this collapses synonymous nucleotide sequences
-ds_agg <- iseqr_aggregate(ds,inc_nt=FALSE)
-```  
 
 ## Building a Metadata Dictionary
 `immunoSeqR` can help make plots of various metrics, but it needs to be aware of the metadata
@@ -67,7 +51,39 @@ In this example, `fn` refers to the original filename of the tsv (which is broug
 column name in the dataset), `patient` is a patient/subject number, `type` is a sample type (in
 this case pre and post treatment as well as tumor) and `response` indicates if a patient was a
 responder or non-responder.  
-It is essential that the order of the dictionary be the same as the order of the dataset. 
+
+##Creating the `tcr` object
+Next, the data is combined with any metadata available to create the `tcr`
+object. To match the samples to their metadata, the metadata must contain a
+column called `fn` which matches the filenames of the sample tsv file
+(specifically, it must match the `colnames` of the `ds` object at this stage.
+With this metadata loaded as a `data.frame`, the `tcr` object can be constructed
+using
+
+```R
+#load the dictionary
+dict <- readRDS('dict.Rds')
+
+#make tcr object
+ds <- iseqr_make_tcr(ds,dict)
+```
+
+## Collapsing Data 
+Many nucleic acid sequences can encode the same CDR3, so many analyses may require aggregated
+data (data in which synonymous nucleotide sequences are combined into a single amino acid level
+representation). Metrics such as Clonality and Richness should typically be computed from aggregated
+data.  
+This step also removes any sequences with stop codons, or sequences with no
+translation. 
+
+An imported dataset can be aggregated using `iseqr_aggregate()`
+
+```R
+# aggregate the data
+# this collapses synonymous nucleotide sequences
+ds_agg <- iseqr_aggregate(ds,inc_nt=FALSE)
+```  
+
 
 
 ## Metrics 
