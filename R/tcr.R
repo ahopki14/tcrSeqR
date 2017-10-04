@@ -4,9 +4,6 @@ tcr <- function(se=SummarizedExperiment(assays=list(tcr_null=matrix()))){
 	new('tcr',se)
 }
 
-data <- new("tcr", seq=assay(ds),
-	    receptors=as.character(rowData(ds)$aa),
-	    colData=dict, rowData=as.data.frame(rowData(ds)))
 
 setMethod("show", "tcr",
 	function(object){
@@ -24,17 +21,3 @@ setMethod("show", "tcr",
 	}
 	# to do:
 )
-
-#this makes filter work with DataFrame
-filter.DataFrame <- function(.data,...) {
-	    DataFrame(filter(as.data.frame(.data),...))
-}
-
-# filter for tcr object
-filter.tcr <- function(.data, ...){
-	colData.filter <- filter(colData(.data), ...)
-	if(nrow(colData.filter)>0){
-		w <- grep(paste0(as.character(colData.filter$fn), collapse='|'), colData(.data)$fn)
-		.data[,w]	
-	}else{.data[,0]}
-}

@@ -1,8 +1,3 @@
-library(immunoSeqR)
-library(dplyr)
-library(ggplot2)
-
-
 #set path to adaptive tsv files
 path <- '~/Documents/emj/ImmunoseqResults/immunoSeqR/data/ex_tsv/tsv'
 setwd(path)
@@ -28,19 +23,21 @@ ds <- ds_agg
 
 ###############################################################
 
-# so you can do this:
-w <- which(dict$type=='PRE') # restrict to Pre-vac sample types
-head(ds[,w])
+# The data object can be filtered using pyr commands
+filter(ds, type=='PRE')
+# or
+filter(ds, patient=='8.001')
 
-# or this:
-w <- which(dict$patient=='8.001') # restrict to patient 1
-head(ds[,w])
 
-# Clonality of first sample
-clonality(ds[,1])
+#metrics can be calculated for the samples
+clonality(ds, merge=F)
 
-# quickly calculate for all samples
-sapply(ds[,-c(65,66)],clonality)
+# and these can be merged directly into the object's metadata
+ds <- clonality(ds)
+ds <- richness(ds)
+ds$clonality
+
+#############OLD#################
 
 
 # What about richness?
