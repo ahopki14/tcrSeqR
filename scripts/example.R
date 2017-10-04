@@ -35,14 +35,18 @@ clonality(ds, merge=F)
 # and these can be merged directly into the object's metadata
 ds <- clonality(ds)
 ds <- richness(ds)
-ds$clonality
+ds$Clonality
+ds$Richness
+
+# To calculate overlaps, as well as changes in metrics we will need to define
+# the comparisons that need to be made
+comps <- list(c('PRE','POST1'), c('PRE','POST3'))
+
+# now we can add the morisita index (similarity) to the object
+ds <- iseqr_morisita(ds, comps)
+
 
 #############OLD#################
-
-
-# What about richness?
-length(which(ds[,1]>0))
-
 
 # overlap
 overlap(ds[,1],ds[,2])

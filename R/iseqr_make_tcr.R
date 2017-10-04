@@ -1,3 +1,17 @@
+#' iseqr_make_tcr
+#' 
+#' Make a tcr object from an imported adaptive dataset and a dictionary
+#' containing sample metadata.
+#'
+#' @param ds A dataset containing Adaptive TCR data, made with `iseqr_merge`
+#' @param dict A dictionary containing the sample metadata. This must contain a
+#' field called `fn` with sample names matching the original tsv files (or, more
+#' accurately the colnames(ds)).
+#' 
+#' @return A `tcr` object 
+#' @author Alexander Hopkins
+#' @export
+
 iseqr_make_tcr <- function(ds, dict){
 	#reoder the dictionary to match the ds
 	dict <- iseqr_order(dict, ds, reorder=T)

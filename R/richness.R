@@ -1,4 +1,14 @@
-#richness
+#' richness
+#' 
+#' Computes the richness (total number of unique elements) in a sample
+#' @param x A numeric vector or tcr object
+#' @param merge If x is a tcr object, the output will be a tcr object with the
+#' richness merged into the metadata. 
+#' @return If x is a vector, the function returns the richness If x is a tcr
+#' object, and merge=T, then the function returns a tcr object with richness
+#' included in the metadata for all samples.  
+#' @author Alexander Hopkins
+#' @export
 richness <- function(x,...){
 	length(which(x>0))
 }

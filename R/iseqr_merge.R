@@ -1,5 +1,16 @@
-# merge the exported ImmunoSeq data into a data frame
-# This loads Adaptive tsv files into a single data frame
+#' iseqr_merge
+#' 
+#' Merge Adaptive ImmunoSeq tcr samples into a data.frame
+#'
+#' @param all_files path to directory containing tsvs
+#' @param nucleotide the column header in the tsv denoting the nucleotide
+#' sequence
+#' @param aminoAcid the column header in the tsv denoting the amino acid
+#' sequence
+#' 
+#' @return a data.frame with all the data joined together
+#' @author Alexander Hopkins
+#' @export
 iseqr_merge <- 
 function(all_files,data='estimatedNumberGenomes',nucleotide='nucleotide',aminoAcid='aminoAcid'){
     start <- proc.time() # start the clock

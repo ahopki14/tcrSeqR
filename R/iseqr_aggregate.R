@@ -1,6 +1,12 @@
-# Aggregate
-# ds is a data frame made with iseqr_merge (needs 'aa' and 'nt', others will be lost)
-# ds_out is a data frame of the aggregated data
+#' iseqr_aggregate
+#' 
+#' Collapse synonymouse nucleotide sequences, summing the values in each sample
+#'
+#' @param ds A TCR object made with iseqr_make_tcr.
+#' 
+#' @return the aggregated dataset
+#' @author Alexander Hopkins
+#' @export
 iseqr_aggregate <- function(ds){
 	stopifnot(class(ds)=='tcr')
 	stopifnot(assayNames(ds)=='tcr_nt')
@@ -26,13 +32,11 @@ iseqr_aggregate <- function(ds){
 	fixed_mat <- sapply(seq(length(ind_to_fix)),FUN=sum_rows)
 	fixed_mat <- t(fixed_mat)
 	rownames(fixed_mat) <- names(ind_to_fix)
-	#assemble a SE of the fixed sequences
-	fixed <- SummarizedExperiment(assays=list(tcr_nt=fixed_mat))
+	#assemble a tcr of the fixed sequences
+	fixed <- tcr(SummarizedExperiment(assays=list(tcr_nt=fixed_mat)))
 	rowData(fixed) <- DataFrame(nt='NA',aa=rownames(fixed_mat))
 	ds_out <- rbind(ok, fixed)
 	names(ds_out@assays$data) <- 'tcr'
-	#Now deal with the dictionary
-	dict <- iseqr_order(dict, ds,reorder=T)
 	# Print sanity check
 	t <- round((proc.time()-start)[['elapsed']]/60,2)
 	cat(paste0('Collapsed ',sum(syn[syn>1]),' TCRs to ',length(syn[syn>1]),'\n',
