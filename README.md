@@ -64,7 +64,7 @@ With this metadata loaded as a `data.frame`, the `tcr` object can be constructed
 using
 
 ```R
-#load the dictionary
+#load an example dictionary
 dict <- readRDS('dict.Rds')
 
 #make tcr object
@@ -87,20 +87,46 @@ An imported dataset can be aggregated using `iseqr_aggregate()`
 ds_agg <- iseqr_aggregate(ds,inc_nt=FALSE)
 ```  
 
-
-
 ## Metrics 
-A variety of metrics are available in `immunoSeqR`, including `clonality`, `overlap`, and `morisita`. 
-These typically operate on a single sample, and therefore need to be used with `apply` to
-calculate the metric for all samples
+A variety of metrics are available in `immunoSeqR`, including `clonality`, `richness`, and `morisita`. 
+These functions can, if given an input vector, calculate the statistic of
+interest. If given a `tcr` object, however, they will calculate the metric for
+all samples and (optionally) merge the results back into the metadata. 
 
 ```R
-sapply(ds,clonality)
+# Clonality for one sample
+clonality(assay(ds)[,1])
+
+#Clonality for all samples
+clonality(ds, merge=F)
+
+#Clonality for all samples. merged back into the metadata
+clonality(ds, merge=T)
+```
+Clonality, Richness and Total Sequences all work in this manner, using
+`clonality`, `richness` and `total`, respectively.  
+
+Once these metrics are calculated, it is often of interest to calculate the
+their change following treatment. To accomplish this, the `delta_stats` function
+can be used in a similar manner to the metric functions described above. Because
+it compares samples of different type, `delta_stats` requires a list of
+comparisons to be made. Changes are calculated relative to the first item in the
+list, and multiple comparisons are possible, however restrictions on how the
+data is stored prevent duplicates in the second slot (i.e. 'Pre' vs 'Post1' and
+'Pre' vs 'Post2' can coexist, however 'Pre' vs 'Post2' and 'Post1' vs 'Post2'
+can not because 'Post2' is duplicated in the second position). 
+
+```R
+# make a list of comparisons
+comps <- list(c('PRE','POST1'), c('PRE','POST3'))
+
+#return the change in clonality
+delta_stats(ds,comps,'Clonality', merge=F)
+
+# calculate the change in Richness and merge it into the tcr object
+ds <- delta_stats(ds,comps,'Richness')
 ```
 
-Other metrics include wrappers that calculate the metric in an intelligent way using the
-metadata. For example, `iseqr_morisita()` can calculate the Morisita Index for any pairs of
-samples in a dataset, and `iseqr_exp_cl()` can identify the T cells which expand after treatment.
-
-
+Morisita Index and Expanded Clones operate on a similar principle, see
+`example.R` for a more detailed look at these. 
 
