@@ -1,10 +1,14 @@
-setClass("tcr",contains='SummarizedExperiment')
-
-tcr <- function(se=SummarizedExperiment(assays=list(tcr_null=matrix()))){
-	new('tcr',se)
-}
-
-
+#' tcr class objects and basic methods
+#' 
+#' This is the constructor function for a tcr class object, which extends
+#' SummarizedExperiment
+#'
+#' @return A tcr class object
+#' @export tcr
+#' @exportClass tcr
+tcr <- setClass("tcr",contains='SummarizedExperiment',
+	 prototype=SummarizedExperiment(assays=list(tcr_null=matrix()))
+	 )
 setMethod("show", "tcr",
 	function(object){
 		cat(class(object), "Experiment with", nrow(object@assays), 
@@ -16,8 +20,12 @@ setMethod("show", "tcr",
 					cat('Empty Data Set\n')
 		}
 		#
-		cat('Metadata Available:\n')
-		cat(head(names(colData(object)),15), '\n')
+		cat('Metadata Available (', ncol(colData(object)),'):\n', sep='')
+		if(ncol(colData(object))>15){
+			cat(head(names(colData(object)),3), '...', tail(names(colData(object)),3), '\n')
+		}else{
+			cat(colnames(colData(object)), '\n')
+		}
 	}
 	# to do:
 )

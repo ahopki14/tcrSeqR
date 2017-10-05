@@ -23,7 +23,8 @@ ds <- ds_agg
 
 ###############################################################
 
-# The data object can be filtered using pyr commands
+# The data object can be filtered using plyr commands
+require(dplyr)
 filter(ds, type=='PRE')
 # or
 filter(ds, patient=='8.001')
@@ -35,6 +36,7 @@ clonality(ds, merge=F)
 # and these can be merged directly into the object's metadata
 ds <- clonality(ds)
 ds <- richness(ds)
+ds <- total(ds)
 ds$Clonality
 ds$Richness
 
@@ -45,19 +47,14 @@ comps <- list(c('PRE','POST1'), c('PRE','POST3'))
 # now we can add the morisita index (similarity) to the object
 ds <- iseqr_morisita(ds, comps)
 
+# And finally, compute the fold change in metrics (using the same comparisons)
+ds <- delta_stats(ds,comps,'Clonality')
+ds <- delta_stats(ds,comps,'Richness')
 
-#############OLD#################
-
-# overlap
-overlap(ds[,1],ds[,2])
-morisita(ds[,1],ds[,2])
-
-# make plot_ds with script using
-comps <- list(c('PRE','POST1'), c('PRE','POST3'))
 
 #now plot whatever you want
-iseqr_plot_factor(plot_ds, 'Clonality', 'response', type='PRE')
-iseqr_plot_factor(plot_ds, 'Log2.Fold.Change.in.Clonality', 'arm', type='POST3')
-iseqr_plot_metrics(plot_ds, 'Total.Sequences', 'ALC', type='PRE')
+iseqr_plot_factor(ds, 'Clonality', 'response', type='PRE')
+iseqr_plot_factor(ds, 'Log2.Fold.Change.in.Clonality', 'arm', type='POST3')
+iseqr_plot_metrics(ds, 'Total.Sequences', 'ALC', type='PRE')
 
 

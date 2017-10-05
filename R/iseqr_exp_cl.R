@@ -1,3 +1,4 @@
+# this needs to be updated for tcr objects
 iseqr_exp_cl <-
 function(ds,dict,s1='PRE',s2='POST',category='type',by='patient',inc.all=FALSE){
     patients <- levels(dict[,by])

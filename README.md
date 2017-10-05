@@ -1,5 +1,8 @@
 # immunoSeqR
 
+This README is a little out of date, check out example.R for a more current
+look. This will be fixed soon. 
+
 ## Description
 
 An R package for analyzing TCR sequencing data from Adaptive Biotechnology's ImmunoSeq platform.

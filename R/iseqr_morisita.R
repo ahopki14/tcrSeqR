@@ -1,4 +1,17 @@
-# Wrapper for Morisita
+#' iseqr_morisita
+#' 
+#' Computes the Morisita index (similarity) across multiple comparisons in a tcr
+#' object 
+#'
+#' @param ds A tcr object
+#' @param comps A list of comparisons to be made
+#' @param merge Logical indicating if the results should be returned alone, or
+#' merged into the tcr object
+#'
+#' @return A data.frame containing the Morisita indicies (if merge=F) or a tcr
+#' object with the Morisita indicies included in the metadata
+#' @author Alexander Hopkins
+#' @export
 iseqr_morisita <- function(ds,comps, merge=T){
 	#make sure comps is a list with 2 elements in each
 	stopifnot(all(unlist(lapply(comps, FUN=length))==2))
@@ -28,7 +41,7 @@ iseqr_morisita <- function(ds,comps, merge=T){
 		#make sure the metadata and data are in the same order
 		stopifnot(all(tmp$fn == colnames(assay(ds))))
 		rownames(tmp) <- tmp$fn
-		colData(ds) <- tmp
+		colData(ds) <- DataFrame(tmp)
 		ds
 	}else{out}
 }

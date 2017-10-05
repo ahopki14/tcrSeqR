@@ -1,3 +1,11 @@
+#' tert
+#' 
+#' Computes the tertiles for a distribution
+#' 
+#' @param x A distribution
+#' @return A vector indicating which tertile each data point falls in 
+#' @author Alexander Hopkins
+#' @export
 tert <- function(x){
 	q <- quantile(x,c(1/3,2/3))
 	w1 <- which(x<=q[[1]])

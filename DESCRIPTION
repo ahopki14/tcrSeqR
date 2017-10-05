@@ -1,7 +1,7 @@
 Package: immunoSeqR
 Type: Package
 Title: Tools for analyzing data from Adaptive's ImmunoSeq platform
-Version: 1.0.5
+Version: 1.0.6
 Date: 2017-09-26
 Author: Alexander Hopkins
 Maintainer: Alexander Hopkins <achopkins@gmail.com>

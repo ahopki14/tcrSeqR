@@ -35,7 +35,7 @@ iseqr_aggregate <- function(ds){
 	#assemble a tcr of the fixed sequences
 	fixed <- tcr(SummarizedExperiment(assays=list(tcr_nt=fixed_mat)))
 	rowData(fixed) <- DataFrame(nt='NA',aa=rownames(fixed_mat))
-	ds_out <- rbind(ok, fixed)
+	ds_out <- BiocGenerics::rbind(ok, fixed)
 	names(ds_out@assays$data) <- 'tcr'
 	# Print sanity check
 	t <- round((proc.time()-start)[['elapsed']]/60,2)
