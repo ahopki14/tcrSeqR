@@ -135,3 +135,6 @@ ds <- delta_stats(ds,comps,'Richness')
 Morisita Index and Expanded Clones operate on a similar principle, see
 `example.R` for a more detailed look at these. 
 
+## Shiny
+Once you have created a valid `tcr` object, you can use the example shiny web
+app in `/shiny` to view comparisons in a web browser 

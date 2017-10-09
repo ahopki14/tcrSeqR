@@ -65,4 +65,5 @@ iseqr_plot_factor(ds, 'Log2.Fold.Change.in.Clonality', 'arm', type='POST3')
 iseqr_plot_factor(ds, 'Total.Sequences', 'sex', type='PRE')
 iseqr_plot_metrics(ds, 'Number.of.Expanded.Clones', 'age', type='POST1')
 
-
+# There is also a shiny web app example that uses a tcr class object
+# try it out in /shiny/
