@@ -36,7 +36,7 @@ iseqr_plot_metrics <- function(plot_ds,metric,by,type=NA,sm=TRUE,hjust=-0.5,labe
 }
 
 setMethod("iseqr_plot_metrics",signature="tcr", 
-	  definition=function(plot_ds,metric,by,...){
-	iseqr_plot_metrics(as.data.frame(colData(plot_ds)),metric,by, ...)
+	  definition=function(plot_ds,metric,by,type=NA,...){
+	iseqr_plot_metrics(as.data.frame(colData(plot_ds)),metric,by,type=type, ...)
 	}
 )

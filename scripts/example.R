@@ -7,14 +7,22 @@ all_files <- list.files(pattern=".tsv")
 ds <- iseqr_merge(all_files)
 
 #load the dictionary
+# This can be done with read.csv, as long as factors are created rather than
+# characters for metadata of interest
+# here, we can use a pre-made dictionary 
 dict <- readRDS('dict.Rds')
 
 #make tcr object
-ds <- iseqr_make_tcr(ds,dict)
+ds_nt <- iseqr_make_tcr(ds,dict)
+
+#This is the optimal time to calculate expanded clones (before you aggregate the
+#data) This requires a list of comparisons
+comps <- list(c('PRE','POST1'), c('PRE','POST3'))
+ds_nt <- iseqr_exp_cl(ds_nt, comps, output='tcr')
 
 # aggregate the data
 # this collapses synonymous nucleotide sequences
-ds_agg <- iseqr_aggregate(ds)
+ds_agg <- iseqr_aggregate(ds_nt)
 
 
 #going forward, use on the aggregated dataset
@@ -24,10 +32,9 @@ ds <- ds_agg
 ###############################################################
 
 # The data object can be filtered using plyr commands
-require(dplyr)
 filter(ds, type=='PRE')
 # or
-filter(ds, patient=='8.001')
+filter(ds, patient=='1')
 
 
 #metrics can be calculated for the samples
@@ -40,8 +47,8 @@ ds <- total(ds)
 ds$Clonality
 ds$Richness
 
-# To calculate overlaps, as well as changes in metrics we will need to define
-# the comparisons that need to be made
+# Like expanded clones (see above), overlaps and fold changes require a list of
+# comparisons
 comps <- list(c('PRE','POST1'), c('PRE','POST3'))
 
 # now we can add the morisita index (similarity) to the object
@@ -53,8 +60,9 @@ ds <- delta_stats(ds,comps,'Richness')
 
 
 #now plot whatever you want
-iseqr_plot_factor(ds, 'Clonality', 'response', type='PRE')
+iseqr_plot_factor(ds, metric='Clonality', by='response', type='PRE')
 iseqr_plot_factor(ds, 'Log2.Fold.Change.in.Clonality', 'arm', type='POST3')
-iseqr_plot_metrics(ds, 'Total.Sequences', 'ALC', type='PRE')
+iseqr_plot_factor(ds, 'Total.Sequences', 'sex', type='PRE')
+iseqr_plot_metrics(ds, 'Number.of.Expanded.Clones', 'age', type='POST1')
 
 

@@ -4,7 +4,7 @@
 \alias{iseqr_make_tcr}
 \title{iseqr_make_tcr}
 \usage{
-iseqr_make_tcr(ds, dict)
+iseqr_make_tcr(ds, dict, remove = T)
 }
 \arguments{
 \item{ds}{A dataset containing Adaptive TCR data, made with `iseqr_merge`}
@@ -12,6 +12,9 @@ iseqr_make_tcr(ds, dict)
 \item{dict}{A dictionary containing the sample metadata. This must contain a
 field called `fn` with sample names matching the original tsv files (or, more
 accurately the colnames(ds)).}
+
+\item{remove}{Logical, indicating if non-productive clones and clones with
+stop codons should be removed}
 }
 \value{
 A `tcr` object

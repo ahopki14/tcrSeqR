@@ -7,12 +7,22 @@
 #' @param dict A dictionary containing the sample metadata. This must contain a
 #' field called `fn` with sample names matching the original tsv files (or, more
 #' accurately the colnames(ds)).
+#' @param remove Logical, indicating if non-productive clones and clones with
+#' stop codons should be removed
 #' 
 #' @return A `tcr` object 
 #' @author Alexander Hopkins
 #' @export
 
-iseqr_make_tcr <- function(ds, dict){
+iseqr_make_tcr <- function(ds, dict, remove=T){
+	stopifnot(class(ds)=='data.frame')
+	# restrict to productive and sanitize factor
+	if(remove){
+		w_remove <- unique(c(which(ds$aa==''), grep('\\*',ds$aa)))
+		ds <- ds[-w_remove,]
+		cat('Removing',length(w_remove), 'clones with stop codons or no translation\n')
+		ds$aa <- as.factor(as.character(ds$aa))
+	}
 	#reoder the dictionary to match the ds
 	dict <- iseqr_order(dict, ds, reorder=T)
 	#make an ordering variable

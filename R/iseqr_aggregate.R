@@ -11,11 +11,6 @@ iseqr_aggregate <- function(ds){
 	stopifnot(class(ds)=='tcr')
 	stopifnot(assayNames(ds)=='tcr_nt')
 	start <- proc.time()
-	# restrict to productive and sanitize factor
-	w_remove <- which(rownames(ds)=='')
-	w_keep <- which(rownames(ds)!='')
-	ds <- ds[w_keep,]
-	#ds$aa <- as.factor(as.character(ds$aa))
 	# make indicies and synonymity
 	ind <- split(seq_len(nrow(ds)),rownames(ds))
 	syn <- sapply(ind,length)
@@ -41,7 +36,6 @@ iseqr_aggregate <- function(ds){
 	t <- round((proc.time()-start)[['elapsed']]/60,2)
 	cat(paste0('Collapsed ',sum(syn[syn>1]),' TCRs to ',length(syn[syn>1]),'\n',
 		   'Left ',length(syn[syn==1]),' TCRs\n'))
-	cat(paste0('Removed ',length(w_remove),' Non-productive TCRs\n'))
 	stopifnot(nrow(ds_out) + sum(syn[syn>1]) - length(syn[syn>1]) == nrow(ds))
 	cat(paste0('Completed in ',t,' minutes\n'))
 	#
