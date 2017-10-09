@@ -1,0 +1,211 @@
+---
+title: \texttt{immunoSeqR} Analysis
+#author: "Alex Hopkins"
+output: pdf_document
+header-includes:
+   - \usepackage{graphicx}
+
+---
+# Adjuvant Study
+Created `r  format(Sys.Date(),"%m/%d/%y")`
+
+```{r eval=TRUE,echo=FALSE}
+require(immunoSeqR)
+require(ggplot2)
+require(gridExtra)
+require(knitr)
+require(reshape2)
+require(rmarkdown)
+r <- 
+function(){render('~/Documents/emj/ImmunoseqResults/immunoSeqR/scripts/rmd/adjuvant.Rmd',output_file=
+'~/Documents/emj/ImmunoseqResults/new/adjuvant.pdf')}
+first_run <- TRUE
+verbose=FALSE
+
+```
+```{r eval=first_run}
+dict <- readRDS('~/Documents/emj/ImmunoseqResults/data/adjuvant/dict.Rds')
+stats <- readRDS('~/Documents/emj/ImmunoseqResults/data/adjuvant/stats.Rds')
+plot_ds <- readRDS('~/Documents/emj/ImmunoseqResults/data/adjuvant/plot_ds.Rds')
+load('~/Documents/emj/ImmunoseqResults/data/adjuvant/olm.Rda')
+load('~/Documents/emj/ImmunoseqResults/data/adjuvant/sum.ds.Rda')
+
+#Filter one bad sample
+w <- which(plot_ds$patient=='3.026' & plot_ds$type=='PDAC')
+plot_ds <- plot_ds[-w,]
+```
+
+
+## Background
+\includegraphics[width=\textwidth]{/home/ahopkins/Documents/emj/figures/J9988_timeline.pdf}
+
+### Dataset
+The data set contains `r sum.ds$nsamp` samples, of `r  sum.ds$ntypes` types.
+There are `r  sum.ds$unique.tcr` unique TCRs, collapsed from `r  sum.ds$total.tcr` distinct
+productive CDR3 sequences. This represents an average synonymity of `r  sum.ds$avg.syn`.
+The maximum synonymity (in the parent data set) was `r  sum.ds$max.syn` (clone sequence `r
+sum.ds$max.syn.aa `).\par
+
+
+### Metadata  
+The available metadata fields in the dictionary are: `r paste(names(dict)[-1],collapse=', ')`. The statistics computed are `r paste(names(stats)[names(stats)!='fn'],collapse=', ')`.
+
+\clearpage
+
+
+### By Response
+
+```{r by_response,echo=verbose,fig.align='center'}
+x_val <- 'response'
+metrics <- names(stats[names(stats)!='fn'])
+types <- levels(plot_ds$type)
+for(b in metrics){
+	l <- vector('list')
+	for(a in types){
+	    l[[a]] <- iseqr_plot_factor(plot_ds,b,x_val,a)
+	}
+	do.call(grid.arrange,c(l,ncol=length(types)))
+}
+```
+
+\clearpage
+
+### Change in Metrics
+
+```{r delta_metrics,eval=TRUE,echo=verbose,}
+w <- grep('Log',names(plot_ds))
+l <- vector('list')
+for(a in seq(length(w))){
+  l[[a]] <- iseqr_plot_factor(plot_ds,names(plot_ds)[w[a]],'response','POST') +
+                              geom_hline(yintercept=0,alpha=0.1) + ggtitle('PRE to POST')
+}
+do.call(grid.arrange,c(l,ncol=length(w)))
+````
+\clearpage
+
+### By Type
+```{r by_type,echo=verbose,fig.align='center'}
+metrics <- names(stats[names(stats)!='fn'])
+l <- vector('list')
+for(b in metrics){
+        l[[b]] <- iseqr_plot_factor(plot_ds,b,'type',NA) + theme(axis.text=element_text(size=5))
+}
+    do.call(grid.arrange,c(l,ncol=length(types)))
+
+```
+\clearpage
+
+## Overlaps
+
+```{r overlap,echo=verbose,eval=TRUE,fig.align='center',fig.height=8}
+rownames(mm) <- paste0(dict$patient,dict$type)
+colnames(mm) <- rownames(mm)
+w <- c(which(dict$response=='NR'),which(dict$response=='R'))
+tdict <- dict[w,]
+tmm <- mm[w,w]
+tmm.m <- melt(tmm)
+g <- ggplot(tmm.m,aes(x=Var1,y=Var2)) +
+    geom_tile(aes(fill=value)) +
+    coord_fixed() +
+    scale_fill_gradient(low='white',high='black')+
+    theme(axis.text=element_text(size=5,colour=tdict$response),
+            axis.text.x=element_text(angle=90,hjust=1,vjust=0.5))+
+    xlab('') + ylab('') + ggtitle('Morisita Overlap')
+g
+```
+\clearpage
+
+## Expanded Clones
+```{r, expanded_clones,echo=verbose,eval=TRUE,fig.width=4}
+w <- grep('Number of Expanded',names(plot_ds))
+iseqr_plot_factor(plot_ds,names(plot_ds)[w],'response',type='POST')
+
+```
+```{r exp_cl_vs_Tumor, eval=FALSE,echo=verbose}
+mats <- out$total
+patients <- names(mats)
+resp <- sapply(patients,FUN=iseqr_lookup,dict=dict)
+mats <- mats[order(resp)]
+patients <- patients[order(resp)]
+resp <- resp[order(resp)]
+nr <- length(which(resp=='NR'))
+r <- length(which(resp=='R'))
+layout <- matrix(nrow=max(r,nr),ncol=2)
+layout[seq(nr),1] <- seq(nr)
+layout[,2] <- seq(r)+nr
+
+plots <- list()
+for(a in seq_along(mats)){
+    tds <- as.data.frame(mats[[a]])
+    w <- which(dict$patient==patients[a] & dict$type=='PDAC')
+    tds[,4] <- ds_nt[,w]
+    names(tds)[4] <- 'PDAC'
+    #calculate the lfc
+    ttds <- tds
+    ttds[ttds[,1]==0,1] <- 1
+    ttds[ttds[,2]==0,2] <- 1
+    tds$lfc <- log(ttds[,2]/ttds[,1],2)
+    rm(ttds)
+    #
+    lowest <- min(tds$p_adj[tds$p_adj>0]) # lowest non-0 p-val
+    tds$p_adj[tds$p_adj==0] <- lowest # clip any p=0 to next lowest
+    tds <- tds[which(tds$PDAC>0),] # restrict to tumor
+    suppressWarnings(
+        l <- max(abs(-log(tds$p_adj,10))) # plot limit
+    )
+    if(l<1.3){l <- 1.3} # minimum of -log(0.05,10)
+    sh <- shared(tds$PDAC,rowSums(tds[,c(1,2)]))
+    if(nrow(tds)>0){
+        plots[[a]] <- ggplot(tds,aes(x=-log(p_adj,10),y=PDAC,color=lfc)) +
+            geom_point() + theme_bw()+
+            ylab('Tumor Counts') +
+            xlab('-log(p)') +
+            ggtitle(paste0(patients[a],'(',resp[a],')',' ',sh,' ','shared')) +
+            scale_colour_gradient2(low='red',mid='black',high='green',midpoint=0)+
+            scale_x_continuous(limits=c(0,l))
+    }else{
+			plots[[a]] <- suppressWarnings(ggplot() + geom_blank()+
+							ggtitle(paste0(patients[a],'(',resp[a],')',' ',sh,' ','shared'))
+						)
+	}
+}
+g <- grid.arrange(grobs=plots,layout_matrix=layout)
+ggsave(g,file='~/Desktop/test_fixed_adj.pdf',height=2*nrow(layout),width=8)
+```
+
+\clearpage
+
+## Confounders
+
+### Age
+
+```{r echo=verbose,cache=FALSE,fig.align='center',fig.height=2.5,width=8}
+x_val <- 'age'
+metrics <- names(stats[names(stats)!='fn'])
+types <- levels(plot_ds$type)
+for(b in metrics){
+    l <- vector('list')
+    for(a in types){
+        l[[a]] <- iseqr_plot_metrics(plot_ds,b,x_val,a,sm=TRUE)
+    }
+    do.call(grid.arrange,c(l,ncol=length(types)))
+	cat('  \n')
+}
+```
+
+### Cell Number
+
+```{r echo=verbose,cache=FALSE,fig.align='center',fig.height=2.5,fig.width=8}
+x_val <- 'cells'
+metrics <- names(stats[names(stats)!='fn'])
+types <- levels(plot_ds$type)
+for(b in metrics){
+    l <- vector('list')
+    for(a in types[types!='PDAC']){
+        l[[a]] <- iseqr_plot_metrics(plot_ds[!is.na(plot_ds$cells),],b,x_val,a) + 
+					theme(axis.text=element_text(size=5))
+    }
+    do.call(grid.arrange,c(l,ncol=length(types)))  
+	cat('  \n')
+}
+```
