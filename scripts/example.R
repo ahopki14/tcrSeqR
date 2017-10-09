@@ -1,5 +1,5 @@
 #set path to adaptive tsv files
-path <- '~/Documents/emj/ImmunoseqResults/immunoSeqR/data/ex_tsv/tsv'
+path <- '~/Documents/emj/ImmunoseqResults/immunoSeqR/data/ex_tsv'
 setwd(path)
 all_files <- list.files(pattern=".tsv")
 
