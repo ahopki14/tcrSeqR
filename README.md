@@ -1,7 +1,7 @@
 # immunoSeqR
 
-This README is a little out of date, check out example.R for a more current
-look. This will be fixed soon. 
+This readme covers TCR analysis with the `immunoSeqR` package at a high level.
+The `example.R` script contains a more complete example. 
 
 ## Description
 
@@ -53,13 +53,18 @@ fn | patient | type | response
 In this example, `fn` refers to the original filename of the tsv (which is brought in as the
 column name in the dataset), `patient` is a patient/subject number, `type` is a sample type (in
 this case pre and post treatment as well as tumor) and `response` indicates if a patient was a
-responder or non-responder.  
+responder or non-responder.    
 
 ## Creating the `tcr` object
+
 Next, the data is combined with any metadata available to create the `tcr`
 object. To match the samples to their metadata, the metadata must contain a
 column called `fn` which matches the filenames of the sample tsv file
 (specifically, it must match the `colnames` of the `ds` object at this stage.
+`R` does not like column names that begin with numerics, so the word 'sample' is
+prepended to the file name and underscores and dashes are removed. The best way
+to make the `fn` column in the dictionary is to create the dataset first using
+`iseqr_merge` (see above) and then copy the `colnames(ds)` from that object.
 With this metadata loaded as a `data.frame`, the `tcr` object can be constructed
 using
 
