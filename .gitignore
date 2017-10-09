@@ -4,3 +4,5 @@ scripts/rmd/*_cache
 *.swp
 *.swo
 *.swn
+*.tsv
+*.Rds
