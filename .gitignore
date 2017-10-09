@@ -6,4 +6,3 @@ scripts/rmd/*_cache
 *.swn
 *.tsv
 *.Rds
-old/rmd*
