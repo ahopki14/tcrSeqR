@@ -1,0 +1,308 @@
+---
+title: \texttt{immunoSeqR} Analysis
+#author: "Alex Hopkins"
+output: pdf_document
+geometry: margin=0.75in
+header-includes:
+   - \usepackage{graphicx}
+---
+# Anti-CTLA4 + GVAX Study
+Created `r  format(Sys.Date(),"%m/%d/%y")`
+
+```{r eval=TRUE,echo=FALSE}
+require(immunoSeqR)
+require(ggplot2)
+require(gridExtra)
+require(reshape2)
+require(knitr)
+require(rmarkdown)
+first_run <- TRUE
+verbose=FALSE
+r <- function(){render('~/Documents/emj/ImmunoseqResults/immunoSeqR/scripts/rmd/ipi.Rmd',
+output_file='~/Documents/emj/ImmunoseqResults/new/ipi.pdf',
+intermediates_dir='~/Documents/emj/ImmunoseqResults/new/')}
+```
+```{r eval=first_run}
+dict <- readRDS('~/Documents/emj/ImmunoseqResults/data/ipi/dict.Rds')
+stats <- readRDS('~/Documents/emj/ImmunoseqResults/data/ipi/stats.Rds')
+plot_ds <- readRDS('~/Documents/emj/ImmunoseqResults/data/ipi/plot_ds_expanded_only.Rds')
+load('~/Documents/emj/ImmunoseqResults/data/ipi/olm.Rda')
+load('~/Documents/emj/ImmunoseqResults/data/ipi/sum.ds.Rda')
+```
+
+## Background
+\includegraphics[width=\textwidth]{/home/ahopkins/Documents/emj/figures/J0834_timeline.pdf}
+
+### Dataset
+
+The data set contains `r sum.ds$nsamp` samples, of `r  sum.ds$ntypes` types. 
+There are `r  format(sum.ds$unique.tcr,big.mark=',')` unique TCRs, collapsed from `r  
+format(sum.ds$total.tcr,big.mark=',')` distinct productive CDR3 sequences. This represents an 
+average synonymity of `r  round(sum.ds$avg.syn,3)`. The maximum synonymity (in the parent data 
+set) was `r sum.ds$max.syn` (clone sequence `r sum.ds$max.syn.aa `).\par
+
+### Metadata  
+The available metadata fields in the dictionary are: `r paste(names(dict)[-1],collapse=', ')`. The statistics computed are `r paste(names(stats)[names(stats)!='fn'],collapse=', ')`.
+
+\clearpage
+
+
+### By Response
+
+
+```{r by_response,echo=verbose,fig.align='center'}
+x_val <- 'response'
+metrics <- names(stats[names(stats)!='fn'])
+types <- levels(plot_ds$type)
+for(b in metrics){
+	l <- vector('list')
+	for(a in types){
+	    l[[a]] <- iseqr_plot_factor(plot_ds,b,x_val,a)
+	}
+	do.call(grid.arrange,c(l,ncol=length(types)))
+}
+```
+\clearpage
+
+## Change In Metrics By Response
+```{r delta_metrics,eval=TRUE,echo=verbose}
+w <- grep('Log',names(plot_ds))
+l <- vector('list')
+m <- vector('list')
+for(a in seq(length(w))){
+  l[[a]] <- iseqr_plot_factor(plot_ds,names(plot_ds)[w[a]],'response','POST1') +
+                              geom_hline(yintercept=0,alpha=0.1) + ggtitle('PRE to POST1')
+  m[[a]] <- iseqr_plot_factor(plot_ds,names(plot_ds)[w[a]],'response','POST3') +
+                              geom_hline(yintercept=0,alpha=0.1) + ggtitle('PRE to POST3')
+}
+do.call(grid.arrange,c(l,ncol=length(w)))
+cat('\n\n')
+do.call(grid.arrange,c(m,ncol=length(w)))
+```
+
+\clearpage
+
+### By CT Response (RECIST or irRC)
+
+```{r by_ct,echo=verbose,fig.align='center'}
+x_val <- 'CT'
+metrics <- names(stats[names(stats)!='fn'])
+types <- levels(plot_ds$type)
+for(b in metrics){
+  l <- vector('list')
+  for(a in types){
+      l[[a]] <- iseqr_plot_factor(plot_ds,b,x_val,a)
+  }
+  do.call(grid.arrange,c(l,ncol=length(types)))
+}
+```
+\clearpage
+
+## Change In Metrics By CT Response
+```{r delta_metrics_ct,eval=TRUE,echo=verbose}
+w <- grep('Log',names(plot_ds))
+l <- vector('list')
+m <- vector('list')
+for(a in seq(length(w))){
+  l[[a]] <- iseqr_plot_factor(plot_ds,names(plot_ds)[w[a]],'CT','POST1') +
+                              geom_hline(yintercept=0,alpha=0.1) + ggtitle('PRE to POST1')
+  m[[a]] <- iseqr_plot_factor(plot_ds,names(plot_ds)[w[a]],'CT','POST3') +
+                              geom_hline(yintercept=0,alpha=0.1) + ggtitle('PRE to POST3')
+}
+do.call(grid.arrange,c(l,ncol=length(w)))
+cat('\n\n')
+do.call(grid.arrange,c(m,ncol=length(w)))
+```
+
+\clearpage
+
+### By CA19-9 Response
+
+```{r by_ca199,echo=verbose,fig.align='center'}
+x_val <- 'CA19.9'
+metrics <- names(stats[names(stats)!='fn'])
+types <- levels(plot_ds$type)
+for(b in metrics){
+  l <- vector('list')
+  for(a in types){
+      l[[a]] <- iseqr_plot_factor(plot_ds,b,x_val,a)
+  }
+  do.call(grid.arrange,c(l,ncol=length(types)))
+}
+```
+\clearpage
+
+## Change In Metrics by CA19-9 Response
+```{r delta_metrics_ca199,eval=TRUE,echo=verbose}
+w <- grep('Log',names(plot_ds))
+l <- vector('list')
+m <- vector('list')
+for(a in seq(length(w))){
+  l[[a]] <- iseqr_plot_factor(plot_ds,names(plot_ds)[w[a]],'CA19.9','POST1') +
+                              geom_hline(yintercept=0,alpha=0.1) + ggtitle('PRE to POST1')
+  m[[a]] <- iseqr_plot_factor(plot_ds,names(plot_ds)[w[a]],'CA19.9','POST3') +
+                              geom_hline(yintercept=0,alpha=0.1) + ggtitle('PRE to POST3')
+}
+do.call(grid.arrange,c(l,ncol=length(w)))
+cat('\n\n')
+do.call(grid.arrange,c(m,ncol=length(w)))
+```
+
+\clearpage
+
+
+#By Adverse Event Status
+\textbf{Yes} indicates that the patient experienced a non-skin immune related adverse event of 
+any grade. 
+
+```{r by_ae,echo=verbose,fig.align='center'}
+x_val <- 'nonskin.irae'
+metrics <- names(stats[names(stats)!='fn'])
+types <- levels(plot_ds$type)
+for(b in metrics){
+  l <- vector('list')
+  for(a in types){
+      l[[a]] <- iseqr_plot_factor(plot_ds,b,x_val,a)
+  }
+  do.call(grid.arrange,c(l,ncol=length(types)))
+}
+```
+
+\clearpage
+
+## Change In Metrics
+```{r delta_metrics_ae,eval=TRUE,echo=verbose,}
+w <- grep('Log',names(plot_ds))
+l <- vector('list')
+m <- vector('list')
+for(a in seq(length(w))){
+  l[[a]] <- iseqr_plot_factor(plot_ds,names(plot_ds)[w[a]],'nonskin.irae','POST1') +
+                              geom_hline(yintercept=0,alpha=0.1) + ggtitle('PRE to POST1')
+  m[[a]] <- iseqr_plot_factor(plot_ds,names(plot_ds)[w[a]],'nonskin.irae','POST3') +
+                              geom_hline(yintercept=0,alpha=0.1) + ggtitle('PRE to POST3')
+}
+do.call(grid.arrange,c(l,ncol=length(w)))
+cat('\n\n')
+do.call(grid.arrange,c(m,ncol=length(w)))
+```
+
+
+\clearpage
+
+### By Type
+```{r by_type,echo=verbose,fig.align='center'}
+metrics <- names(stats[names(stats)!='fn'])
+l <- vector('list')
+for(b in metrics){
+        l[[b]] <- iseqr_plot_factor(plot_ds,b,'type',NA) + theme(axis.text=element_text(size=5))
+}
+    do.call(grid.arrange,c(l,ncol=length(types)))
+
+```
+\clearpage
+
+### By Treatment Arm
+
+\begin{center}
+\begin{tabular}{l l}
+Arm 1 & Ipilimumab \\
+Arm 2 & Ipilimumab + Cy + GVAX \\
+\end{tabular}
+\end{center}
+
+
+```{r echo=verbose,cache=FALSE,fig.align='center',fig.height=2.5}
+x_val <- 'arm'
+metrics <- names(stats[names(stats)!='fn'])
+types <- levels(plot_ds$type)
+for(b in metrics){
+    l <- vector('list')
+    for(a in types){
+        l[[a]] <- iseqr_plot_factor(plot_ds,b,x_val,a)
+    }
+    do.call(grid.arrange,c(l,ncol=length(types)))
+}
+```
+\clearpage
+
+## Change In Metrics
+```{r delta_metrics_arm,eval=TRUE,echo=verbose,}
+w <- grep('Log',names(plot_ds))
+l <- vector('list')
+m <- vector('list')
+for(a in seq(length(w))){
+  l[[a]] <- iseqr_plot_factor(plot_ds,names(plot_ds)[w[a]],'arm','POST1') +
+                              geom_hline(yintercept=0,alpha=0.1) + ggtitle('PRE to POST1')
+  m[[a]] <- iseqr_plot_factor(plot_ds,names(plot_ds)[w[a]],'arm','POST3') +
+                              geom_hline(yintercept=0,alpha=0.1) + ggtitle('PRE to POST3')
+}
+do.call(grid.arrange,c(l,ncol=length(w)))
+cat('\n\n')
+do.call(grid.arrange,c(m,ncol=length(w)))
+```
+
+
+
+## Overlaps
+
+```{r overlap,echo=verbose,eval=TRUE,fig.align='center',fig.height=8}
+rownames(mm) <- paste0(dict$patient,dict$type)
+colnames(mm) <- rownames(mm)
+w <- c(which(dict$response=='NR'),which(dict$response=='R'))
+tdict <- dict[w,]
+tmm <- mm[w,w]
+tmm.m <- melt(tmm)
+g <- ggplot(tmm.m,aes(x=Var1,y=Var2)) +
+    geom_tile(aes(fill=value)) +
+    coord_fixed() +
+    scale_fill_gradient(low='white',high='black',na.value='white')+
+    theme(axis.text=element_text(size=5,colour=tdict$response),
+            axis.text.x=element_text(angle=90,hjust=1,vjust=0.5))+
+    xlab('') + ylab('') + ggtitle('Morisita Overlap')
+g
+```
+\clearpage
+
+
+## Expanded Clones
+```{r exp_cl_plot, echo=verbose,fig.align='center',fig.height=4,fig.width=7}
+w <- grep('Number of Expanded',names(plot_ds))
+g <- iseqr_plot_factor(plot_ds,names(plot_ds)[w],'response',type='POST1') + xlab('Response')
+f <- iseqr_plot_factor(plot_ds,names(plot_ds)[w],'arm',type='POST1') + xlab('Arm')
+h <- iseqr_plot_factor(plot_ds,names(plot_ds)[w],'nonskin.irae',type='POST1') + xlab('AE')
+i <- iseqr_plot_factor(plot_ds,names(plot_ds)[w],'CA19.9',type='POST1') + xlab('CA19-9')
+j <- iseqr_plot_factor(plot_ds,names(plot_ds)[w],'CT',type='POST1') + xlab('CT')
+grid.arrange(g,f,h,i,j,ncol=5)
+
+w <- grep('Number of Expanded',names(plot_ds))
+g <- iseqr_plot_factor(plot_ds,names(plot_ds)[w],'response',type='POST3') + xlab('Response')
+f <- iseqr_plot_factor(plot_ds,names(plot_ds)[w],'arm',type='POST3') + xlab('Arm')
+h <- iseqr_plot_factor(plot_ds,names(plot_ds)[w],'nonskin.irae',type='POST3') + xlab('AE')
+i <- iseqr_plot_factor(plot_ds,names(plot_ds)[w],'CA19.9',type='POST3') + xlab('CA19-9')
+j <- iseqr_plot_factor(plot_ds,names(plot_ds)[w],'CT',type='POST3') + xlab('CT')
+grid.arrange(g,f,h,i,j,ncol=5)
+
+
+```
+
+\clearpage
+
+## Confounders
+
+### Age
+
+```{r by_age,echo=verbose,cache=FALSE,fig.align='center',fig.height=2.5}
+x_val <- 'age'
+metrics <- names(stats[names(stats)!='fn'])
+types <- levels(plot_ds$type)
+for(b in metrics){
+    l <- vector('list')
+    for(a in types){
+        l[[a]] <- iseqr_plot_metrics(plot_ds,b,x_val,a,sm=TRUE)
+    }
+    do.call(grid.arrange,c(l,ncol=length(types)))
+	cat('  \n')
+}
+```
+\clearpage
+

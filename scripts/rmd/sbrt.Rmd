@@ -1,0 +1,241 @@
+---
+title: \texttt{immunoSeqR} Analysis
+#author: "Alex Hopkins"
+output: pdf_document
+header-includes:
+   - \usepackage{graphicx}
+
+---
+# SBRT Study
+Created `r  format(Sys.Date(),"%m/%d/%y")`
+
+```{r eval=TRUE,echo=FALSE}
+require(rmarkdown)
+require(immunoSeqR)
+require(ggplot2)
+require(gridExtra)
+require(knitr)
+require(reshape2)
+first_run <- FALSE
+verbose=FALSE
+r <- function(){render('~/Documents/emj/ImmunoseqResults/immunoSeqR/scripts/rmd/sbrt.Rmd',
+output_file='~/Documents/emj/ImmunoseqResults/new/sbrt.pdf')}
+
+```
+```{r eval=first_run}
+ds <- readRDS('~/Documents/emj/ImmunoseqResults/data/sbrt/ds_agg.Rds')
+load('~/Documents/emj/ImmunoseqResults/data/sbrt/sum.ds.Rda')
+dict <- readRDS('~/Documents/emj/ImmunoseqResults/data/sbrt/dict.Rds')
+plot_ds <- readRDS('~/Documents/emj/ImmunoseqResults/data/sbrt/plot_ds.Rds')
+stats <- readRDS('~/Documents/emj/ImmunoseqResults/data/sbrt/stats.Rds')
+load('~/Documents/emj/ImmunoseqResults/data/sbrt/olm.Rda')
+
+```
+
+## Background
+
+### Dataset
+
+The data set contains `r sum.ds$nsamp` samples, of `r  sum.ds$ntypes` types.
+There are `r  sum.ds$unique.tcr` unique TCRs, collapsed from `r  sum.ds$total.tcr` distinct
+productive CDR3 sequences. This represents an average synonymity of `r  sum.ds$avg.syn`.
+The maximum synonymity (in the parent data set) was `r  sum.ds$max.syn` (clone sequence `r
+sum.ds$max.syn.aa `).\par
+
+### Metadata  
+The available metadata fields in the dictionary are: `r paste(names(dict)[-1],collapse=', ')`. The statistics computed are `r paste(names(stats)[names(stats)!='fn'],collapse=', ')`.
+
+\clearpage
+
+###Overlaps
+```{r overlap,echo=verbose,eval=TRUE,fig.align='center',fig.height=8}
+rownames(mm) <- paste0(dict$patient,dict$type)
+colnames(mm) <- rownames(mm)
+#w <- c(which(dict$response=='NR'),which(dict$response=='R'))
+tdict <- dict[,]
+tmm <- mm
+tmm.m <- melt(tmm)
+g <- ggplot(tmm.m,aes(x=Var1,y=Var2)) +
+    geom_tile(aes(fill=value)) +
+    coord_fixed() +
+    scale_fill_gradient(low='white',high='black')+
+    theme(axis.text=element_text(size=5,color='black'),
+            axis.text.x=element_text(angle=90,hjust=1,vjust=0.5))+
+    xlab('') + ylab('') + ggtitle('Morisita Overlap')
+g
+```
+
+## Expanded Clones
+
+### Pre vs Post-SBRT
+```{r exp_cl_plot, echo=verbose,fig.align='center',fig.height=3,fig.width=5}
+w <- grep('Number of Expanded',names(plot_ds))
+g <- iseqr_plot_factor(plot_ds,names(plot_ds)[w],'arm',type='POSTSBRT') + xlab('Arm')
+g
+
+w <- grep('Number of Expanded',names(plot_ds))
+g <- iseqr_plot_factor(plot_ds,names(plot_ds)[w],'arm',type='POSTFOLF') + xlab('Arm')
+f
+
+```
+
+
+```{r exp_cl_plot2, echo=verbose,fig.align='center',fig.height=3,fig.width=5}
+resp <- sapply(names(out2$num_exp),FUN=iseqr_lookup,dict=tdict,o_col='os.tert')
+pt <- sapply(names(out2$num_exp),FUN=iseqr_lookup,dict=tdict,o_col='ptv80.tert')
+arm <- sapply(names(out2$num_exp),FUN=iseqr_lookup,dict=tdict,o_col='arm')
+df <- data.frame(patient=names(out2$num_exp),response=resp,arm=arm,pt=pt,num_exp=out2$num_exp)
+g <- iseqr_plot_factor(df,'num_exp','response',NA)
+g <- g + ylab('Number of Expanded Clones') + xlab('Survival Tertile')
+f <- iseqr_plot_factor(df,'num_exp','arm',NA) + xlab('Arm')
+f <- f + ylab('Number of Expanded Clones')
+i <- iseqr_plot_factor(df,'num_exp','pt',NA) + xlab('PTV80 Tertile')
+i <- i + ylab('Number of Expanded Clones')
+
+grid.arrange(f,g,i,ncol=3)
+
+```
+
+
+
+### By Type
+
+```{r eval=TRUE,echo=verbose,cache=FALSE}
+#put sum of seqs at the end
+stats <- stats[,c(1,3,2,4)]
+plot_ds <- merge(dict,stats)
+
+```
+```{r by_type,echo=verbose,fig.align='center'}
+metrics <- names(stats[names(stats)!='fn'])
+types <- levels(plot_ds$type)
+l <- vector('list')
+for(b in metrics){
+	    l[[b]] <- iseqr_plot_factor(plot_ds,b,'type',NA) + theme(axis.text=element_text(size=5))
+}
+do.call(grid.arrange,c(l,ncol=length(types)))
+```
+```{r echo=FALSE,results='asis',eval=FALSE}
+for(a in metrics){
+	print(kable(iseqr_summarize(plot_ds,'type',metric=a),
+		format='markdown',
+		digits=3,
+		align='c'))
+}
+```
+
+\clearpage
+
+### By Treatment Arm
+```{r by_arm,echo=verbose,fig.align='center'}
+x_val <- 'arm'
+metrics <- names(stats[names(stats)!='fn'])
+types <- levels(plot_ds$type)
+for(b in metrics){
+    l <- vector('list')
+    for(a in types){
+        l[[a]] <- iseqr_plot_factor(plot_ds,b,x_val,a)
+    }
+    do.call(grid.arrange,c(l,ncol=length(types)))
+}
+```
+\clearpage
+
+### By Overall Survival
+```{r by_survival,echo=verbose,cache=FALSE,fig.align='center',fig.height=3,fig.width=8}
+x_val <- 'os'
+metrics <- names(stats[names(stats)!='fn'])
+types <- levels(plot_ds$type)
+for(b in metrics){
+    l <- vector('list')
+    for(a in types[types!='PDAC']){
+        l[[a]] <- iseqr_plot_metrics(plot_ds[!is.na(plot_ds$os),],b,x_val,a) +
+                    theme(axis.text=element_text(size=5))
+    }
+    do.call(grid.arrange,c(l,ncol=length(types)))
+    cat('  \n')
+}
+```
+
+### By Survival Tertile
+```{r by_survival_tert,echo=verbose,fig.align='center'}
+x_val <- 'os.tert'
+metrics <- names(stats[names(stats)!='fn'])
+types <- levels(plot_ds$type)
+for(b in metrics){
+    l <- vector('list')
+    for(a in types){
+        l[[a]] <- iseqr_plot_factor(plot_ds,b,x_val,a)
+    }
+    do.call(grid.arrange,c(l,ncol=length(types)))
+}
+```
+
+\clearpage
+
+###By PTV80
+```{r by_ptv80,echo=verbose,cache=FALSE,fig.align='center',fig.height=3,fig.width=8}
+x_val <- 'ptv80'
+metrics <- names(stats[names(stats)!='fn'])
+types <- levels(plot_ds$type)
+for(b in metrics){
+    l <- vector('list')
+    for(a in types[types!='PDAC']){
+        l[[a]] <- iseqr_plot_metrics(plot_ds[!is.na(plot_ds$ptv80),],b,x_val,a) +
+                    theme(axis.text=element_text(size=5))
+    }
+    do.call(grid.arrange,c(l,ncol=length(types)))
+    cat('  \n')
+}
+```
+### By PTV80 Tertile
+```{r by_ptv80_tert,echo=verbose,fig.align='center'}
+x_val <- 'ptv80.tert'
+metrics <- names(stats[names(stats)!='fn'])
+types <- levels(plot_ds$type)
+for(b in metrics){
+    l <- vector('list')
+    for(a in types){
+        l[[a]] <- iseqr_plot_factor(plot_ds,b,x_val,a)
+    }
+    do.call(grid.arrange,c(l,ncol=length(types)))
+}
+```
+
+\clearpage
+
+## Confounders
+
+### Cell Number
+
+```{r by_number,echo=verbose,cache=FALSE,fig.align='center',fig.height=3,fig.width=8}
+x_val <- 'cells'
+metrics <- names(stats[names(stats)!='fn'])
+types <- levels(plot_ds$type)
+for(b in metrics){
+    l <- vector('list')
+    for(a in types[types!='PDAC']){
+        l[[a]] <- iseqr_plot_metrics(plot_ds[!is.na(plot_ds$cells),],b,x_val,a) + 
+					theme(axis.text=element_text(size=5))
+    }
+    do.call(grid.arrange,c(l,ncol=length(types)))  
+	cat('  \n')
+}
+```
+
+### Age
+```{r by_age,echo=verbose,cache=FALSE,fig.align='center',fig.height=3,fig.width=8}
+x_val <- 'age'
+metrics <- names(stats[names(stats)!='fn'])
+types <- levels(plot_ds$type)
+for(b in metrics){
+    l <- vector('list')
+    for(a in types[types!='PDAC']){
+        l[[a]] <- iseqr_plot_metrics(plot_ds[!is.na(plot_ds$cells),],b,x_val,a) +
+                    theme(axis.text=element_text(size=5))
+    }
+    do.call(grid.arrange,c(l,ncol=length(types)))
+    cat('  \n')
+}
+```
+
