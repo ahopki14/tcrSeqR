@@ -1,5 +1,5 @@
-#library(immunoSeqR)
+library(immunoSeqR)
 setwd('/home/student/ahopkins/emj/immunoseq_data/adjuvant')
 all_files <- list.files(pattern=".tsv")
 ds <- iseqr_merge(all_files)
-save(ds,file='ds.Rda')
+saveRDS(ds,file='ds.Rds')
