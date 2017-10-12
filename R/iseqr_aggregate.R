@@ -20,6 +20,7 @@ iseqr_aggregate <- function(ds){
 	ok <- ds[-to_fix,]
 	stopifnot(length(rownames(ok))==length(unique(rownames(ok))))
 	to_fix <- ds[to_fix,]
+	cat('Found', nrow(to_fix),'synonymous sequences\n')
 	# do math
 	gc()
 	ind_to_fix <- split(seq_len(nrow(to_fix)),rownames(to_fix))

@@ -1,4 +1,7 @@
-# filter for tcr object
+#' filter.tcr
+#' 
+#' Method for using dplyr filter on tcr class objects
+#' @author Alexander Hopkins
 filter.tcr <- function(.data, ...){
 	colData.filter <- filter(colData(.data), ...)
 	if(nrow(colData.filter)>0){
