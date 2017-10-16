@@ -12,7 +12,7 @@ iseqr_aggregate <- function(ds){
 	stopifnot(assayNames(ds)=='tcr_nt')
 	start <- proc.time()
 	# make indicies and synonymity
-	ind <- split(seq_len(nrow(ds)),rownames(ds))
+	ind <- split(seq_len(nrow(ds)),rownames(ds)) # This is a little slow
 	syn <- sapply(ind,length)
 	#split out columns to be fixed
 	f <- syn>1 # id clones which need to be collapsed
@@ -24,8 +24,9 @@ iseqr_aggregate <- function(ds){
 	# do math
 	gc()
 	ind_to_fix <- split(seq_len(nrow(to_fix)),rownames(to_fix))
-	sum_rows <- function(x){colSums(assay(to_fix)[unlist(ind_to_fix[x]),])}
-	fixed_mat <- sapply(seq(length(ind_to_fix)),FUN=sum_rows)
+	to_fix_m <- assay(to_fix)
+	sum_rows <- function(x){colSums(to_fix_m[unlist(ind_to_fix[x]),])}
+	fixed_mat <- sapply(seq(length(ind_to_fix)),FUN=sum_rows) # This is the slow part
 	fixed_mat <- t(fixed_mat)
 	rownames(fixed_mat) <- names(ind_to_fix)
 	#assemble a tcr of the fixed sequences
