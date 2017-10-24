@@ -5,7 +5,7 @@ Version: 1.0.6
 Date: 2017-09-26
 Author: Alexander Hopkins
 Maintainer: Alexander Hopkins <achopkins@gmail.com>
-Depends: R, SummarizedExperiment, ggplot2, dplyr
+Depends: SummarizedExperiment, ggplot2, dplyr
 Description: Results from T cell receptor beta chain sequencing can be aggregated and manipulated using this package.
 License: None (yet)
 RoxygenNote: 6.0.1
