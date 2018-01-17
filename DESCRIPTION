@@ -1,4 +1,4 @@
-Package: immunoSeqR
+Package: tcrSeqR
 Type: Package
 Title: Tools for analyzing data from Adaptive's ImmunoSeq platform
 Version: 1.0.6

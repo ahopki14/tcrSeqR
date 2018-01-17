@@ -1,6 +1,6 @@
-# immunoSeqR
+# tcrSeqR
 
-This readme covers TCR analysis with the `immunoSeqR` package at a high level.
+This readme covers TCR analysis with the `tcrSeqR` package at a high level.
 The `example.R` script contains a more complete example. 
 
 ## Description
@@ -36,7 +36,7 @@ ds <- iseqr_merge(all_files)
 ``` 
 
 ## Building a Metadata Dictionary
-`immunoSeqR` can help make plots of various metrics, but it needs to be aware of the metadata
+`tcrSeqR` can help make plots of various metrics, but it needs to be aware of the metadata
 associated with each sample. This is accomplished with a dictionary, which is simply a
 `data.frame` in which each row corresponds to a column in the dataset. A simple example might
 look like 
@@ -93,7 +93,7 @@ ds_agg <- iseqr_aggregate(ds,inc_nt=FALSE)
 ```  
 
 ## Metrics 
-A variety of metrics are available in `immunoSeqR`, including `clonality`, `richness`, and `morisita`. 
+A variety of metrics are available in `tcrSeqR`, including `clonality`, `richness`, and `morisita`. 
 These functions can, if given an input vector, calculate the statistic of
 interest. If given a `tcr` object, however, they will calculate the metric for
 all samples and (optionally) merge the results back into the metadata. 
