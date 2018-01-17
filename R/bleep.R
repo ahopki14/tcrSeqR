@@ -10,5 +10,5 @@
 bleep <- function(){
   system('bleep &')
 # this puts up a notification in the gnome notification tray
-  system('notify-send -t 3000 "immunoSeqR" "Done"')
+  system('notify-send -t 3000 "tcrSeqR" "Done"')
 }
