@@ -30,8 +30,7 @@ iseqr_plot_factor <- function(plot_ds,metric,by,type=NA,hjust=-0.5,labels=TRUE,.
     if(labels){ g <- g + geom_text(aes(label=patient),
 				   colour='grey',
 				   hjust=hjust,
-				   size=1,
-				   label.padding=0)}else{g}
+				   size=1)}else{g}
     g
 }
 
