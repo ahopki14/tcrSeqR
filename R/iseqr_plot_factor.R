@@ -27,15 +27,20 @@ iseqr_plot_factor <- function(plot_ds,metric,by,type=NA,hjust=-0.5,labels=TRUE,.
     stat_summary(fun.data=mean_only,geom='errorbar',width=0.25,colour='red')+
     geom_point()
     if(grepl('Log',metric)){g <- g + geom_hline(yintercept=0, color='black',alpha=0.2)}
-    if(labels){ g <- g + geom_text(aes(label=patient),colour='grey',hjust=hjust,size=1)}else{g}
+    if(labels){ g <- g + geom_text(aes(label=patient),
+				   colour='grey',
+				   hjust=hjust,
+				   size=1,
+				   label.padding=0)}else{g}
     g
 }
 
 
 
 setMethod("iseqr_plot_factor",signature="tcr", 
-	  definition=function(plot_ds,metric,by,type=NA,...){
-	iseqr_plot_factor(as.data.frame(colData(plot_ds)),metric,by,type=type, ...)
+	  definition=function(plot_ds,metric,by,type=NA,hjust=-0.5,labels=TRUE,...){
+	iseqr_plot_factor(as.data.frame(colData(plot_ds)),
+			  metric,by,type=type,hjust=hjust,labels=labels, ...)
 	}
 )
 
