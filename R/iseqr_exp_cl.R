@@ -49,7 +49,7 @@ iseqr_exp_cl <- function(ds,comps, category='type', alpha=0.05,min.count=5,outpu
 	#loop through comparisons first
 	for(a in comps){
 		#then loop through patients
-		for(b in seq(patients)){
+		for(b in seq_along(patients)){
 			w <- c(which(md[,by]==patients[b] & md[,category]==a[[1]]),
 			       which(md[,by]==patients[b] & md[,category]==a[[2]])
 			       )
@@ -64,7 +64,7 @@ iseqr_exp_cl <- function(ds,comps, category='type', alpha=0.05,min.count=5,outpu
 				  ind <- as.numeric(ind)
 				  s <- apply(mat[ind,],MARGIN=2,FUN=sum)
 				  tm <- proc.time()
-				  p_vals <- exp_clone(mat[ind,2],mat[ind,1])
+				  p_vals <- exp_clone(mat[ind,1],mat[ind,2])
 				  el<- proc.time()-tm
 				  p_adj <- p.adjust(p_vals,method='BH')
 				  mat[ind,3] <- p_adj
