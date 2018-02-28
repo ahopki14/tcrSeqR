@@ -44,7 +44,7 @@ iseqr_exp_cl <- function(ds,comps, category='type', alpha=0.05,min.count=5,outpu
 	#initialize variables
 	patients <- unique(md$patient)
 	out <- data.frame(p_adj=numeric(),ind=numeric(),patient=character())
-	p <- matrix(nrow=nrow(ds),ncol=length(patients))
+	p <- as.data.frame(matrix(nrow=nrow(ds),ncol=length(patients)))
 	num_exp <- data.frame(patient=character(), type=character(), out=numeric())
 	#loop through comparisons first
 	for(a in comps){
@@ -73,6 +73,7 @@ iseqr_exp_cl <- function(ds,comps, category='type', alpha=0.05,min.count=5,outpu
 								       type=a[[2]],
 								       out=n_exp))
 				  p[,b] <- mat[,3]
+				  colnames(p)[b] <- patients[b]
 			}else if(length(w)<2){
 				#nothing found for that category
 				cat('No sample found for',by,patients[b],category,a[[2]],'\n')
