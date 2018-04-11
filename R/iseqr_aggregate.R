@@ -31,7 +31,7 @@ iseqr_aggregate <- function(ds){
 	rownames(fixed_mat) <- names(ind_to_fix)
 	#assemble a tcr of the fixed sequences
 	fixed <- tcr(SummarizedExperiment(assays=list(tcr_nt=fixed_mat)))
-	rowData(fixed) <- DataFrame(nt='NA',aa=rownames(fixed_mat))
+	rowData(fixed) <- DataFrame(aa=rownames(fixed_mat),nt='NA')
 	ds_out <- BiocGenerics::rbind(ok, fixed)
 	names(ds_out@assays$data) <- 'tcr'
 	# Print sanity check
