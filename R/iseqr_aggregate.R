@@ -10,6 +10,7 @@
 iseqr_aggregate <- function(ds){
 	stopifnot(class(ds)=='tcr')
 	stopifnot(assayNames(ds)=='tcr_nt')
+	stopifnot(all(rownames(ds)==rowData(ds)$aa))
 	start <- proc.time()
 	# make indicies and synonymity
 	ind <- split(seq_len(nrow(ds)),rownames(ds)) # This is a little slow
@@ -31,7 +32,7 @@ iseqr_aggregate <- function(ds){
 	rownames(fixed_mat) <- names(ind_to_fix)
 	#assemble a tcr of the fixed sequences
 	fixed <- tcr(SummarizedExperiment(assays=list(tcr_nt=fixed_mat)))
-	rowData(fixed) <- DataFrame(aa=rownames(fixed_mat),nt='NA')
+	rowData(fixed) <- DataFrame(nt='NA',aa=rownames(fixed_mat))
 	ds_out <- BiocGenerics::rbind(ok, fixed)
 	names(ds_out@assays$data) <- 'tcr'
 	# Print sanity check
